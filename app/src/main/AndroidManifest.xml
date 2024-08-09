@@ -13,6 +13,12 @@
         android:theme="@style/Theme.TFM"
         tools:targetApi="31">
         <activity
+            android:name=".TVShow_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".MovieActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
