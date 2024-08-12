@@ -5,17 +5,73 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_constraintTop_toBottomOf="@id/headerLayout"
+    app:layout_constraintBottom_toTopOf="@id/footerLayout"
     tools:context=".MovieActivity">
 
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        android:background="@android:color/holo_green_dark"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:paddingStart="10dp"
+        android:paddingTop="8dp">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/arrow_back"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Volver a la pantalla anterior" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginStart="128dp"
+            android:layout_marginTop="5dp"
+            android:text="Movie Details"
+
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/footerLayout"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:orientation="horizontal"
+        android:background="@android:color/holo_green_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:id="@+id/footerTextView"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:text="HobbyTrack"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
     <ImageView
         android:id="@+id/posterView"
-        android:layout_width="147dp"
-        android:layout_height="119dp"
+        android:layout_width="120dp"
+        android:layout_height="180dp"
         app:srcCompat="@drawable/placeholder"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintBottom_toTopOf="@id/titleGuideline"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/titleView" tools:layout_editor_absoluteX="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/titleView"
         tools:layout_editor_absoluteY="37dp" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -23,101 +79,81 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="187dp" />
+        app:layout_constraintGuide_begin="279dp" />
 
     <TextView
         android:id="@+id/titleView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintBottom_toTopOf="@id/titleGuideline"
         app:layout_constraintLeft_toRightOf="@id/posterView"
         app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteX="253dp"
-        tools:layout_editor_absoluteY="59dp" />
+        app:layout_constraintTop_toBottomOf="@id/headerLayout" />
 
     <TextView
         android:id="@+id/overviewView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintTop_toBottomOf="@id/titleGuideline"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         app:layout_constraintBottom_toTopOf="@id/creditsView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteX="167dp"
-        tools:layout_editor_absoluteY="221dp" />
+        app:layout_constraintTop_toBottomOf="@id/titleGuideline" />
 
     <TextView
         android:id="@+id/creditsView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintTop_toBottomOf="@id/overviewView"
         app:layout_constraintBottom_toTopOf="@id/studioView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteX="167dp"
-        tools:layout_editor_absoluteY="277dp" />
+        app:layout_constraintTop_toBottomOf="@id/overviewView" />
 
     <TextView
         android:id="@+id/studioView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintTop_toBottomOf="@id/creditsView"
         app:layout_constraintBottom_toTopOf="@id/genresView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/releaseDateView"
-        tools:layout_editor_absoluteX="45dp"
-        tools:layout_editor_absoluteY="329dp" />
+        app:layout_constraintTop_toBottomOf="@id/creditsView" />
 
     <TextView
         android:id="@+id/releaseDateView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintTop_toBottomOf="@id/creditsView"
         app:layout_constraintBottom_toTopOf="@id/genresView"
         app:layout_constraintLeft_toRightOf="@id/studioView"
         app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteX="290dp"
-        tools:layout_editor_absoluteY="329dp" />
+        app:layout_constraintTop_toBottomOf="@id/creditsView" />
 
     <TextView
         android:id="@+id/genresView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintTop_toBottomOf="@id/studioView"
         app:layout_constraintBottom_toTopOf="@id/runtimeView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteX="163dp"
-        tools:layout_editor_absoluteY="395dp" />
+        app:layout_constraintTop_toBottomOf="@id/studioView" />
 
     <TextView
         android:id="@+id/runtimeView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@id/footerLayout"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/scoreView"
-        app:layout_constraintTop_toBottomOf="@id/genresView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="34dp"
-        tools:layout_editor_absoluteY="470dp" />
+        app:layout_constraintRight_toLeftOf="@id/movieScoreView"
+        app:layout_constraintTop_toBottomOf="@id/genresView" />
 
     <TextView
-        android:id="@+id/scoreView"
+        android:id="@+id/movieScoreView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintTop_toBottomOf="@id/genresView"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/footerLayout"
         app:layout_constraintLeft_toRightOf="@id/runtimeView"
         app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteX="290dp"
-        tools:layout_editor_absoluteY="470dp" />
+        app:layout_constraintTop_toBottomOf="@id/genresView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -77,24 +77,27 @@ public class TVShow {
         this.release_date = release_date;
     }
 
-    public int getNumber_of_episodes() {
-        return number_of_episodes;
+    public String getNumber_of_episodes() {
+        return number_of_episodes + " episodes.";
     }
 
     public void setNumber_of_episodes(int number_of_episodes) {
         this.number_of_episodes = number_of_episodes;
     }
 
-    public int getNumber_of_seasons() {
-        return number_of_seasons;
+    public String getNumber_of_seasons() {
+        return number_of_seasons + " seasons.";
     }
 
     public void setNumber_of_seasons(int number_of_seasons) {
         this.number_of_seasons = number_of_seasons;
     }
 
-    public ArrayList<String> getCast() {
-        return cast;
+    public String getCast() {
+        String result="Actors\n";
+        for(String c : cast)
+            result = result + c + "\n";
+        return result;
     }
 
     public void setCast(ArrayList<String> cast) {
@@ -117,16 +120,22 @@ public class TVShow {
         this.poster = poster.replace("\"", "");
     }
 
-    public ArrayList<String> getStudios() {
-        return studios;
+    public String getStudios() {
+        String result="";
+        for(String s : studios)
+            result = result + s + ".\n";
+        return result;
     }
 
     public void setStudios(ArrayList<String> studios) {
         this.studios = new ArrayList<>(studios);
     }
 
-    public ArrayList<String> getGenres() {
-        return genres;
+    public String getGenres() {
+        String result="";
+        for(String g : genres)
+            result = result + g + ", ";
+        return result.substring(0, result.length()-2);
     }
 
     public void setGenres(ArrayList<String> genres) {

@@ -246,9 +246,4 @@ public class TMDBInterface {
         result.setScore(tv.getDouble("vote_average"));
         return result;
     }
-
-    public static void main(String[] args) throws IOException, JSONException {
-        TVShow tv = new TVShow(getTVShowDetails("1668"));
-        System.out.println(tv.toString());
-    }
 }

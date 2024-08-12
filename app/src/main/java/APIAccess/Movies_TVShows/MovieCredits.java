@@ -72,13 +72,20 @@ public class MovieCredits {
 
     @Override
     public String toString() {
-        return "Credits{" +
-                "cast=" + cast +
-                ", director='" + director + '\'' +
-                ", composer='" + composer + '\'' +
-                ", screenplay='" + screenplay + '\'' +
-                ", producer='" + producer + '\'' +
-                '}';
+        String result;
+        result = "Actors\n";
+        for(String a : cast){
+            result = result + a + ".\n";
+        }
+        if(!director.isEmpty())
+            result = result + "Director\n" + director + ".\n";
+        if(!composer.isEmpty())
+            result = result + "Composer\n" + composer + ".\n";
+        if(!screenplay.isEmpty())
+            result = result + "Screenplay\n" + screenplay + ".\n";
+        if(!producer.isEmpty())
+            result = result + "Producer\n" + producer + ".";
+        return result;
     }
 }
 

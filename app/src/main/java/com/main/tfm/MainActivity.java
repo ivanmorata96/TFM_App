@@ -14,7 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button boton;
+    Button movieButton, tvButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,15 +26,21 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        boton = findViewById(R.id.movieButton);
-        boton.setOnClickListener(new View.OnClickListener() {
+        movieButton = findViewById(R.id.movieButton);
+        tvButton = findViewById(R.id.tvButton);
+        movieButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("Error", "Has clicado.");
                 Intent intent = new Intent(MainActivity.this, MovieActivity.class);
-                Log.i("Error", "Se ha generado el intent.");
                 startActivity(intent);
-                Log.i("Error", "Has finalizado.");
+            }
+        });
+
+        tvButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, TVShow_Activity.class);
+                startActivity(intent);
             }
         });
 

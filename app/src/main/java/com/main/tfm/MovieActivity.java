@@ -3,7 +3,6 @@ package com.main.tfm;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -49,7 +48,7 @@ public class MovieActivity extends AppCompatActivity {
         genresView = findViewById(R.id.genresView);
         studioView = findViewById(R.id.studioView);
         runtimeView = findViewById(R.id.runtimeView);
-        scoreView = findViewById(R.id.scoreView);
+        scoreView = findViewById(R.id.movieScoreView);
         posterView = findViewById(R.id.posterView);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
@@ -62,10 +61,10 @@ public class MovieActivity extends AppCompatActivity {
             handler.post(() -> {
                 titleView.setText(m.get().getTitle());
                 releaseDateView.setText(m.get().getRelease_date());
-                creditsView.setText(m.get().getMovieCredits().toString());
+                creditsView.setText(m.get().getMovieCredits());
                 overviewView.setText(m.get().getOverview());
-                genresView.setText(m.get().getGenres().toString());
-                studioView.setText(m.get().getStudios().toString());
+                genresView.setText(m.get().getGenres());
+                studioView.setText(m.get().getStudios());
                 runtimeView.setText(String.valueOf(m.get().getRuntime()));
                 scoreView.setText(String.valueOf(m.get().getScore()));
                 Picasso.get().load(m.get().getPoster()).into(posterView);

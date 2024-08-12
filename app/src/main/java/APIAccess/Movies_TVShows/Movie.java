@@ -72,8 +72,8 @@ public class Movie {
         this.release_date = release_date;
     }
 
-    public MovieCredits getMovieCredits() {
-        return movieCredits;
+    public String getMovieCredits() {
+        return movieCredits.toString();
     }
 
     public void setMovieCredits(MovieCredits movieCredits) {
@@ -88,8 +88,11 @@ public class Movie {
         this.overview = overview;
     }
 
-    public ArrayList<String> getGenres() {
-        return genres;
+    public String getGenres() {
+        String result="";
+        for(String g : genres)
+            result = result + g + ", ";
+        return result.substring(0, result.length()-2);
     }
 
     public void setGenres(ArrayList<String> genres) {
@@ -104,8 +107,11 @@ public class Movie {
         this.poster = poster.replace("\"", "");
     }
 
-    public ArrayList<String> getStudios() {
-        return studios;
+    public String getStudios() {
+        String result="";
+        for(String s : studios)
+            result = result + s + ", ";
+        return result.substring(0, result.length()-2);
     }
 
     public void setStudios(ArrayList<String> studios) {
