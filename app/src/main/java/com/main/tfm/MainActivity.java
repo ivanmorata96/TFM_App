@@ -1,25 +1,19 @@
 package com.main.tfm;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
-import com.main.tfm.details.BooksActivity;
-import com.main.tfm.details.MovieActivity;
-import com.main.tfm.details.TVShowActivity;
-import com.main.tfm.details.VideogameActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-
-    Button movieButton, tvButton, videogameButton, bookButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,41 +24,35 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        movieButton = findViewById(R.id.movieButton);
-        tvButton = findViewById(R.id.tvButton);
-        videogameButton = findViewById(R.id.vgButton);
-        bookButton = findViewById(R.id.bookButton);
-        movieButton.setOnClickListener(new View.OnClickListener() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        loadFragment(new searchFragment());
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, MovieActivity.class);
-                startActivity(intent);
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+                switch (item.getItemId()) {
+                    case R.id.settingsFragmentNavi:
+                        selectedFragment = new searchFragment();
+                        break;
+                    case R.id.searchFragmentNavi:
+                        //selectedFragment = new Fragment2();
+                        break;
+                    case R.id.userFragmentNavi:
+                        //selectedFragment = new Fragment3();
+                        break;
+                }
+                if (selectedFragment != null) {
+                    loadFragment(selectedFragment);
+                }
+                return true;
             }
         });
+    }
 
-        tvButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, TVShowActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        videogameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, VideogameActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        bookButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, BooksActivity.class);
-                startActivity(intent);
-            }
-        });
-
+    private void loadFragment(Fragment fragment) {
+        // Reemplaza el fragmento en el contenedor
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
     }
 }
