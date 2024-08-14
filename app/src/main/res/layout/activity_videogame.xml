@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     app:layout_constraintTop_toBottomOf="@id/headerLayout"
     app:layout_constraintBottom_toTopOf="@id/footerLayout"
-    tools:context=".TVShowActivity">
+    tools:context=".VideogameActivity">
 
     <LinearLayout
         android:id="@+id/headerLayout"
@@ -33,9 +33,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:layout_marginStart="126dp"
+            android:layout_marginStart="118dp"
             android:layout_marginTop="5dp"
-            android:text="TV Show Details"
+            android:text="Videogame Details"
 
             android:textAlignment="center"
             android:textColor="@color/white"
@@ -62,17 +62,27 @@
             android:textColor="@android:color/white"
             android:textStyle="bold" />
     </LinearLayout>
+
     <ImageView
         android:id="@+id/posterView"
-        android:layout_width="120dp"
-        android:layout_height="180dp"
+        android:layout_width="180dp"
+        android:layout_height="120dp"
         app:srcCompat="@drawable/placeholder"
-        app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toTopOf="@id/titleView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintBottom_toTopOf="@id/titleGuideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/titleView"
-        tools:layout_editor_absoluteY="37dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/posterView" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/titleGuideline"
@@ -82,98 +92,66 @@
         app:layout_constraintGuide_begin="279dp" />
 
     <TextView
-        android:id="@+id/titleView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        app:layout_constraintBottom_toTopOf="@id/titleGuideline"
-        app:layout_constraintLeft_toRightOf="@id/posterView"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout" />
-
-    <TextView
-        android:id="@+id/overviewView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        app:layout_constraintBottom_toTopOf="@id/castView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleGuideline" />
-
-    <TextView
-        android:id="@+id/castView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/studioView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/overviewView" />
-
-    <TextView
-        android:id="@+id/studioView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/genresView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/releaseDateView"
-        app:layout_constraintTop_toBottomOf="@id/castView" />
-
-    <TextView
-        android:id="@+id/releaseDateView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/genresView"
-        app:layout_constraintLeft_toRightOf="@id/studioView"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/castView" />
-
-    <TextView
-        android:id="@+id/genresView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/seasonsView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/studioView" />
-
-    <TextView
-        android:id="@+id/seasonsView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/episodesView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/statusView"
-        app:layout_constraintTop_toBottomOf="@id/genresView" />
-
-    <TextView
-        android:id="@+id/statusView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/footerLayout"
-        app:layout_constraintLeft_toRightOf="@id/seasonsView"
-        app:layout_constraintRight_toLeftOf="@id/TVscoreView"
-        app:layout_constraintTop_toBottomOf="@id/genresView" />
-
-    <TextView
-        android:id="@+id/episodesView"
+        android:id="@+id/videogameOverview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/statusView"
-        app:layout_constraintTop_toBottomOf="@id/seasonsView"
-        app:layout_constraintBottom_toTopOf="@id/footerLayout"/>
+        app:layout_constraintBottom_toTopOf="@+id/developersView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/titleGuideline"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"/>
 
     <TextView
-        android:id="@+id/TVscoreView"
+        android:id="@+id/developersView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/statusView"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/genresView"
-        app:layout_constraintBottom_toTopOf="@id/footerLayout"
-        android:text=""/>
+        android:text=""
+        app:layout_constraintTop_toBottomOf="@id/videogameOverview"
+        app:layout_constraintBottom_toTopOf="@id/platformsView"
+        app:layout_constraintEnd_toStartOf="@+id/vgReleaseView"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="446dp" />
+
+    <TextView
+        android:id="@+id/vgReleaseView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintStart_toEndOf="@id/developersView"
+        app:layout_constraintBottom_toTopOf="@+id/vgGenresView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/videogameOverview" />
+
+    <TextView
+        android:id="@+id/platformsView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintEnd_toStartOf="@+id/vgGenresView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/developersView"
+        app:layout_constraintBottom_toTopOf="@id/vgScoreView"/>
+
+    <TextView
+        android:id="@+id/vgGenresView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintTop_toBottomOf="@id/vgReleaseView"
+        app:layout_constraintStart_toEndOf="@id/platformsView"
+        app:layout_constraintBottom_toTopOf="@+id/vgScoreView"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/vgScoreView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/footerLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/platformsView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

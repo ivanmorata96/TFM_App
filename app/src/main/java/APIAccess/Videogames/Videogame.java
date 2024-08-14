@@ -60,6 +60,10 @@ public class Videogame {
     }
 
     public void setOverview(String overview) {
+        overview = overview.replace("<p>", "");
+        overview = overview.replace("</p>", "");
+        if(overview.length() > 500)
+            overview = overview.substring(0, 500) + "...";
         this.overview = overview;
     }
 
@@ -71,24 +75,33 @@ public class Videogame {
         this.poster = poster;
     }
 
-    public ArrayList<String> getPlatforms() {
-        return platforms;
+    public String getPlatforms() {
+        String result = "Platforms\n";
+        for(String p : platforms)
+            result = result + p + "\n";
+        return result;
     }
 
     public void setPlatforms(ArrayList<String> platforms) {
         this.platforms = new ArrayList<>(platforms);
     }
 
-    public ArrayList<String> getDevelopers() {
-        return developers;
+    public String getDevelopers() {
+        String result = "Developers\n";
+        for(String d : developers)
+            result = result + d + "\n";
+        return result;
     }
 
     public void setDevelopers(ArrayList<String> developers) {
         this.developers = new ArrayList<>(developers);
     }
 
-    public ArrayList<String> getGenres() {
-        return genres;
+    public String getGenres() {
+        String result = "Genres\n";
+        for(String g : genres)
+            result = result + g + "\n";
+        return result;
     }
 
     public void setGenres(ArrayList<String> genres) {

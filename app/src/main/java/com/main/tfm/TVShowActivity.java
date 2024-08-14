@@ -21,11 +21,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
-import APIAccess.Movies_TVShows.Movie;
 import APIAccess.Movies_TVShows.TMDBInterface;
 import APIAccess.Movies_TVShows.TVShow;
 
-public class TVShow_Activity extends AppCompatActivity {
+public class TVShowActivity extends AppCompatActivity {
 
     TextView titleView, releaseDateView, castView, overviewView, genresView, studioView, seasonsView, episodesView, statusView, scoreView;
     ImageView posterView;

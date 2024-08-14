@@ -2,7 +2,6 @@ package com.main.tfm;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -14,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button movieButton, tvButton;
+    Button movieButton, tvButton, videogameButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         });
         movieButton = findViewById(R.id.movieButton);
         tvButton = findViewById(R.id.tvButton);
+        videogameButton = findViewById(R.id.vgButton);
         movieButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -39,7 +39,15 @@ public class MainActivity extends AppCompatActivity {
         tvButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, TVShow_Activity.class);
+                Intent intent = new Intent(MainActivity.this, TVShowActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        videogameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, VideogameActivity.class);
                 startActivity(intent);
             }
         });
