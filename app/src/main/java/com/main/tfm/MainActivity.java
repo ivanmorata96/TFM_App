@@ -11,9 +11,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.main.tfm.details.BooksActivity;
+import com.main.tfm.details.MovieActivity;
+import com.main.tfm.details.TVShowActivity;
+import com.main.tfm.details.VideogameActivity;
+
 public class MainActivity extends AppCompatActivity {
 
-    Button movieButton, tvButton, videogameButton;
+    Button movieButton, tvButton, videogameButton, bookButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         movieButton = findViewById(R.id.movieButton);
         tvButton = findViewById(R.id.tvButton);
         videogameButton = findViewById(R.id.vgButton);
+        bookButton = findViewById(R.id.bookButton);
         movieButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,6 +54,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, VideogameActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        bookButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, BooksActivity.class);
                 startActivity(intent);
             }
         });

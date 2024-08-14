@@ -11,7 +11,7 @@
         android:id="@+id/movieButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="¡Movie!"
+        android:text="Movie!"
         app:layout_constraintBottom_toTopOf="@+id/tvButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +21,7 @@
         android:id="@+id/tvButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="¡TV Show!"
+        android:text="TV Show!"
         app:layout_constraintTop_toBottomOf="@id/movieButton"
         app:layout_constraintBottom_toTopOf="@id/vgButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,9 +31,19 @@
         android:id="@+id/vgButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="¡Videogame!"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Videogame!"
+        app:layout_constraintBottom_toTopOf="@id/bookButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvButton" />
+
+    <Button
+        android:id="@+id/bookButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Book!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vgButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

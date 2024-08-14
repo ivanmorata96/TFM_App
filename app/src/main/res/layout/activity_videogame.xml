@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     app:layout_constraintTop_toBottomOf="@id/headerLayout"
     app:layout_constraintBottom_toTopOf="@id/footerLayout"
-    tools:context=".VideogameActivity">
+    tools:context=".details.VideogameActivity">
 
     <LinearLayout
         android:id="@+id/headerLayout"

@@ -1,4 +1,4 @@
-package com.main.tfm;
+package com.main.tfm.details;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +12,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.main.tfm.R;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;

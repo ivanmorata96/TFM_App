@@ -67,8 +67,12 @@ public class Book {
         this.title = title;
     }
 
-    public ArrayList<String> getAuthor() {
-        return author;
+    public String getAuthor() {
+        String result = "";
+        for(String a : author){
+            result = result + a + ", ";
+        }
+        return result.substring(0, result.length()-2);
     }
 
     public void setAuthor(ArrayList<String> author) {
@@ -88,6 +92,10 @@ public class Book {
     }
 
     public void setOverview(String overview) {
+        overview = overview.replace("<p>", "");
+        overview = overview.replace("</p>", "");
+        overview = overview.replace("<br>", "");
+        overview = overview.substring(0, 500) + "...";
         this.overview = overview;
     }
 
@@ -115,8 +123,14 @@ public class Book {
         this.pages = pages;
     }
 
-    public ArrayList<String> getGenres() {
-        return genres;
+    public String getGenres() {
+        String result="";
+        String [] split;
+        split = genres.get(0).split("/");
+        for(int i = 0; i < split.length; i++){
+            result = result+ split[i];
+        }
+        return result;
     }
 
     public void setGenres(ArrayList<String> genres) {
@@ -132,6 +146,9 @@ public class Book {
     }
 
     public String getCover() {
+        String[] split;
+        split = cover.split("http");
+        cover = "https" + split[1];
         return cover;
     }
 
