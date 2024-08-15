@@ -1,12 +1,19 @@
 package com.main.tfm;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +21,8 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class searchFragment extends Fragment {
+    AppCompatButton searchButton;
+    EditText searchQuery;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,6 +68,26 @@ public class searchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
+
+        Spinner spinner = view.findViewById(R.id.searchOptions);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                getContext(),
+                R.array.searchOptions, // Referencia al array de opciones
+                android.R.layout.simple_spinner_item // Layout para el spinner
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        searchButton = view.findViewById(R.id.searchButton);
+        searchQuery = view.findViewById(R.id.searchET);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), searchResults.class);
+                intent.putExtra("item", searchQuery.getText().toString());
+                startActivity(intent);
+            }
+        });
+        return view;
     }
 }
