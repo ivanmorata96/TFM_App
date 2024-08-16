@@ -1,5 +1,7 @@
 package APIAccess.Books;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 import APIAccess.Content;
@@ -118,11 +120,10 @@ public class Book extends Content {
         this.score = score;
     }
 
-    public String getCover() {
+    public void setPoster(String poster){
         String[] split;
-        split = super.getPoster().split("http");
+        split = poster.split("http");
         super.setPoster("https" + split[1]);
-        return super.getPoster();
     }
 
     @Override
@@ -132,7 +133,7 @@ public class Book extends Content {
                 "It falls under the following genres: " + genres + ".\n" +
                 "It has a total of " + pages + " pages. It has a rating of " + score + ".\n" +
                 "Here you have an overview: " + getOverview() + ".\n" +
-                "Here you can check its cover: " + getCover() + ".\n";
+                "Here you can check its cover: " + getPoster() + ".\n";
         return book;
     }
 }

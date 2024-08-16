@@ -60,4 +60,6 @@ public abstract class Content{
     public void setPoster(String poster) {
         this.poster = poster;
     }
+
+
 }

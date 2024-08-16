@@ -65,7 +65,7 @@ public class BooksActivity extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
             handler.post(() -> {
-                Uri uri = Uri.parse(b.get().getCover());
+                Uri uri = Uri.parse(b.get().getPoster());
                 titleView.setText(b.get().getTitle());
                 releaseDateView.setText(b.get().getDate_of_publishing());
                 authorView.setText(b.get().getAuthor());

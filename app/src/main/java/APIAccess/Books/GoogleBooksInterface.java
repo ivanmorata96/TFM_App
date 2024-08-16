@@ -101,13 +101,23 @@ public class GoogleBooksInterface {
         return result;
     }
 
-    private static String arrangeCover(JSONObject book) throws JSONException {
+    private static String arrangeCoverDetails(JSONObject book) throws JSONException {
         String result = "N/A";
         JSONObject bookInfo = book.optJSONObject("volumeInfo");
         JSONObject coverLinks = bookInfo.getJSONObject("imageLinks");
         if(coverLinks != null){
-            result = coverLinks.getString("medium");
+            result = coverLinks.optString("medium");
         }
+        return result;
+    }
+
+    private static String arrangeCoverSearch(JSONObject book) throws JSONException {
+        String result = "N/A";
+        JSONObject bookInfo = book.optJSONObject("volumeInfo");
+        JSONObject coverLinks = bookInfo.optJSONObject("imageLinks");
+        if(coverLinks != null){
+            result = coverLinks.optString("thumbnail");
+        }else result = "http://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png";
         return result;
     }
 
@@ -139,6 +149,7 @@ public class GoogleBooksInterface {
             book.setAuthor(arrangeAuthors(currentBook));
             book.setOverview(arrangeOverview(currentBook));
             book.setDate_of_publishing(arrangeDoP(currentBook));
+            book.setPoster(arrangeCoverSearch(currentBook));
             results.add(book);
         }
         return results;
@@ -172,7 +183,7 @@ public class GoogleBooksInterface {
         result.setPages(arrangePages(bookJSON));
         result.setGenres(arrangeGenre(bookJSON));
         result.setScore(bookJSON.getJSONObject("volumeInfo").getDouble("averageRating"));
-        result.setPoster(arrangeCover(bookJSON));
+        result.setPoster(arrangeCoverDetails(bookJSON));
         return result;
     }
 

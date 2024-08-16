@@ -88,6 +88,8 @@ public class searchResults extends AppCompatActivity {
                     //TODO
             }
             handler.post(() -> {
+                for(Content c : results)
+                    Log.i("Prueba", c.getPoster());
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
                 recyclerView.setAdapter(new ItemAdapter(results));
             });
