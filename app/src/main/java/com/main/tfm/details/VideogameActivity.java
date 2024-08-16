@@ -60,7 +60,7 @@ public class VideogameActivity extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
             handler.post(() -> {
-                titleView.setText(vg.get().getName());
+                titleView.setText(vg.get().getTitle());
                 releaseDateView.setText(vg.get().getRelease_date());
                 developersView.setText(vg.get().getDevelopers());
                 overviewView.setText(vg.get().getOverview());

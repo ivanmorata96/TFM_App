@@ -2,49 +2,30 @@ package APIAccess.Videogames;
 
 import java.util.ArrayList;
 
-public class Videogame {
-    private String id;
-    private String name;
+import APIAccess.Content;
+
+public class Videogame extends Content {
+
     private String release_date;
-    private String overview;
-    private String poster;
     private ArrayList<String> platforms;
     private ArrayList<String> developers;
     private ArrayList<String> genres;
     private int score;
 
     public Videogame(){
-        name=release_date=overview=poster="";
+        super();
+        release_date="";
         platforms = new ArrayList<>();
         score=-1;
     }
 
     public Videogame(String id, String name, String release_date, String overview, String poster, ArrayList<String> platforms, ArrayList<String> developers, ArrayList<String> genres, int score) {
-        this.id = id;
-        this.name = name;
+        super(id, name, overview, poster);
         this.release_date = release_date;
-        this.overview = overview;
-        this.poster = poster;
         this.platforms = new ArrayList<>(platforms);
         this.developers = new ArrayList<>(developers);
         this.genres = new ArrayList<>(genres);
         this.score = score;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getRelease_date() {
@@ -55,24 +36,12 @@ public class Videogame {
         this.release_date = release_date;
     }
 
-    public String getOverview() {
-        return overview;
-    }
-
     public void setOverview(String overview) {
         overview = overview.replace("<p>", "");
         overview = overview.replace("</p>", "");
         if(overview.length() > 500)
             overview = overview.substring(0, 500) + "...";
-        this.overview = overview;
-    }
-
-    public String getPoster() {
-        return poster;
-    }
-
-    public void setPoster(String poster) {
-        this.poster = poster;
+        super.setOverview(overview);
     }
 
     public String getPlatforms() {
@@ -118,11 +87,11 @@ public class Videogame {
 
     @Override
     public String toString() {
-        String videogame = "This videogame is called " + name + ", and was released on " + release_date + ".\n" +
+        String videogame = "This videogame is called " + getTitle() + ", and was released on " + release_date + ".\n" +
                 "This game falls under the following genres: " + genres + ".\n" +
-                "Here you have an overview of the plot: " + overview + ".\n" +
+                "Here you have an overview of the plot: " + getOverview() + ".\n" +
                 "It was produced by: " + developers + ", on the following platforms " + platforms + ". \n" +
-                "Here's a link to its poster: " + poster + "\n" +
+                "Here's a link to its poster: " + getPoster() + "\n" +
                 "Here's its average score at Metacritic: " + score + ".\n";
         return videogame;
     }

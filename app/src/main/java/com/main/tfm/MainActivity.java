@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.main.tfm.searches.searchFragment;
 
 public class MainActivity extends AppCompatActivity {
     @Override

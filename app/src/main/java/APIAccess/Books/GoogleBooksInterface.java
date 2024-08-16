@@ -11,6 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import APIAccess.Content;
+
 public class GoogleBooksInterface {
     private static final String API_KEY = "AIzaSyDgdOeUefmkshxMrOSiYi6U2Pn_zOslpmI"; // Reemplaza con tu clave de API
 
@@ -109,9 +111,9 @@ public class GoogleBooksInterface {
         return result;
     }
 
-    public static ArrayList<Book> searchBooks(String title) throws IOException, JSONException {
+    public static ArrayList<Content> searchBooks(String title) throws IOException, JSONException {
         title = title.replace(" ", "%20");
-        ArrayList<Book> results = new ArrayList<>();
+        ArrayList<Content> results = new ArrayList<>();
         URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=+" + title + "&key=" + API_KEY);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -170,7 +172,7 @@ public class GoogleBooksInterface {
         result.setPages(arrangePages(bookJSON));
         result.setGenres(arrangeGenre(bookJSON));
         result.setScore(bookJSON.getJSONObject("volumeInfo").getDouble("averageRating"));
-        result.setCover(arrangeCover(bookJSON));
+        result.setPoster(arrangeCover(bookJSON));
         return result;
     }
 

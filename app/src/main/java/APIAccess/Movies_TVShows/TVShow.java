@@ -2,71 +2,48 @@ package APIAccess.Movies_TVShows;
 
 import java.util.ArrayList;
 
-public class TVShow {
-    private String id;
-    private String name;
+import APIAccess.Content;
+
+public class TVShow extends Content {
     private String release_date;
     private int number_of_episodes;
     private int number_of_seasons;
     private ArrayList<String> cast;
-    private String overview;
     private ArrayList<String> studios;
     private ArrayList<String> genres;
-    private String poster;
     private String status;
     private double score;
 
     public TVShow(){
-        id=name= release_date =overview=poster=status="";
+        super();
+        release_date=status="";
         number_of_episodes=number_of_seasons=-1;
         score = -1;
         cast = studios = new ArrayList<>();
     }
 
     public TVShow(String id, String name, String release_date, int number_of_episodes, int number_of_seasons, ArrayList<String> cast, String overview, ArrayList<String> studios, ArrayList<String> genres, String poster, String status, double score) {
-        this.id = id;
-        this.name = name;
+        super(id, name, overview, poster);
         this.release_date = release_date;
         this.number_of_episodes = number_of_episodes;
         this.number_of_seasons = number_of_seasons;
         this.cast = new ArrayList<>(cast);
-        this.overview = overview;
         this.studios = new ArrayList<>(studios);
         this.genres = new ArrayList<>(genres);
-        this.poster = poster;
         this.status = status;
         this.score = score;
     }
 
     public TVShow(TVShow other){
-        this.id = other.id;
-        this.name = other.name;
+        super(other);
         this.release_date = other.release_date;
         this.number_of_episodes = other.number_of_episodes;
         this.number_of_seasons = other.number_of_seasons;
         this.cast = new ArrayList<>(other.cast);
-        this.overview = other.overview;
         this.studios = new ArrayList<>(other.studios);
         this.genres = new ArrayList<>(other.genres);
-        this.poster = other.poster;
         this.status = other.status;
         this.score = other.score;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getRelease_date() {
@@ -104,20 +81,8 @@ public class TVShow {
         this.cast = new ArrayList<>(cast);
     }
 
-    public String getOverview() {
-        return overview;
-    }
-
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
-    public String getPoster() {
-        return poster;
-    }
-
     public void setPoster(String poster) {
-        this.poster = poster.replace("\"", "");
+        super.setPoster(poster.replace("\"", ""));
     }
 
     public String getStudios() {
@@ -160,11 +125,11 @@ public class TVShow {
 
     @Override
     public String toString() {
-        String tv = "This TV Show (" + id + ") is called " + name + ", and it aired first on " + release_date + ".\n" +
+        String tv = "This TV Show (" + getId() + ") is called " + getTitle() + ", and it aired first on " + release_date + ".\n" +
                 "It falls under the following genres: " + genres + ".\n" +
-                "Here you have an overview of the plot: " + overview + ".\n" +
+                "Here you have an overview of the plot: " + getOverview() + ".\n" +
                 "It was produced by: " + studios + ", with a total of " + number_of_episodes + " episodes across " + number_of_seasons + " seasons. \n" +
-                "Here's a link to its poster: " + poster + "\n" +
+                "Here's a link to its poster: " + getPoster() + "\n" +
                 "Here's its average score at TheMovieDataBase: " + score + ".\n" +
                 "And here's a rundown of its cast and staff: " + cast;
         return tv;

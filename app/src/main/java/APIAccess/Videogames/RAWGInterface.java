@@ -11,13 +11,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import APIAccess.Content;
+
 public class RAWGInterface {
 
     private static final String API_KEY = "b3bbc9668e8c4b779eabf907b675f517";
 
-    public static ArrayList<Videogame> searchVideogame(String name) throws IOException, JSONException {
+    public static ArrayList<Content> searchVideogame(String name) throws IOException, JSONException {
         name = name.replace(" ", "%20");
-        ArrayList<Videogame> result = new ArrayList<>();
+        ArrayList<Content> result = new ArrayList<>();
         ArrayList<String> currentGamePlatforms;
         JSONObject jsonResponse, game, platformObject, platform;
         JSONArray games, platforms;
@@ -40,7 +42,7 @@ public class RAWGInterface {
                 game = games.getJSONObject(i);
                 Videogame v = new Videogame();
                 v.setId(String.valueOf(game.getInt("id")));
-                v.setName(game.getString("name"));
+                v.setTitle(game.getString("name"));
                 v.setRelease_date(game.optString("released"));
                 v.setPoster(game.optString("background_image"));
                 v.setScore(game.optInt("metacritic"));
@@ -86,7 +88,7 @@ public class RAWGInterface {
             in.close();
             game = new JSONObject(response.toString());
             result.setId(id);
-            result.setName(game.getString("name"));
+            result.setTitle(game.getString("name"));
             result.setRelease_date(game.optString("released"));
             result.setPoster(game.optString("background_image"));
             result.setScore(game.optInt("metacritic"));

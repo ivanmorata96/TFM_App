@@ -7,10 +7,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import APIAccess.Content;
+
 public class TMDBInterface {
     private static String APIKey = "6a4260c509a9bde12e02539ca7e739b7";
     private static MovieCredits getMovieCredits(String movieID) throws IOException, JSONException {
@@ -121,8 +125,8 @@ public class TMDBInterface {
         }
         return result;
     }
-    public static ArrayList<Movie> searchMovie(String movieSearch) throws IOException, JSONException {
-        ArrayList<Movie> results = new ArrayList<>();
+    public static ArrayList<Content> searchMovie(String movieSearch) throws IOException, JSONException {
+        ArrayList<Content> results = new ArrayList<>();
         movieSearch = movieSearch.replace(" ", "%20");
         URL url = new URL("https://api.themoviedb.org/3/search/movie?query=" + movieSearch + "&include_adult=false&language=en-US&page=1&api_key=" + APIKey);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -183,8 +187,8 @@ public class TMDBInterface {
         result.setScore(movie.getDouble("vote_average"));
         return result;
     }
-    public static ArrayList<TVShow> searchTVShow(String tvSearch) throws IOException, JSONException {
-        ArrayList<TVShow> results = new ArrayList<>();
+    public static ArrayList<Content> searchTVShow(String tvSearch) throws IOException, JSONException {
+        ArrayList<Content> results = new ArrayList<>();
         tvSearch = tvSearch.replace(" ", "%20");
         URL url = new URL("https://api.themoviedb.org/3/search/tv?query=" + tvSearch + "&include_adult=false&language=en-US&page=1&api_key=" + APIKey);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -207,7 +211,7 @@ public class TMDBInterface {
             JSONObject currentShow = tvShows.getJSONObject(i);
             TVShow tvShow = new TVShow();
             tvShow.setId(String.valueOf(currentShow.getInt("id")));
-            tvShow.setName(currentShow.getString("name"));
+            tvShow.setTitle(currentShow.getString("name"));
             tvShow.setOverview(currentShow.getString("overview"));
             tvShow.setRelease_date(currentShow.getString("first_air_date"));
             tvShow.setPoster(arrangePoster(currentShow));
@@ -234,7 +238,7 @@ public class TMDBInterface {
 
         JSONObject tv = new JSONObject(sb.toString());
         result.setId(String.valueOf(tv.getInt("id")));
-        result.setName(tv.getString("name"));
+        result.setTitle(tv.getString("name"));
         result.setRelease_date(tv.getString("first_air_date"));
         result.setNumber_of_episodes(tv.getInt("number_of_episodes"));
         result.setNumber_of_seasons(tv.getInt("number_of_seasons"));

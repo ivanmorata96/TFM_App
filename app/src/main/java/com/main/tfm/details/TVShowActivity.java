@@ -62,7 +62,7 @@ public class TVShowActivity extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
             handler.post(() -> {
-                titleView.setText(tv.get().getName());
+                titleView.setText(tv.get().getTitle());
                 releaseDateView.setText(tv.get().getRelease_date());
                 castView.setText(tv.get().getCast());
                 overviewView.setText(tv.get().getOverview());
