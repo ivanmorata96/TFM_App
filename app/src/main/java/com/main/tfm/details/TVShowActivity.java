@@ -1,5 +1,6 @@
 package com.main.tfm.details;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -32,8 +33,9 @@ public class TVShowActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        String tvshowID = intent.getStringExtra("id");
         AtomicReference<TVShow> tv = new AtomicReference<>(new TVShow());
-
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tvshow);
@@ -57,7 +59,7 @@ public class TVShowActivity extends AppCompatActivity {
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
             try {
-                tv.set(TMDBInterface.getTVShowDetails("1668"));
+                tv.set(TMDBInterface.getTVShowDetails(tvshowID));
             } catch (IOException | JSONException e) {
                 throw new RuntimeException(e);
             }

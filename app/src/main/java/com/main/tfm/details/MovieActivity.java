@@ -1,5 +1,6 @@
 package com.main.tfm.details;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -32,8 +33,9 @@ public class MovieActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        String movieID = intent.getStringExtra("id");
         AtomicReference<Movie> m = new AtomicReference<>(new Movie());
-
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_movie);
@@ -55,7 +57,7 @@ public class MovieActivity extends AppCompatActivity {
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
             try {
-                m.set(TMDBInterface.getMovieDetails("680"));
+                m.set(TMDBInterface.getMovieDetails(movieID));
             } catch (IOException | JSONException e) {
                 throw new RuntimeException(e);
             }

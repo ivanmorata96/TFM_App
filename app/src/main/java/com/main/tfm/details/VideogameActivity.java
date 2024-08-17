@@ -1,5 +1,6 @@
 package com.main.tfm.details;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -33,6 +34,8 @@ public class VideogameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        String vgID = intent.getStringExtra("id");
         AtomicReference<Videogame> vg = new AtomicReference<>(new Videogame());
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -55,7 +58,7 @@ public class VideogameActivity extends AppCompatActivity {
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
             try {
-                vg.set(RAWGInterface.getVideogameDetails("3328"));
+                vg.set(RAWGInterface.getVideogameDetails(vgID));
             } catch (IOException | JSONException e) {
                 throw new RuntimeException(e);
             }

@@ -2,6 +2,7 @@ package com.main.tfm.details;
 
 import static APIAccess.Books.GoogleBooksInterface.*;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +36,8 @@ public class BooksActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        String bookID = intent.getStringExtra("id");
         AtomicReference<Book> b = new AtomicReference<>(new Book());
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -60,7 +63,7 @@ public class BooksActivity extends AppCompatActivity {
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
             try {
-                b.set(getBookDetails("2zgRDXFWkm8C"));
+                b.set(getBookDetails(bookID));
             } catch (IOException | JSONException e) {
                 throw new RuntimeException(e);
             }

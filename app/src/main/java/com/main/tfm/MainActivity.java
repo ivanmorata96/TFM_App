@@ -12,7 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.main.tfm.searches.searchFragment;
+import com.main.tfm.searches.SearchFragment;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -26,14 +26,14 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        loadFragment(new searchFragment());
+        loadFragment(new SearchFragment());
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;
                 switch (item.getItemId()) {
                     case R.id.settingsFragmentNavi:
-                        selectedFragment = new searchFragment();
+                        selectedFragment = new SearchFragment();
                         break;
                     case R.id.searchFragmentNavi:
                         //selectedFragment = new Fragment2();

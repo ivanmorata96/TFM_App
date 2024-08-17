@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,13 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.main.tfm.R;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -31,7 +27,7 @@ import APIAccess.Content;
 import APIAccess.Movies_TVShows.TMDBInterface;
 import APIAccess.Videogames.RAWGInterface;
 
-public class searchResults extends AppCompatActivity {
+public class SearchResults extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ArrayList<Content> results;
@@ -89,7 +85,7 @@ public class searchResults extends AppCompatActivity {
             }
             handler.post(() -> {
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                recyclerView.setAdapter(new ItemAdapter(results));
+                recyclerView.setAdapter(new ItemAdapter(results, searchType, this));
             });
         });
     }
