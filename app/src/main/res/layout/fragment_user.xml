@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/introView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="These are your stats"
+        android:textStyle="bold"
+        android:textSize="18sp" />
+
+    <TextView
+
+        android:id="@+id/userMoviesView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text=""
+        android:textSize="18sp" />
+
+    <TextView
+
+        android:id="@+id/userTVShowsView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text=""
+        android:textSize="18sp" />
+
+    <TextView
+
+        android:id="@+id/userVideogameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text=""
+        android:textSize="18sp" />
+
+
+    <TextView
+
+        android:id="@+id/userBooksView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text=""
+        android:textSize="18sp" />
+
+    <!-- Dropdown 1 -->
+    <TextView
+        android:id="@+id/ongoingDropdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="On-going"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:background="@android:color/darker_gray"
+        android:clickable="true"
+        android:focusable="true" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ongoingRV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:nestedScrollingEnabled="false" />
+
+    <!-- Dropdown 2 -->
+    <TextView
+        android:id="@+id/backlogDropdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Backlog"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:background="@android:color/darker_gray"
+        android:clickable="true"
+        android:focusable="true" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/backlogRV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:nestedScrollingEnabled="false" />
+
+    <!-- Dropdown 3 -->
+    <TextView
+        android:id="@+id/completedDropdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Completed"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:background="@android:color/darker_gray"
+        android:clickable="true"
+        android:focusable="true" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/completedRV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:nestedScrollingEnabled="false" />
+
+</LinearLayout>

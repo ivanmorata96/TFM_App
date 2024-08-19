@@ -4,19 +4,14 @@ public class UserContent extends Content{
     private String type;
     private int score;
     private String review;
+    private String status;
 
-    public UserContent(String type, int score, String review) {
-        super();
-        this.type = type;
-        this.score = score;
-        this.review = review;
-    }
-
-    public UserContent(String id, String title, String overview, String poster, String type, int score, String review) {
+    public UserContent(String id, String title, String overview, String poster, String type, int score, String review, String status) {
         super(id, title, overview, poster);
         this.type = type;
         this.score = score;
         this.review = review;
+        this.status = status;
     }
 
     public UserContent(Content other, String type, int score, String review) {

@@ -24,7 +24,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 "    poster TEXT," +
                 "    type TEXT," +
                 "    userScore INTEGER," +
-                "    userReview TEXT" +
+                "    userReview TEXT," +
+                "    status TEXT" +
                 ");");
     }
 

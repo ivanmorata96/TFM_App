@@ -23,23 +23,25 @@ public class UserDB extends DBHelper{
         this.context=context;
     }
 
-    public long addContent(String id, String name, String poster, String type, int userScore, String userReview) {
+    public long addContent(String id, String name, String poster, String type, int userScore, String userReview, String status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        long result;
         values.put("id", id);
         values.put("name", name);
         values.put("poster", poster);
         values.put("type", type);
         values.put("userScore", userScore);
         values.put("userReview", userReview);
-        long resultado = db.insert(TABLE_NAME, null, values);
+        values.put("status", status);
+        result = db.insert(TABLE_NAME, null, values);
         db.close();
-        return resultado;
+        return result;
     }
 
     public ArrayList<Content> retrieveContentList(){
         ArrayList<Content> contentList = new ArrayList<>();
-        String id, name, poster, type, userReview;
+        String id, name, poster, type, userReview, status;
         int userScore;
         UserContent item;
         try{
@@ -57,7 +59,39 @@ public class UserDB extends DBHelper{
                     type = contentCursor.getString(3);
                     userScore = contentCursor.getInt(4);
                     userReview = contentCursor.getString(5);
-                    item = new UserContent(id, name, "", poster, type, userScore, userReview);
+                    status = contentCursor.getString(6);
+                    item = new UserContent(id, name, "", poster, type, userScore, userReview, status);
+                    contentList.add(item);
+                }while(contentCursor.moveToNext());
+            }
+            contentCursor.close();
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }
+        return contentList;
+    }
+
+    public ArrayList<UserContent> retrieveContentByStatus(String status){
+        ArrayList<UserContent> contentList = new ArrayList<>();
+        String id, name, poster, type, userReview;
+        int userScore;
+        UserContent item;
+        try{
+            DBHelper dbHelper = new DBHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor contentCursor;
+
+            contentCursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE status = " + status, null);
+
+            if(contentCursor.moveToFirst()){
+                do{
+                    id = contentCursor.getString(0);
+                    name = contentCursor.getString(1);
+                    poster = contentCursor.getString(2);
+                    type = contentCursor.getString(3);
+                    userScore = contentCursor.getInt(4);
+                    userReview = contentCursor.getString(5);
+                    item = new UserContent(id, name, "", poster, type, userScore, userReview, status);
                     contentList.add(item);
                 }while(contentCursor.moveToNext());
             }
@@ -76,8 +110,7 @@ public class UserDB extends DBHelper{
             db.execSQL("DELETE FROM " + TABLE_NAME + "WHERE id = '" + id + "'");
             deleteOK=true;
         }catch (Exception ex){
-            ex.toString();
-            deleteOK=false;
+            Log.i("BD", ex.toString());
         }finally {
             db.close();
         }
