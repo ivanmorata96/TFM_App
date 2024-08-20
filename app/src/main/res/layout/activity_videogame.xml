@@ -17,29 +17,19 @@
         android:background="@android:color/holo_green_dark"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:paddingStart="10dp"
-        android:paddingTop="8dp">
-
-        <ImageButton
-            android:id="@+id/backButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/arrow_back"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Volver a la pantalla anterior" />
+        app:layout_constraintRight_toRightOf="parent">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_marginStart="118dp"
-            android:layout_marginTop="5dp"
-            android:text="Videogame Details"
-
+            android:id="@+id/header_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="HobbyTrack"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
             android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
+            android:background="@android:color/holo_green_dark"
+            android:textColor="@android:color/white"/>
     </LinearLayout>
 
     <LinearLayout
@@ -51,27 +41,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
-
-        <TextView
-            android:id="@+id/footerTextView"
-            android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:layout_weight="1"
-            android:text="HobbyTrack"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textStyle="bold" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/posterView"
-        android:layout_width="180dp"
-        android:layout_height="120dp"
-        app:srcCompat="@drawable/placeholder"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
-        app:layout_constraintBottom_toTopOf="@id/titleView"
+        android:layout_width="160dp"
+        android:layout_height="100dp"
+        app:layout_constraintEnd_toEndOf="@+id/titleView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toTopOf="@id/isGameAddedView"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:srcCompat="@drawable/placeholder" />
 
     <TextView
         android:id="@+id/titleView"
@@ -79,10 +60,32 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        app:layout_constraintBottom_toTopOf="@id/titleGuideline"
-        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintBottom_toTopOf="@+id/isGameAddedView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/posterView" />
+        app:layout_constraintStart_toEndOf="@id/posterView"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout" />
+
+    <TextView
+        android:id="@+id/isGameAddedView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/addGameButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/posterView" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/addGameButton"
+        android:layout_width="180dp"
+        android:layout_height="30dp"
+        android:background="@android:color/holo_green_light"
+        android:text="Add to My Movies"
+        app:layout_constraintBottom_toTopOf="@+id/titleGuideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/isGameAddedView" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/titleGuideline"

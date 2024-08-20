@@ -6,6 +6,12 @@ public class UserContent extends Content{
     private String review;
     private String status;
 
+    public UserContent() {
+        super();
+        type = review = status = "";
+        score = 0;
+    }
+
     public UserContent(String id, String title, String overview, String poster, String type, int score, String review, String status) {
         super(id, title, overview, poster);
         this.type = type;

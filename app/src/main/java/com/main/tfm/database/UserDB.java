@@ -102,6 +102,31 @@ public class UserDB extends DBHelper{
         return contentList;
     }
 
+    public UserContent checkContent(String id){
+        UserContent result = new UserContent();
+        String name, poster, type, userReview, status;
+        int userScore;
+        try{
+            DBHelper dbHelper = new DBHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor contentCursor;
+            contentCursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id = " + id + " LIMIT 1", null);
+            if(contentCursor.moveToFirst()){
+                name = contentCursor.getString(1);
+                poster = contentCursor.getString(2);
+                type = contentCursor.getString(3);
+                userScore = contentCursor.getInt(4);
+                userReview = contentCursor.getString(5);
+                status = contentCursor.getString(6);
+                result = new UserContent(id, name, "", poster, type, userScore, userReview, status);
+            }else return null;
+            contentCursor.close();
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }
+        return result;
+    }
+
     public boolean deleteContentItem(String id){
         boolean deleteOK = false;
         DBHelper dbHelper = new DBHelper(context);
