@@ -55,6 +55,21 @@ public class UserDB extends DBHelper{
         return result;
     }
 
+    public boolean editContent(UserContent item){
+        boolean updateOK = false;
+        DBHelper dbHelper = new DBHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        try {
+            db.execSQL("UPDATE " + TABLE_NAME + " SET userScore = " + item.getScore() + ", userReview = '" + item.getReview() + "', status = '" + item.getStatus() + "' WHERE id = '" + item.getId() + "' ");
+            updateOK=true;
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }finally {
+            db.close();
+        }
+        return updateOK;
+    }
+
     public ArrayList<Content> retrieveContentList(){
         ArrayList<Content> contentList = new ArrayList<>();
         String id, name, poster, type, userReview, status;

@@ -145,7 +145,9 @@ public class MovieActivity extends AppCompatActivity {
                     int userScore = Integer.parseInt(scoreInput.getText().toString());
                     String userReview = reviewInput.getText().toString();
                     thisContent = new UserContent(m.getId(), m.getTitle(), m.getOverview(), m.getPoster(), "movie", userScore, userReview, category);
-                    db.addContent(thisContent);
+                    if(typeOfDialog == 1)
+                        db.editContent(thisContent);
+                    else db.addContent(thisContent);
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
