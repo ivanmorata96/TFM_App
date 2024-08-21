@@ -39,6 +39,22 @@ public class UserDB extends DBHelper{
         return result;
     }
 
+    public long addContent(UserContent item) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        long result;
+        values.put("id", item.getId());
+        values.put("name", item.getTitle());
+        values.put("poster", item.getPoster());
+        values.put("type", item.getType());
+        values.put("userScore", item.getScore());
+        values.put("userReview", item.getReview());
+        values.put("status", item.getStatus());
+        result = db.insert(TABLE_NAME, null, values);
+        db.close();
+        return result;
+    }
+
     public ArrayList<Content> retrieveContentList(){
         ArrayList<Content> contentList = new ArrayList<>();
         String id, name, poster, type, userReview, status;
@@ -132,7 +148,7 @@ public class UserDB extends DBHelper{
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         try {
-            db.execSQL("DELETE FROM " + TABLE_NAME + "WHERE id = '" + id + "'");
+            db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE id = '" + id + "'");
             deleteOK=true;
         }catch (Exception ex){
             Log.i("BD", ex.toString());

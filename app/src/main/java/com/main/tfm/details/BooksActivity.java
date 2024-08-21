@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -31,8 +32,9 @@ import APIAccess.Books.Book;
 
 public class BooksActivity extends AppCompatActivity {
 
-    TextView titleView, overviewView, releaseDateView, authorView, genresView, publisherView, isbnView, pagesView, scoreView;
+    TextView titleView, overviewView, releaseDateView, authorView, genresView, publisherView, isbnView, pagesView, scoreView, isBookAddedView;
     ImageView posterView;
+    AppCompatButton addBookButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,8 @@ public class BooksActivity extends AppCompatActivity {
         pagesView = findViewById(R.id.pagesView);
         scoreView = findViewById(R.id.bookScoreView);
         posterView = findViewById(R.id.posterView);
-
+        isBookAddedView = findViewById(R.id.isBookAddedView);
+        addBookButton = findViewById(R.id.addBookButton);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {

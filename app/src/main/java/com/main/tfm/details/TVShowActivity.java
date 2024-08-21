@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -25,11 +26,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import APIAccess.Movies_TVShows.TMDBInterface;
 import APIAccess.Movies_TVShows.TVShow;
+import APIAccess.UserContent;
 
 public class TVShowActivity extends AppCompatActivity {
 
-    TextView titleView, releaseDateView, castView, overviewView, genresView, studioView, seasonsView, episodesView, statusView, scoreView;
+    TextView titleView, releaseDateView, castView, overviewView, genresView, studioView, seasonsView, episodesView, statusView, scoreView, isTVShowAddedView;
     ImageView posterView;
+    AppCompatButton addTVShowButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +56,10 @@ public class TVShowActivity extends AppCompatActivity {
         seasonsView = findViewById(R.id.seasonsView);
         episodesView = findViewById(R.id.episodesView);
         statusView = findViewById(R.id.statusView);
-        scoreView = findViewById(R.id.statusView);
+        scoreView = findViewById(R.id.TVscoreView);
         posterView = findViewById(R.id.posterView);
+        isTVShowAddedView = findViewById(R.id.isTVShowAddedView);
+        addTVShowButton = findViewById(R.id.addTVShowButton);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {

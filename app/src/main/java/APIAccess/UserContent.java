@@ -50,4 +50,12 @@ public class UserContent extends Content{
     public void setReview(String review) {
         this.review = review;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

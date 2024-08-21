@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -29,8 +30,9 @@ import APIAccess.Videogames.Videogame;
 
 public class VideogameActivity extends AppCompatActivity {
 
-    TextView titleView, overviewView, releaseDateView, developersView, genresView, platformView, scoreView;
+    TextView titleView, overviewView, releaseDateView, developersView, genresView, platformView, scoreView, isGameAddedView;
     ImageView posterView;
+    AppCompatButton addGameButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,8 @@ public class VideogameActivity extends AppCompatActivity {
         platformView = findViewById(R.id.platformsView);
         scoreView = findViewById(R.id.vgScoreView);
         posterView = findViewById(R.id.posterView);
-
+        isGameAddedView = findViewById(R.id.isGameAddedView);
+        addGameButton = findViewById(R.id.addGameButton);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
