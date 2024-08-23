@@ -94,21 +94,21 @@ public class VideogameActivity extends AppCompatActivity {
             addGameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showAddDialog(vg.get(), 1);
+                    showAddDialog(thisContent, 1);
                 }
             });
         }else{
-            isGameAddedView.setText("You can add this movie to your profile.");
+            isGameAddedView.setText("You can add this game to your profile.");
             addGameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showAddDialog(vg.get(), 2);
+                    showAddDialog(thisContent, 2);
                 }
             });
         }
     }
 
-    private void showAddDialog(Videogame vg, int typeOfDialog){
+    private void showAddDialog(UserContent vg, int typeOfDialog){
         LayoutInflater inflater = LayoutInflater.from(this);
         View dialogView;
         if(typeOfDialog == 1){
@@ -133,7 +133,10 @@ public class VideogameActivity extends AppCompatActivity {
         EditText scoreInput = dialogView.findViewById(R.id.userScore);
         EditText reviewInput = dialogView.findViewById(R.id.userReview);
         scoreInput.setFilters(new InputFilter[]{ new ScoreInputFilter("0", "10") });
-
+        if(typeOfDialog == 1){
+            scoreInput.setText(vg.getScore());
+            reviewInput.setText(vg.getReview());
+        }
         new AlertDialog.Builder(this)
                 .setTitle("Select how to add this content to your profile.")
                 .setView(dialogView)

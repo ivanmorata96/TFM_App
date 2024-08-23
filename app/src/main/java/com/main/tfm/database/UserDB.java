@@ -141,7 +141,7 @@ public class UserDB extends DBHelper{
             DBHelper dbHelper = new DBHelper(context);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             Cursor contentCursor;
-            contentCursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id = " + id + " LIMIT 1", null);
+            contentCursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id = '" + id + "' LIMIT 1", null);
             if(contentCursor.moveToFirst()){
                 name = contentCursor.getString(1);
                 poster = contentCursor.getString(2);

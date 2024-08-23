@@ -51,12 +51,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintBottom_toTopOf="@id/isGameAddedView"
-        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintHorizontal_bias="0.15"
         app:srcCompat="@drawable/placeholder" />
 
     <TextView
         android:id="@+id/titleView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
@@ -81,7 +81,7 @@
         android:layout_width="180dp"
         android:layout_height="30dp"
         android:background="@android:color/holo_green_light"
-        android:text="Add to My Movies"
+        android:text="Add to My Games"
         app:layout_constraintBottom_toTopOf="@+id/titleGuideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

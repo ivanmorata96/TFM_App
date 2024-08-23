@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.main.tfm.searches.SearchFragment;
+import com.main.tfm.user.UserFragment;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -32,13 +33,13 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;
                 switch (item.getItemId()) {
-                    case R.id.settingsFragmentNavi:
+                    case R.id.searchFragmentNavi:
                         selectedFragment = new SearchFragment();
                         break;
-                    case R.id.searchFragmentNavi:
-                        //selectedFragment = new Fragment2();
-                        break;
                     case R.id.userFragmentNavi:
+                        selectedFragment = new UserFragment();
+                        break;
+                    case R.id.settingsFragmentNavi:
                         //selectedFragment = new Fragment3();
                         break;
                 }

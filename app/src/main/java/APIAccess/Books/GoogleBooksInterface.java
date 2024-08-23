@@ -182,7 +182,7 @@ public class GoogleBooksInterface {
         result.setISBN(arrangeISBN(bookJSON));
         result.setPages(arrangePages(bookJSON));
         result.setGenres(arrangeGenre(bookJSON));
-        result.setScore(bookJSON.getJSONObject("volumeInfo").getDouble("averageRating"));
+        result.setScore(bookJSON.getJSONObject("volumeInfo").optDouble("averageRating"));
         result.setPoster(arrangeCoverDetails(bookJSON));
         return result;
     }
