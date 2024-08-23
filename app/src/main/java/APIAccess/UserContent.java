@@ -58,4 +58,14 @@ public class UserContent extends Content{
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "\nUserContent{" +
+                "type='" + type + '\'' +
+                ", score=" + score +
+                ", review='" + review + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

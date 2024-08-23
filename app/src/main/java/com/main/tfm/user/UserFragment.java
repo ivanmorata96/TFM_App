@@ -1,6 +1,7 @@
 package com.main.tfm.user;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.main.tfm.R;
 import com.main.tfm.database.UserDB;
+
+import java.util.ArrayList;
+
+import APIAccess.Content;
+import APIAccess.UserContent;
 
 public class UserFragment extends Fragment {
 
@@ -36,17 +42,20 @@ public class UserFragment extends Fragment {
         backlogRV = view.findViewById(R.id.backlogRV);
         completedRV = view.findViewById(R.id.completedRV);
         db = new UserDB(getContext());
-
-        ongoingRV.setLayoutManager(new GridLayoutManager(getContext(), 3)); // 3 items por línea
-        UserDataAdapter adapter1 = new UserDataAdapter(getContext(), db.retrieveContentByStatus("ongoing"), R.id.ongoingRV);
+        ArrayList<Content> test = db.retrieveContentList();
+        for(Content c : test){
+            Log.i("Test", c.toString());
+        }
+        ongoingRV.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        UserDataAdapter adapter1 = new UserDataAdapter(getContext(), db.retrieveContentByStatus("On-going"), R.layout.user_item_layout);
         ongoingRV.setAdapter(adapter1);
 
-        backlogRV.setLayoutManager(new GridLayoutManager(getContext(), 3)); // 3 items por línea
-        UserDataAdapter adapter2 = new UserDataAdapter(getContext(), db.retrieveContentByStatus("backlog"), R.id.backlogRV);
+        backlogRV.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        UserDataAdapter adapter2 = new UserDataAdapter(getContext(), db.retrieveContentByStatus("Backlog"), R.layout.user_item_layout);
         backlogRV.setAdapter(adapter2);
 
-        completedRV.setLayoutManager(new GridLayoutManager(getContext(), 3)); // 3 items por línea
-        UserDataAdapter adapter3 = new UserDataAdapter(getContext(), db.retrieveContentByStatus("completed"), R.id.completedRV);
+        completedRV.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        UserDataAdapter adapter3 = new UserDataAdapter(getContext(), db.retrieveContentByStatus("Completed"), R.layout.user_item_layout);
         completedRV.setAdapter(adapter3);
 
         view.findViewById(R.id.ongoingDropdown).setOnClickListener(v -> {

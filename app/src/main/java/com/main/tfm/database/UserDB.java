@@ -112,7 +112,7 @@ public class UserDB extends DBHelper{
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             Cursor contentCursor;
 
-            contentCursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE status = " + status, null);
+            contentCursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE status = '" + status + "'", null);
 
             if(contentCursor.moveToFirst()){
                 do{
