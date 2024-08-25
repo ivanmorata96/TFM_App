@@ -14,7 +14,7 @@ import com.main.tfm.details.TVShowActivity;
 import com.main.tfm.details.VideogameActivity;
 import com.squareup.picasso.Picasso;
 
-import APIAccess.UserContent;
+import com.main.tfm.APIAccess.UserContent;
 
 public class UserContentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
     ImageView imageView;

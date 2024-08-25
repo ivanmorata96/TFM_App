@@ -1,8 +1,8 @@
-package APIAccess.Movies_TVShows;
+package com.main.tfm.APIAccess.Movies_TVShows;
+
+import com.main.tfm.APIAccess.Content;
 
 import java.util.ArrayList;
-
-import APIAccess.Content;
 
 public class Movie extends Content {
 

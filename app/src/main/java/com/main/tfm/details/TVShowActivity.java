@@ -32,10 +32,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
-import APIAccess.Movies_TVShows.Movie;
-import APIAccess.Movies_TVShows.TMDBInterface;
-import APIAccess.Movies_TVShows.TVShow;
-import APIAccess.UserContent;
+import com.main.tfm.APIAccess.Movies_TVShows.TMDBInterface;
+import com.main.tfm.APIAccess.Movies_TVShows.TVShow;
+import com.main.tfm.APIAccess.UserContent;
 
 public class TVShowActivity extends AppCompatActivity {
 
@@ -152,6 +151,7 @@ public class TVShowActivity extends AppCompatActivity {
                     if(typeOfDialog == 1)
                         db.editContent(thisContent);
                     else db.addContent(thisContent);
+                    recreate();
                 })
                 .setNegativeButton("Cancel", null)
                 .show();

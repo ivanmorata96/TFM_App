@@ -1,4 +1,6 @@
-package APIAccess.Movies_TVShows;
+package com.main.tfm.APIAccess.Movies_TVShows;
+
+import com.main.tfm.APIAccess.Content;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,13 +9,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import APIAccess.Content;
 
 public class TMDBInterface {
     private static String APIKey = "6a4260c509a9bde12e02539ca7e739b7";

@@ -1,6 +1,6 @@
 package com.main.tfm.details;
 
-import static APIAccess.Books.GoogleBooksInterface.*;
+import static com.main.tfm.APIAccess.Books.GoogleBooksInterface.getBookDetails;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputFilter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -36,9 +35,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
-import APIAccess.Books.Book;
-import APIAccess.Movies_TVShows.Movie;
-import APIAccess.UserContent;
+import com.main.tfm.APIAccess.Books.Book;
+import com.main.tfm.APIAccess.UserContent;
 
 public class BooksActivity extends AppCompatActivity {
 
@@ -113,6 +111,7 @@ public class BooksActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     showAddDialog(b.get(), 2);
+
                 }
             });
         }
@@ -155,6 +154,7 @@ public class BooksActivity extends AppCompatActivity {
                     if(typeOfDialog == 1)
                         db.editContent(thisContent);
                     else db.addContent(thisContent);
+                    recreate();
                 })
                 .setNegativeButton("Cancel", null)
                 .show();

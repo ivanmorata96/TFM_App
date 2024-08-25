@@ -1,4 +1,4 @@
-package APIAccess;
+package com.main.tfm.APIAccess;
 
 public abstract class Content{
     private String id;

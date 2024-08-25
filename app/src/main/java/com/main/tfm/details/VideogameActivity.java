@@ -32,9 +32,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
-import APIAccess.UserContent;
-import APIAccess.Videogames.RAWGInterface;
-import APIAccess.Videogames.Videogame;
+import com.main.tfm.APIAccess.UserContent;
+import com.main.tfm.APIAccess.Videogames.RAWGInterface;
+import com.main.tfm.APIAccess.Videogames.Videogame;
 
 public class VideogameActivity extends AppCompatActivity {
 
@@ -148,6 +148,7 @@ public class VideogameActivity extends AppCompatActivity {
                     if(typeOfDialog == 1)
                         db.editContent(thisContent);
                     else db.addContent(thisContent);
+                    recreate();
                 })
                 .setNegativeButton("Cancel", null)
                 .show();

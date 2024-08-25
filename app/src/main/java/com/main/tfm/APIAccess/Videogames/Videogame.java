@@ -1,8 +1,8 @@
-package APIAccess.Videogames;
+package com.main.tfm.APIAccess.Videogames;
+
+import com.main.tfm.APIAccess.Content;
 
 import java.util.ArrayList;
-
-import APIAccess.Content;
 
 public class Videogame extends Content {
 

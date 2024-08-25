@@ -1,10 +1,8 @@
-package APIAccess.Books;
+package com.main.tfm.APIAccess.Books;
 
-import android.util.Log;
+import com.main.tfm.APIAccess.Content;
 
 import java.util.ArrayList;
-
-import APIAccess.Content;
 
 public class Book extends Content {
     private ArrayList<String> author;

@@ -11,10 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import APIAccess.UserContent;
+import com.main.tfm.APIAccess.UserContent;
 
 import com.main.tfm.R;
-import com.squareup.picasso.Picasso;
 
 public class UserDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

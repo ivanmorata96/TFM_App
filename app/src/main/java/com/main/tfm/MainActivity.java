@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.main.tfm.searches.SearchFragment;
+import com.main.tfm.settings.SettingsFragment;
 import com.main.tfm.user.UserFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                         selectedFragment = new UserFragment();
                         break;
                     case R.id.settingsFragmentNavi:
-                        //selectedFragment = new Fragment3();
+                        selectedFragment = new SettingsFragment();
                         break;
                 }
                 if (selectedFragment != null) {

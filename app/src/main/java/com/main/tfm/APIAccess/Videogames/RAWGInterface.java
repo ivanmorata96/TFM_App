@@ -1,4 +1,6 @@
-package APIAccess.Videogames;
+package com.main.tfm.APIAccess.Videogames;
+
+import com.main.tfm.APIAccess.Content;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,8 +12,6 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import APIAccess.Content;
 
 public class RAWGInterface {
 

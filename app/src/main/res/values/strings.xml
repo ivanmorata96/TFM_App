@@ -11,4 +11,10 @@
         <item>Backlog</item>
         <item>Completed</item>
     </string-array>
+    <string-array name="language_options">
+        <item>English</item>
+        <item>Spanish</item>
+        <item>French</item>
+        <item>German</item>
+    </string-array>
 </resources>

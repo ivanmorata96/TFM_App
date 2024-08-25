@@ -10,9 +10,8 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-import APIAccess.Content;
-import APIAccess.Movies_TVShows.Movie;
-import APIAccess.UserContent;
+import com.main.tfm.APIAccess.Content;
+import com.main.tfm.APIAccess.UserContent;
 
 public class UserDB extends DBHelper{
 

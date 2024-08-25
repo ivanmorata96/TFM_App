@@ -2,7 +2,6 @@ package com.main.tfm.searches;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import APIAccess.Content;
+import com.main.tfm.APIAccess.Content;
 import com.main.tfm.R;
 
 
