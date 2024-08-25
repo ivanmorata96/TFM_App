@@ -17,6 +17,9 @@ import com.main.tfm.R;
 import com.main.tfm.database.UserDB;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import APIAccess.Content;
 import APIAccess.UserContent;
@@ -46,16 +49,47 @@ public class UserFragment extends Fragment {
         for(Content c : test){
             Log.i("Test", c.toString());
         }
-        ongoingRV.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        UserDataAdapter adapter1 = new UserDataAdapter(getContext(), db.retrieveContentByStatus("On-going"), R.layout.user_item_layout);
+
+        GridLayoutManager gridLayoutManager1 = new GridLayoutManager(getContext(), 3);
+        List<UserContent> ongoingContent = db.retrieveContentByStatus("On-going");
+        ongoingRV.setLayoutManager(gridLayoutManager1);
+        UserDataAdapter adapter1 = new UserDataAdapter(getContext(), categorizeContent(ongoingContent), R.layout.user_item_layout);
+        gridLayoutManager1.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                // El adaptador determinará si es un header o un item regular
+                // Si es un header, ocupará las 3 columnas, si es un item regular ocupará 1 columna
+                return adapter1.getItemViewType(position) == UserDataAdapter.VIEW_TYPE_HEADER ? gridLayoutManager1.getSpanCount() : 1;
+            }
+        });
         ongoingRV.setAdapter(adapter1);
 
-        backlogRV.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        UserDataAdapter adapter2 = new UserDataAdapter(getContext(), db.retrieveContentByStatus("Backlog"), R.layout.user_item_layout);
+        GridLayoutManager gridLayoutManager2 = new GridLayoutManager(getContext(), 3);
+        List<UserContent> backlogContent = db.retrieveContentByStatus("Backlog");
+        backlogRV.setLayoutManager(gridLayoutManager2);
+        UserDataAdapter adapter2 = new UserDataAdapter(getContext(), categorizeContent(backlogContent), R.layout.user_item_layout);
+        gridLayoutManager2.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                // El adaptador determinará si es un header o un item regular
+                // Si es un header, ocupará las 3 columnas, si es un item regular ocupará 1 columna
+                return adapter2.getItemViewType(position) == UserDataAdapter.VIEW_TYPE_HEADER ? gridLayoutManager1.getSpanCount() : 1;
+            }
+        });
         backlogRV.setAdapter(adapter2);
 
-        completedRV.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        UserDataAdapter adapter3 = new UserDataAdapter(getContext(), db.retrieveContentByStatus("Completed"), R.layout.user_item_layout);
+        GridLayoutManager gridLayoutManager3 = new GridLayoutManager(getContext(), 3);
+        List<UserContent> completedContent = db.retrieveContentByStatus("Completed");
+        completedRV.setLayoutManager(gridLayoutManager3);
+        UserDataAdapter adapter3 = new UserDataAdapter(getContext(), categorizeContent(completedContent), R.layout.user_item_layout);
+        gridLayoutManager3.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                // El adaptador determinará si es un header o un item regular
+                // Si es un header, ocupará las 3 columnas, si es un item regular ocupará 1 columna
+                return adapter3.getItemViewType(position) == UserDataAdapter.VIEW_TYPE_HEADER ? gridLayoutManager1.getSpanCount() : 1;
+            }
+        });
         completedRV.setAdapter(adapter3);
 
         view.findViewById(R.id.ongoingDropdown).setOnClickListener(v -> {
@@ -73,4 +107,17 @@ public class UserFragment extends Fragment {
 
         return view;
     }
+
+    private Map<String, List<UserContent>> categorizeContent(List<UserContent> contentList) {
+        Map<String, List<UserContent>> categorizedContent = new LinkedHashMap<>();
+        for (UserContent content : contentList) {
+            String type = content.getType();
+            if (!categorizedContent.containsKey(type)) {
+                categorizedContent.put(type, new ArrayList<>());
+            }
+            categorizedContent.get(type).add(content);
+        }
+        return categorizedContent;
+    }
 }
+
