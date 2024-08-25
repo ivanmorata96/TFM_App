@@ -173,4 +173,45 @@ public class UserDB extends DBHelper{
         return deleteOK;
     }
 
+    public ArrayList<Integer> retrieveNumberOfItemsByType(){
+        ArrayList<Integer> result = new ArrayList<>();
+        int nMovies, nShows, nGames, nBooks;
+        nMovies = nShows = nGames = nBooks = 0;
+        try{
+            DBHelper dbHelper = new DBHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor contentCursor;
+
+            contentCursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + ";", null);
+
+            if(contentCursor.moveToFirst()){
+                do{
+                    switch (contentCursor.getString(3)){
+                        case "movie":
+                           nMovies++;
+                            break;
+                        case "tvshow":
+                            nShows++;
+                            break;
+                        case "videogame":
+                            nGames++;
+                            break;
+                        case "book":
+                            nBooks++;
+                            break;
+                    }
+
+                }while(contentCursor.moveToNext());
+            }
+            result.add(nMovies);
+            result.add(nShows);
+            result.add(nGames);
+            result.add(nBooks);
+            contentCursor.close();
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }
+        return result;
+    }
+
 }

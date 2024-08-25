@@ -27,6 +27,16 @@ public class UserContent extends Content{
         this.review = review;
     }
 
+    public UserContent(UserContent other){
+        this.setId(other.getId());
+        this.setTitle(other.getTitle());
+        this.setOverview(other.getOverview());
+        this.setPoster(other.getPoster());
+        this.type = other.type;
+        this.score = other.score;
+        this.review = other.review;
+    }
+
     public String getType() {
         return type;
     }

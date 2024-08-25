@@ -26,6 +26,7 @@ import APIAccess.UserContent;
 
 public class UserFragment extends Fragment {
 
+    ArrayList<Integer> statistics;
     private UserDB db;
     private TextView userMovies, userTVShows, userVideogames, userBooks;
     private RecyclerView ongoingRV, backlogRV, completedRV;
@@ -45,11 +46,15 @@ public class UserFragment extends Fragment {
         backlogRV = view.findViewById(R.id.backlogRV);
         completedRV = view.findViewById(R.id.completedRV);
         db = new UserDB(getContext());
-        ArrayList<Content> test = db.retrieveContentList();
-        for(Content c : test){
-            Log.i("Test", c.toString());
-        }
+        statistics = new ArrayList<>(db.retrieveNumberOfItemsByType());
+        userMovies.setText("You have added to your profile " + statistics.get(0) + " movies.");
 
+        userTVShows.setText("You have added to your profile " + statistics.get(1) + " TV Shows.");
+
+        userVideogames.setText("You have added to your profile " + statistics.get(2) + " videogames.");
+
+        userBooks.setText("You have added to your profile " + statistics.get(0) + " books.");
+        
         GridLayoutManager gridLayoutManager1 = new GridLayoutManager(getContext(), 3);
         List<UserContent> ongoingContent = db.retrieveContentByStatus("On-going");
         ongoingRV.setLayoutManager(gridLayoutManager1);
@@ -57,8 +62,6 @@ public class UserFragment extends Fragment {
         gridLayoutManager1.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                // El adaptador determinará si es un header o un item regular
-                // Si es un header, ocupará las 3 columnas, si es un item regular ocupará 1 columna
                 return adapter1.getItemViewType(position) == UserDataAdapter.VIEW_TYPE_HEADER ? gridLayoutManager1.getSpanCount() : 1;
             }
         });
@@ -71,8 +74,6 @@ public class UserFragment extends Fragment {
         gridLayoutManager2.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                // El adaptador determinará si es un header o un item regular
-                // Si es un header, ocupará las 3 columnas, si es un item regular ocupará 1 columna
                 return adapter2.getItemViewType(position) == UserDataAdapter.VIEW_TYPE_HEADER ? gridLayoutManager1.getSpanCount() : 1;
             }
         });
@@ -85,8 +86,6 @@ public class UserFragment extends Fragment {
         gridLayoutManager3.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                // El adaptador determinará si es un header o un item regular
-                // Si es un header, ocupará las 3 columnas, si es un item regular ocupará 1 columna
                 return adapter3.getItemViewType(position) == UserDataAdapter.VIEW_TYPE_HEADER ? gridLayoutManager1.getSpanCount() : 1;
             }
         });
@@ -110,8 +109,22 @@ public class UserFragment extends Fragment {
 
     private Map<String, List<UserContent>> categorizeContent(List<UserContent> contentList) {
         Map<String, List<UserContent>> categorizedContent = new LinkedHashMap<>();
+        String type = "";
         for (UserContent content : contentList) {
-            String type = content.getType();
+            switch (content.getType()){
+                case "movie":
+                    type = "Movies";
+                    break;
+                case "tvshow":
+                    type = "TV Shows";
+                    break;
+                case "videogame":
+                    type = "Videogames";
+                    break;
+                case "book":
+                    type = "Books";
+                    break;
+            }
             if (!categorizedContent.containsKey(type)) {
                 categorizedContent.put(type, new ArrayList<>());
             }

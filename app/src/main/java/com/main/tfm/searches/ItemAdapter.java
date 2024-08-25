@@ -61,8 +61,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
                     case 3:
                         intent = new Intent(context, BooksActivity.class);
                         break;
-                    default:
-                        //A
                 }
             }
         });
@@ -77,18 +75,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
                         break;
                     case 1:
                         intent = new Intent(context, TVShowActivity.class);
-                        intent.putExtra("id", item.getId());
                         break;
                     case 2:
                         intent = new Intent(context, VideogameActivity.class);
-                        intent.putExtra("id", item.getId());
                         break;
                     case 3:
                         intent = new Intent(context, BooksActivity.class);
-                        intent.putExtra("id", item.getId());
                         break;
-                    default:
-                        //A
                 }
                 intent.putExtra("id", item.getId());
                 context.startActivity(intent);
