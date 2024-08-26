@@ -213,4 +213,19 @@ public class UserDB extends DBHelper{
         return result;
     }
 
+    public void purgeDatabase(){
+        DBHelper dbHelper = new DBHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL("DROP TABLE " + TABLE_NAME);
+        db.execSQL("CREATE TABLE " + TABLE_NAME + " (" +
+                "    id TEXT PRIMARY KEY," +
+                "    name TEXT NOT NULL," +
+                "    poster TEXT," +
+                "    type TEXT," +
+                "    userScore INTEGER," +
+                "    userReview TEXT," +
+                "    status TEXT" +
+                ");");
+    }
+
 }
