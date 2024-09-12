@@ -8,7 +8,10 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import com.main.tfm.APIAccess.Content;
 import com.main.tfm.APIAccess.UserContent;
@@ -16,6 +19,8 @@ import com.main.tfm.APIAccess.UserContent;
 public class UserDB extends DBHelper{
 
     Context context;
+
+    String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
 
     public UserDB(@Nullable Context context) {
         super(context);
@@ -33,7 +38,7 @@ public class UserDB extends DBHelper{
         values.put("userScore", userScore);
         values.put("userReview", userReview);
         values.put("status", status);
-        result = db.insert(TABLE_NAME, null, values);
+        result = db.insert(USER_CONTENT_TABLE, null, values);
         db.close();
         return result;
     }
@@ -49,7 +54,7 @@ public class UserDB extends DBHelper{
         values.put("userScore", item.getScore());
         values.put("userReview", item.getReview());
         values.put("status", item.getStatus());
-        result = db.insert(TABLE_NAME, null, values);
+        result = db.insert(USER_CONTENT_TABLE, null, values);
         db.close();
         return result;
     }
@@ -59,7 +64,7 @@ public class UserDB extends DBHelper{
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         try {
-            db.execSQL("UPDATE " + TABLE_NAME + " SET userScore = " + item.getScore() + ", userReview = '" + item.getReview() + "', status = '" + item.getStatus() + "' WHERE id = '" + item.getId() + "' ");
+            db.execSQL("UPDATE " + USER_CONTENT_TABLE + " SET userScore = " + item.getScore() + ", userReview = '" + item.getReview() + "', status = '" + item.getStatus() + "' WHERE id = '" + item.getId() + "' ");
             updateOK=true;
         }catch (Exception ex){
             Log.i("BD", ex.toString());
@@ -79,7 +84,7 @@ public class UserDB extends DBHelper{
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             Cursor contentCursor;
 
-            contentCursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+            contentCursor = db.rawQuery("SELECT * FROM " + USER_CONTENT_TABLE, null);
 
             if(contentCursor.moveToFirst()){
                 do{
@@ -111,7 +116,7 @@ public class UserDB extends DBHelper{
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             Cursor contentCursor;
 
-            contentCursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE status = '" + status + "'", null);
+            contentCursor = db.rawQuery("SELECT * FROM " + USER_CONTENT_TABLE + " WHERE status = '" + status + "'", null);
 
             if(contentCursor.moveToFirst()){
                 do{
@@ -140,7 +145,7 @@ public class UserDB extends DBHelper{
             DBHelper dbHelper = new DBHelper(context);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             Cursor contentCursor;
-            contentCursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id = '" + id + "' LIMIT 1", null);
+            contentCursor = db.rawQuery("SELECT * FROM " + USER_CONTENT_TABLE + " WHERE id = '" + id + "' LIMIT 1", null);
             if(contentCursor.moveToFirst()){
                 name = contentCursor.getString(1);
                 poster = contentCursor.getString(2);
@@ -162,7 +167,7 @@ public class UserDB extends DBHelper{
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         try {
-            db.execSQL("DELETE FROM " + TABLE_NAME + " WHERE id = '" + id + "'");
+            db.execSQL("DELETE FROM " + USER_CONTENT_TABLE + " WHERE id = '" + id + "'");
             deleteOK=true;
         }catch (Exception ex){
             Log.i("BD", ex.toString());
@@ -181,7 +186,7 @@ public class UserDB extends DBHelper{
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             Cursor contentCursor;
 
-            contentCursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + ";", null);
+            contentCursor = db.rawQuery("SELECT * FROM " + USER_CONTENT_TABLE + ";", null);
 
             if(contentCursor.moveToFirst()){
                 do{
@@ -213,11 +218,104 @@ public class UserDB extends DBHelper{
         return result;
     }
 
+    public long addUserGoals(int movies, int shows, int videogames, int books){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        long result;
+        values.put("year", currentDate);
+        values.put("moviesTarget", movies);
+        values.put("showsTarget", shows);
+        values.put("videogamesTarget", videogames);
+        values.put("moviesCompleted", books);
+        values.put("showsCompleted", 0);
+        values.put("videogamesCompleted", 0);
+        values.put("booksCompleted", 0);
+        result = db.insert(USER_GOAL_TABLE, null, values);
+        db.close();
+        return result;
+    }
+
+    public boolean updateGoalTable(String type, int updatedGoal){
+        boolean updateOK = false;
+        DBHelper dbHelper = new DBHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        try {
+            switch (type){
+                case "movie":
+                    db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET moviesCompleted = " + updatedGoal +" WHERE year = '" + currentDate + "' ;");
+                    break;
+                case "show":
+                    db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET showsCompleted = " + updatedGoal +" WHERE year = '" + currentDate + "' ;");
+                    break;
+                case "videogame":
+                    db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET videogamesCompleted = " + updatedGoal +" WHERE year = '" + currentDate + "' ;");
+                    break;
+                case "book":
+                    db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET booksCompleted = " + updatedGoal +" WHERE year = '" + currentDate + "' ;");
+                    break;
+            }
+            updateOK=true;
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }finally {
+            db.close();
+        }
+        return updateOK;
+    }
+
+    public boolean editGoalTable(String type, int updatedTarget){
+        boolean updateOK = false;
+        DBHelper dbHelper = new DBHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        try {
+            switch (type){
+                case "movie":
+                    db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET moviesTarget = " + updatedTarget +" WHERE year = '" + currentDate + "' ;");
+                    break;
+                case "show":
+                    db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET showsTarget = " + updatedTarget +" WHERE year = '" + currentDate + "' ;");
+                    break;
+                case "videogame":
+                    db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET videogamesTarget = " + updatedTarget +" WHERE year = '" + currentDate + "' ;");
+                    break;
+                case "book":
+                    db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET booksTarget = " + updatedTarget +" WHERE year = '" + currentDate + "' ;");
+                    break;
+            }
+            updateOK=true;
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }finally {
+            db.close();
+        }
+        return updateOK;
+    }
+
+    public int retrieveGoalCompletionByType(String type){
+        int result = -1;
+        try{
+            DBHelper dbHelper = new DBHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor contentCursor;
+
+            contentCursor = db.rawQuery("SELECT "+ type +"Completed FROM " + USER_GOAL_TABLE + ";", null);
+
+            if(contentCursor.moveToFirst()){
+                result = contentCursor.getInt(0);
+            }
+            contentCursor.close();
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }
+        return result;
+    }
+
     public void purgeDatabase(){
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.execSQL("DROP TABLE " + TABLE_NAME);
-        db.execSQL("CREATE TABLE " + TABLE_NAME + " (" +
+        db.execSQL("DROP TABLE " + USER_CONTENT_TABLE);
+        db.execSQL("DROP TABLE " + USER_GOAL_TABLE);
+        db.execSQL("CREATE TABLE " + USER_CONTENT_TABLE + " (" +
                 "    id TEXT PRIMARY KEY," +
                 "    name TEXT NOT NULL," +
                 "    poster TEXT," +
@@ -225,6 +323,17 @@ public class UserDB extends DBHelper{
                 "    userScore INTEGER," +
                 "    userReview TEXT," +
                 "    status TEXT" +
+                ");");
+        db.execSQL("CREATE TABLE " + USER_GOAL_TABLE + " (" +
+                "    year TEXT PRIMARY KEY," +
+                "    moviesTarget INTEGER," +
+                "    showsTarget INTEGER," +
+                "    videogamesTarget INTEGER," +
+                "    booksTarget INTEGER," +
+                "    moviesCompleted INTEGER," +
+                "    showsCompleted INTEGER," +
+                "    videogamesCompleted INTEGER," +
+                "    booksCompleted INTEGER" +
                 ");");
     }
 

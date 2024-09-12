@@ -8,6 +8,10 @@
         android:icon="@drawable/user"
         android:title="My page" />
     <item
+        android:id="@+id/goalsFragmentNavi"
+        android:icon="@drawable/goals"
+        android:title="Goals" />
+    <item
         android:id="@+id/settingsFragmentNavi"
         android:icon="@drawable/settings"
         android:title="Settings" />

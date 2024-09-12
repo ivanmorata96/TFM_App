@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.main.tfm.goals.GoalsFragment;
 import com.main.tfm.searches.SearchFragment;
 import com.main.tfm.settings.SettingsFragment;
 import com.main.tfm.user.UserFragment;
@@ -43,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.settingsFragmentNavi:
                         selectedFragment = new SettingsFragment();
                         break;
+                    case R.id.goalsFragmentNavi:
+                        selectedFragment = new GoalsFragment();
+                        break;
                 }
                 if (selectedFragment != null) {
                     loadFragment(selectedFragment);
@@ -53,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadFragment(Fragment fragment) {
-        // Reemplaza el fragmento en el contenedor
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();

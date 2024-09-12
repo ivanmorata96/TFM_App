@@ -26,32 +26,21 @@ public class UserFragment extends Fragment {
 
     ArrayList<Integer> statistics;
     private UserDB db;
-    private TextView userMovies, userTVShows, userVideogames, userBooks;
     private RecyclerView ongoingRV, backlogRV, completedRV;
-    private boolean isOngoingVisible = false;
-    private boolean isBacklogVisible = false;
-    private boolean isCompletedVisible = false;
+    private boolean isOngoingVisible = true;
+    private boolean isBacklogVisible = true;
+    private boolean isCompletedVisible = true;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user, container, false);
-        userMovies = view.findViewById(R.id.userMoviesView);
-        userTVShows = view.findViewById(R.id.userTVShowsView);
-        userVideogames = view.findViewById(R.id.userVideogameView);
-        userBooks = view.findViewById(R.id.userBooksView);
+
         ongoingRV = view.findViewById(R.id.ongoingRV);
         backlogRV = view.findViewById(R.id.backlogRV);
         completedRV = view.findViewById(R.id.completedRV);
         db = new UserDB(getContext());
         statistics = new ArrayList<>(db.retrieveNumberOfItemsByType());
-        userMovies.setText("You have added to your profile " + statistics.get(0) + " movies.");
-
-        userTVShows.setText("You have added to your profile " + statistics.get(1) + " TV Shows.");
-
-        userVideogames.setText("You have added to your profile " + statistics.get(2) + " videogames.");
-
-        userBooks.setText("You have added to your profile " + statistics.get(0) + " books.");
         
         GridLayoutManager gridLayoutManager1 = new GridLayoutManager(getContext(), 3);
         List<UserContent> ongoingContent = db.retrieveContentByStatus("On-going");
