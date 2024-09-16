@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -20,7 +21,7 @@ public class UserDB extends DBHelper{
 
     Context context;
 
-    String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
+    String currentDate = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
     public UserDB(@Nullable Context context) {
         super(context);
@@ -308,6 +309,22 @@ public class UserDB extends DBHelper{
             Log.i("BD", ex.toString());
         }
         return result;
+    }
+
+    public boolean checkIfGoalsAreSet() {
+        boolean ok = false;
+        try {
+            DBHelper dbHelper = new DBHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor contentCursor;
+
+            contentCursor = db.rawQuery("SELECT * FROM " + USER_GOAL_TABLE + " WHERE year = '" + currentDate + "';", null);
+            ok = contentCursor.moveToFirst();
+            contentCursor.close();
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }
+        return ok;
     }
 
     public void purgeDatabase(){

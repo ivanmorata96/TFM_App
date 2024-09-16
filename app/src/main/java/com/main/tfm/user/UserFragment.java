@@ -24,7 +24,6 @@ import com.main.tfm.APIAccess.UserContent;
 
 public class UserFragment extends Fragment {
 
-    ArrayList<Integer> statistics;
     private UserDB db;
     private RecyclerView ongoingRV, backlogRV, completedRV;
     private boolean isOngoingVisible = true;
@@ -40,8 +39,7 @@ public class UserFragment extends Fragment {
         backlogRV = view.findViewById(R.id.backlogRV);
         completedRV = view.findViewById(R.id.completedRV);
         db = new UserDB(getContext());
-        statistics = new ArrayList<>(db.retrieveNumberOfItemsByType());
-        
+
         GridLayoutManager gridLayoutManager1 = new GridLayoutManager(getContext(), 3);
         List<UserContent> ongoingContent = db.retrieveContentByStatus("On-going");
         ongoingRV.setLayoutManager(gridLayoutManager1);

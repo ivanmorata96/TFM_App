@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/setMovieGoalView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Set your movies goal:"
+        android:textSize="8pt"/>
+
+    <EditText
+        android:id="@+id/movieGoalET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="Movies goals" />
+
+    <TextView
+        android:id="@+id/setTVGoalView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Set your TV Shows goal:"
+        android:textSize="8pt"/>
+
+    <EditText
+        android:id="@+id/tvShowGoalET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="TV Shows goals" />
+
+    <TextView
+        android:id="@+id/setVideogameGoalView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Set your videogames goal:"
+        android:textSize="8pt"/>
+
+    <EditText
+        android:id="@+id/videogameGoalET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="Videogames goals" />
+
+    <TextView
+        android:id="@+id/setBooksGoalView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Set your books goal:"
+        android:textSize="8pt"/>
+
+    <EditText
+        android:id="@+id/booksGoalET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="Books goals" />
+
+
+</LinearLayout>
