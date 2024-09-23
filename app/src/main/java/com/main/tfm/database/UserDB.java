@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import com.main.tfm.APIAccess.Content;
 import com.main.tfm.APIAccess.UserContent;
@@ -245,7 +246,7 @@ public class UserDB extends DBHelper{
                 case "movie":
                     db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET moviesCompleted = " + updatedGoal +" WHERE year = '" + currentDate + "' ;");
                     break;
-                case "show":
+                case "tvshow":
                     db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET showsCompleted = " + updatedGoal +" WHERE year = '" + currentDate + "' ;");
                     break;
                 case "videogame":
@@ -264,29 +265,19 @@ public class UserDB extends DBHelper{
         return updateOK;
     }
 
-    public boolean editGoalTable(String type, int updatedTarget){
+    public boolean editGoalTable(int movies, int shows, int videogames, int books){
         boolean updateOK = false;
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        try {
-            switch (type){
-                case "movie":
-                    db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET moviesTarget = " + updatedTarget +" WHERE year = '" + currentDate + "' ;");
-                    break;
-                case "show":
-                    db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET showsTarget = " + updatedTarget +" WHERE year = '" + currentDate + "' ;");
-                    break;
-                case "videogame":
-                    db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET videogamesTarget = " + updatedTarget +" WHERE year = '" + currentDate + "' ;");
-                    break;
-                case "book":
-                    db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET booksTarget = " + updatedTarget +" WHERE year = '" + currentDate + "' ;");
-                    break;
-            }
-            updateOK=true;
+        try{
+            db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET moviesTarget = " + movies + ", " +
+                    "showsTarget = " + shows + ", " +
+                    "videogamesTarget = " + shows + ", " +
+                    "booksTarget = " + shows +
+                    " WHERE year = '" + currentDate + "' ;");
         }catch (Exception ex){
             Log.i("BD", ex.toString());
-        }finally {
+        }finally{
             db.close();
         }
         return updateOK;
@@ -297,14 +288,52 @@ public class UserDB extends DBHelper{
         try{
             DBHelper dbHelper = new DBHelper(context);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            Cursor contentCursor;
+            Cursor goalsCursor;
 
-            contentCursor = db.rawQuery("SELECT "+ type +"Completed FROM " + USER_GOAL_TABLE + ";", null);
+            goalsCursor = db.rawQuery("SELECT "+ type +"Completed FROM " + USER_GOAL_TABLE + ";", null);
 
-            if(contentCursor.moveToFirst()){
-                result = contentCursor.getInt(0);
+            if(goalsCursor.moveToFirst()){
+                switch (type){
+                    case "movies":
+                        result = goalsCursor.getInt(5);
+                        break;
+                    case "shows":
+                        result = goalsCursor.getInt(6);
+                        break;
+                    case "videogames":
+                        result = goalsCursor.getInt(7);
+                        break;
+                    case "books":
+                        result = goalsCursor.getInt(8);
+                        break;
+                }
             }
-            contentCursor.close();
+            goalsCursor.close();
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }
+        return result;
+    }
+
+    public HashMap<String, Integer> retrieveAllGoals(){
+        HashMap<String, Integer> result = new HashMap<>();
+        try{
+            DBHelper dbHelper = new DBHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor goalsCursor;
+
+            goalsCursor = db.rawQuery("SELECT * FROM " + USER_GOAL_TABLE + " WHERE year=" + currentDate + ";", null);
+            if(goalsCursor.moveToFirst()){
+                result.put("moviesTarget", goalsCursor.getInt(1));
+                result.put("showsTarget", goalsCursor.getInt(2));
+                result.put("videogamesTarget", goalsCursor.getInt(3));
+                result.put("booksTarget", goalsCursor.getInt(4));
+                result.put("moviesCompleted", goalsCursor.getInt(5));
+                result.put("showsCompleted", goalsCursor.getInt(6));
+                result.put("videogamesCompleted", goalsCursor.getInt(7));
+                result.put("booksCompleted", goalsCursor.getInt(8));
+            }
+            goalsCursor.close();
         }catch (Exception ex){
             Log.i("BD", ex.toString());
         }
@@ -316,11 +345,11 @@ public class UserDB extends DBHelper{
         try {
             DBHelper dbHelper = new DBHelper(context);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            Cursor contentCursor;
+            Cursor goalsCursor;
 
-            contentCursor = db.rawQuery("SELECT * FROM " + USER_GOAL_TABLE + " WHERE year = '" + currentDate + "';", null);
-            ok = contentCursor.moveToFirst();
-            contentCursor.close();
+            goalsCursor = db.rawQuery("SELECT * FROM " + USER_GOAL_TABLE + " WHERE year = '" + currentDate + "';", null);
+            ok = goalsCursor.moveToFirst();
+            goalsCursor.close();
         }catch (Exception ex){
             Log.i("BD", ex.toString());
         }

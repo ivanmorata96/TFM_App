@@ -14,11 +14,12 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import com.main.tfm.R;
+import com.main.tfm.database.UserDB;
 
 public class SettingsFragment extends Fragment {
 
     AppCompatButton purgeButton;
-
+    private UserDB db;
 
 
     @Nullable
@@ -26,7 +27,7 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         purgeButton = view.findViewById(R.id.purgeDatabaseButton);
-
+        db = new UserDB(getContext());
         purgeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,7 +45,7 @@ public class SettingsFragment extends Fragment {
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                db.purgeDatabase();
             }
         });
 
