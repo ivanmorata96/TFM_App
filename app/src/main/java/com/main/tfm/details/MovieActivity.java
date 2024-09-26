@@ -96,7 +96,7 @@ public class MovieActivity extends AppCompatActivity {
             addMovieButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showAddDialog(m.get(), 1);
+                    showEditDialog(thisContent);
                 }
             });
         }else{
@@ -104,34 +104,16 @@ public class MovieActivity extends AppCompatActivity {
             addMovieButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showAddDialog(m.get(), 2);
+                    showAddDialog(m.get());
                 }
             });
         }
-
     }
 
-    private void showAddDialog(Movie m, int typeOfDialog){
+    private void showAddDialog(Movie m){
         LayoutInflater inflater = LayoutInflater.from(this);
         View dialogView;
-        if(typeOfDialog == 1){
-            dialogView = inflater.inflate(R.layout.edit_media_dialog_layout, null);
-            AppCompatButton deleteButton = dialogView.findViewById(R.id.deleteButton);
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (confirmDelete) {
-                        deleteButton.setText("Are you sure you want to delete this content from your page?");
-                        confirmDelete = false;
-                    } else {
-                        db.deleteContentItem(m.getId());
-                        recreate();
-                    }
-                }
-            });
-        }else{
-            dialogView = inflater.inflate(R.layout.add_media_dialog_layout, null);
-        }
+        dialogView = inflater.inflate(R.layout.add_media_dialog_layout, null);
         Spinner categoryInput = dialogView.findViewById(R.id.category);
         EditText scoreInput = dialogView.findViewById(R.id.userScore);
         EditText reviewInput = dialogView.findViewById(R.id.userReview);
@@ -145,9 +127,45 @@ public class MovieActivity extends AppCompatActivity {
                     int userScore = Integer.parseInt(scoreInput.getText().toString());
                     String userReview = reviewInput.getText().toString();
                     thisContent = new UserContent(m.getId(), m.getTitle(), m.getOverview(), m.getPoster(), "movie", userScore, userReview, category);
-                    if(typeOfDialog == 1)
-                        db.editContent(thisContent);
-                    else db.addContent(thisContent);
+                    db.addContent(thisContent);
+                    recreate();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void showEditDialog(UserContent m) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView;
+        dialogView = inflater.inflate(R.layout.edit_media_dialog_layout, null);
+        AppCompatButton deleteButton = dialogView.findViewById(R.id.deleteButton);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (confirmDelete) {
+                    deleteButton.setText("Are you sure you want to delete this content from your page?");
+                    confirmDelete = false;
+                } else {
+                    db.deleteContentItem(m.getId());
+                    recreate();
+                }
+            }
+        });
+        Spinner categoryInput = dialogView.findViewById(R.id.category);
+        EditText scoreInput = dialogView.findViewById(R.id.userScore);
+        EditText reviewInput = dialogView.findViewById(R.id.userReview);
+        scoreInput.setFilters(new InputFilter[]{new ScoreInputFilter("0", "10")});
+        scoreInput.setText(Integer.toString(m.getScore()));
+        reviewInput.setText(m.getReview());
+        new AlertDialog.Builder(this)
+                .setTitle("Select how to add this content to your profile.")
+                .setView(dialogView)
+                .setPositiveButton("OK", (dialog, which) -> {
+                    String category = categoryInput.getSelectedItem().toString();
+                    int userScore = Integer.parseInt(scoreInput.getText().toString());
+                    String userReview = reviewInput.getText().toString();
+                    thisContent = new UserContent(m.getId(), m.getTitle(), m.getOverview(), m.getPoster(), "videogame", userScore, userReview, category);
+                    db.editContent(thisContent);
                     recreate();
                 })
                 .setNegativeButton("Cancel", null)

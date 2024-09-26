@@ -87,7 +87,7 @@ public class Videogame extends Content {
 
     @Override
     public String toString() {
-        String videogame = "This videogame is called " + getTitle() + ", and was released on " + release_date + ".\n" +
+        String videogame = "This videogame (" + getId() +") is called " + getTitle() + ", and was released on " + release_date + ".\n" +
                 "This game falls under the following genres: " + genres + ".\n" +
                 "Here you have an overview of the plot: " + getOverview() + ".\n" +
                 "It was produced by: " + developers + ", on the following platforms " + platforms + ". \n" +
