@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.main.tfm.APIAccess.Books.GoogleBooksInterface;
-import com.main.tfm.APIAccess.Content;
+import com.main.tfm.support.Content;
 import com.main.tfm.APIAccess.Movies_TVShows.TMDBInterface;
 import com.main.tfm.APIAccess.Videogames.RAWGInterface;
 

@@ -16,7 +16,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import com.main.tfm.APIAccess.Content;
+import com.main.tfm.support.Content;
 import com.main.tfm.R;
 
 

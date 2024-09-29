@@ -14,7 +14,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import com.main.tfm.R;
-import com.main.tfm.database.UserDB;
+import com.main.tfm.support.database.UserDB;
 
 public class SettingsFragment extends Fragment {
 

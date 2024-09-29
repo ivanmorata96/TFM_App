@@ -16,9 +16,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.main.tfm.APIAccess.UserContent;
+import com.main.tfm.support.UserContent;
 import com.main.tfm.R;
-import com.main.tfm.database.UserDB;
+import com.main.tfm.support.database.UserDB;
 
 import java.util.ArrayList;
 import java.util.HashMap;

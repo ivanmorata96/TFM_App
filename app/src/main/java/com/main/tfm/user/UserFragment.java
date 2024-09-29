@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,14 +12,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.main.tfm.R;
-import com.main.tfm.database.UserDB;
+import com.main.tfm.support.database.UserDB;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.main.tfm.APIAccess.UserContent;
+import com.main.tfm.support.UserContent;
 
 public class UserFragment extends Fragment {
 

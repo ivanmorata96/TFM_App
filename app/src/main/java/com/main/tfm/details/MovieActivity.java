@@ -21,7 +21,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.main.tfm.R;
-import com.main.tfm.database.UserDB;
+import com.main.tfm.support.database.UserDB;
 import com.main.tfm.support.ScoreInputFilter;
 import com.squareup.picasso.Picasso;
 
@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.main.tfm.APIAccess.Movies_TVShows.Movie;
 import com.main.tfm.APIAccess.Movies_TVShows.TMDBInterface;
-import com.main.tfm.APIAccess.UserContent;
+import com.main.tfm.support.UserContent;
 
 public class MovieActivity extends AppCompatActivity {
 

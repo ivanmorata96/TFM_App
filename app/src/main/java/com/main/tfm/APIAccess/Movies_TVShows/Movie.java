@@ -1,6 +1,6 @@
 package com.main.tfm.APIAccess.Movies_TVShows;
 
-import com.main.tfm.APIAccess.Content;
+import com.main.tfm.support.Content;
 
 import java.util.ArrayList;
 

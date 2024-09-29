@@ -1,4 +1,4 @@
-package com.main.tfm.APIAccess;
+package com.main.tfm.support;
 
 public class UserContent extends Content{
     private String type;

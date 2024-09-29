@@ -1,6 +1,6 @@
 package com.main.tfm.APIAccess.Books;
 
-import com.main.tfm.APIAccess.Content;
+import com.main.tfm.support.Content;
 
 import java.io.BufferedReader;
 import java.io.IOException;

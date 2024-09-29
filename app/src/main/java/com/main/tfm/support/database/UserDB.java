@@ -1,4 +1,4 @@
-package com.main.tfm.database;
+package com.main.tfm.support.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,15 +8,12 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-import com.main.tfm.APIAccess.Content;
-import com.main.tfm.APIAccess.UserContent;
+import com.main.tfm.support.Content;
+import com.main.tfm.support.UserContent;
 
 public class UserDB extends DBHelper{
 
@@ -359,28 +356,8 @@ public class UserDB extends DBHelper{
     public void purgeDatabase(){
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.execSQL("DROP TABLE " + USER_CONTENT_TABLE);
-        db.execSQL("DROP TABLE " + USER_GOAL_TABLE);
-        db.execSQL("CREATE TABLE " + USER_CONTENT_TABLE + " (" +
-                "    id TEXT PRIMARY KEY," +
-                "    name TEXT NOT NULL," +
-                "    poster TEXT," +
-                "    type TEXT," +
-                "    userScore INTEGER," +
-                "    userReview TEXT," +
-                "    status TEXT" +
-                ");");
-        db.execSQL("CREATE TABLE " + USER_GOAL_TABLE + " (" +
-                "    year TEXT PRIMARY KEY," +
-                "    moviesTarget INTEGER," +
-                "    showsTarget INTEGER," +
-                "    videogamesTarget INTEGER," +
-                "    booksTarget INTEGER," +
-                "    moviesCompleted INTEGER," +
-                "    showsCompleted INTEGER," +
-                "    videogamesCompleted INTEGER," +
-                "    booksCompleted INTEGER" +
-                ");");
+        db.execSQL("DELETE FROM " + USER_CONTENT_TABLE + ";");
+        db.execSQL("DELETE FROM " + USER_GOAL_TABLE + ";");
     }
 
 }

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputFilter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -22,7 +21,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.main.tfm.R;
-import com.main.tfm.database.UserDB;
+import com.main.tfm.support.database.UserDB;
 import com.main.tfm.support.ScoreInputFilter;
 import com.squareup.picasso.Picasso;
 
@@ -35,7 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.main.tfm.APIAccess.Movies_TVShows.TMDBInterface;
 import com.main.tfm.APIAccess.Movies_TVShows.TVShow;
-import com.main.tfm.APIAccess.UserContent;
+import com.main.tfm.support.UserContent;
 
 public class TVShowActivity extends AppCompatActivity {
 
