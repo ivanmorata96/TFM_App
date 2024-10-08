@@ -16,6 +16,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -38,7 +39,8 @@ import com.main.tfm.support.UserContent;
 
 public class MovieActivity extends AppCompatActivity {
 
-    TextView titleView, releaseDateView, creditsView, overviewView, genresView, studioView, runtimeView, scoreView, isMovieAddedView;
+    ConstraintLayout infoLayout, reviewLayout;
+    TextView titleView, releaseDateView, creditsView, overviewView, genresView, studioView, runtimeView, scoreView, isMovieAddedView, toggleInfoHeader, toggleReviewHeader, userCurrentState, userCurrentScore, userCurrentReview;
     ImageView posterView;
     AppCompatButton addMovieButton;
     UserContent thisContent;
@@ -58,6 +60,8 @@ public class MovieActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        infoLayout = findViewById(R.id.infoLayout);
+        reviewLayout = findViewById(R.id.reviewLayout);
         titleView = findViewById(R.id.titleView);
         releaseDateView = findViewById(R.id.releaseDateView);
         creditsView = findViewById(R.id.creditsView);
@@ -69,6 +73,20 @@ public class MovieActivity extends AppCompatActivity {
         posterView = findViewById(R.id.posterView);
         isMovieAddedView = findViewById(R.id.isMovieAddedView);
         addMovieButton = findViewById(R.id.addMovieButton);
+        toggleInfoHeader = findViewById(R.id.toggleInfoHeaderView);
+        toggleReviewHeader = findViewById(R.id.toggleReviewHeaderView);
+        userCurrentState = findViewById(R.id.userCurrentStateView);
+        userCurrentScore = findViewById(R.id.userCurrentScoreView);
+        userCurrentReview = findViewById(R.id.userCurrentReviewView);
+
+        toggleInfoHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(infoLayout.getVisibility() == View.GONE)
+                    infoLayout.setVisibility(View.VISIBLE);
+                else infoLayout.setVisibility(View.GONE);
+            }
+        });
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
@@ -97,6 +115,14 @@ public class MovieActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     showEditDialog(thisContent);
+                }
+            });
+            toggleReviewHeader.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(reviewLayout.getVisibility() == View.GONE)
+                        reviewLayout.setVisibility(View.VISIBLE);
+                    else reviewLayout.setVisibility(View.GONE);
                 }
             });
         }else{

@@ -1,11 +1,14 @@
 package com.main.tfm.APIAccess.Videogames;
 
+import android.util.Log;
+
 import com.main.tfm.support.Content;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -44,6 +47,7 @@ public class RAWGInterface {
                 v.setId(String.valueOf(game.getInt("id")));
                 v.setTitle(game.getString("name"));
                 v.setRelease_date(game.optString("released"));
+                v.setOverview(retrieveOverview(game.getInt("id")));
                 v.setPoster(game.optString("background_image"));
                 v.setScore(game.optInt("metacritic"));
                 currentGamePlatforms = new ArrayList<>();
@@ -64,7 +68,7 @@ public class RAWGInterface {
                 result.add(v);
             }
         } else {
-            System.out.println("Error en la solicitud: " + conn.getResponseCode());
+            Log.i("API", "Error en la solicitud: " + conn.getResponseCode());
         }
         return result;
     }
@@ -75,7 +79,6 @@ public class RAWGInterface {
         JSONObject game, platformObject, platform, developerObject, genreObject;
         JSONArray platforms, developers, genres;
         String busqueda = "https://api.rawg.io/api/games/"+ id + "?key=" + API_KEY;
-        System.out.println(busqueda);
         HttpURLConnection conn = (HttpURLConnection) new URL(busqueda).openConnection();
         conn.setRequestMethod("GET");
         if (conn.getResponseCode() == 200) {
@@ -132,20 +135,33 @@ public class RAWGInterface {
                 }
             }
             result.setGenres(currentGameGenres);
+        }else{
+            Log.i("API", "Error en la solicitud: " + conn.getResponseCode());
         }
 
         return result;
     }
 
-    public static void main(String[] args) throws IOException, JSONException {
-        /*
-        ArrayList<Videogame> busqueda = new ArrayList<>();
-        busqueda = searchVideogame("The Witcher 3");
-        for(Videogame current : busqueda){
-            System.out.println(current.toString());
-            System.out.println("-------------------------------------------------------------------------------");
-        }*/
-        Videogame v = getVideogameDetails("3328");
-        System.out.println(v.toString());
+    public static String retrieveOverview(int id) throws IOException, JSONException {
+        String result="";
+        String busqueda = "https://api.rawg.io/api/games/"+ id + "?key=" + API_KEY;
+        JSONObject game;
+        HttpURLConnection conn = (HttpURLConnection) new URL(busqueda).openConnection();
+        conn.setRequestMethod("GET");
+        if (conn.getResponseCode() == 200) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            game = new JSONObject(response.toString());
+            result = game.optString("description");
+        }else{
+            Log.i("API", "Error en la solicitud: " + conn.getResponseCode());
+        }
+
+        return result;
     }
 }

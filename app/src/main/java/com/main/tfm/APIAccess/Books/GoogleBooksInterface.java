@@ -186,17 +186,4 @@ public class GoogleBooksInterface {
         result.setPoster(arrangeCoverDetails(bookJSON));
         return result;
     }
-
-    public static void main(String[] args) throws IOException {
-        /*
-        ArrayList<Book> libros;
-        libros = searchBooks("Harry Potter");
-        for(Book b: libros){
-            System.out.println(b.toString());
-            System.out.println("-----------------------------------------------------------------------------------------");
-        }*/
-        /*
-        Book b = new Book(getBookDetails("2zgRDXFWkm8C"));
-        System.out.println(b.toString());*/
-    }
 }
