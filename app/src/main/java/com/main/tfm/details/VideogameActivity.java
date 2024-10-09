@@ -16,6 +16,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -38,7 +39,8 @@ import com.main.tfm.APIAccess.Videogames.Videogame;
 
 public class VideogameActivity extends AppCompatActivity {
 
-    TextView titleView, overviewView, releaseDateView, developersView, genresView, platformView, scoreView, isGameAddedView;
+    ConstraintLayout infoLayout, reviewLayout;
+    TextView titleView, overviewView, releaseDateView, developersView, genresView, platformView, scoreView, isGameAddedView, toggleInfoHeader, toggleReviewHeader, userCurrentState, userCurrentScore, userCurrentReview;;
     ImageView posterView;
     AppCompatButton addGameButton;
     UserContent thisContent;
@@ -58,6 +60,8 @@ public class VideogameActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        infoLayout = findViewById(R.id.infoLayout);
+        reviewLayout = findViewById(R.id.reviewLayout);
         titleView = findViewById(R.id.titleView);
         releaseDateView = findViewById(R.id.vgReleaseView);
         developersView = findViewById(R.id.developersView);
@@ -68,6 +72,21 @@ public class VideogameActivity extends AppCompatActivity {
         posterView = findViewById(R.id.posterView);
         isGameAddedView = findViewById(R.id.isGameAddedView);
         addGameButton = findViewById(R.id.addGameButton);
+        toggleInfoHeader = findViewById(R.id.toggleInfoHeaderView);
+        toggleReviewHeader = findViewById(R.id.toggleReviewHeaderView);
+        userCurrentState = findViewById(R.id.userCurrentStateView);
+        userCurrentScore = findViewById(R.id.userCurrentScoreView);
+        userCurrentReview = findViewById(R.id.userCurrentReviewView);
+        toggleInfoHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(infoLayout.getVisibility() == View.GONE) {
+                    infoLayout.setVisibility(View.VISIBLE);
+                    reviewLayout.setVisibility(View.GONE);
+                }
+                else infoLayout.setVisibility(View.GONE);
+            }
+        });
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
@@ -91,10 +110,22 @@ public class VideogameActivity extends AppCompatActivity {
         if(thisContent != null){
             isGameAddedView.setText("This game is currently on your profile marked as: " + thisContent.getStatus());
             addGameButton.setText("Edit this Game");
+            userCurrentScore.setText(Integer.toString(thisContent.getScore()));
+            userCurrentReview.setText(thisContent.getReview());
             addGameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     showEditDialog(thisContent);
+                }
+            });
+            toggleReviewHeader.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(reviewLayout.getVisibility() == View.GONE) {
+                        reviewLayout.setVisibility(View.VISIBLE);
+                        infoLayout.setVisibility(View.GONE);
+                    }
+                    else reviewLayout.setVisibility(View.GONE);
                 }
             });
         }else{
@@ -105,6 +136,8 @@ public class VideogameActivity extends AppCompatActivity {
                     showAddDialog(vg.get());
                 }
             });
+            if(toggleReviewHeader.getVisibility() == View.VISIBLE)
+                toggleReviewHeader.setVisibility(View.GONE);
         }
     }
 

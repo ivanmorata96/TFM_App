@@ -19,6 +19,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -40,7 +41,8 @@ import com.main.tfm.support.UserContent;
 
 public class BooksActivity extends AppCompatActivity {
 
-    TextView titleView, overviewView, releaseDateView, authorView, genresView, publisherView, isbnView, pagesView, scoreView, isBookAddedView;
+    ConstraintLayout infoLayout, reviewLayout;
+    TextView titleView, overviewView, releaseDateView, authorView, genresView, publisherView, isbnView, pagesView, scoreView, isBookAddedView, toggleInfoHeader, toggleReviewHeader, userCurrentState, userCurrentScore, userCurrentReview;;
     ImageView posterView;
     AppCompatButton addBookButton;
     UserContent thisContent;
@@ -60,7 +62,8 @@ public class BooksActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        infoLayout = findViewById(R.id.infoLayout);
+        reviewLayout = findViewById(R.id.reviewLayout);
         titleView = findViewById(R.id.titleView);
         releaseDateView = findViewById(R.id.dopView);
         authorView = findViewById(R.id.authorView);
@@ -73,6 +76,21 @@ public class BooksActivity extends AppCompatActivity {
         posterView = findViewById(R.id.posterView);
         isBookAddedView = findViewById(R.id.isBookAddedView);
         addBookButton = findViewById(R.id.addBookButton);
+        toggleInfoHeader = findViewById(R.id.toggleInfoHeaderView);
+        toggleReviewHeader = findViewById(R.id.toggleReviewHeaderView);
+        userCurrentState = findViewById(R.id.userCurrentStateView);
+        userCurrentScore = findViewById(R.id.userCurrentScoreView);
+        userCurrentReview = findViewById(R.id.userCurrentReviewView);
+        toggleInfoHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(infoLayout.getVisibility() == View.GONE) {
+                    infoLayout.setVisibility(View.VISIBLE);
+                    reviewLayout.setVisibility(View.GONE);
+                }
+                else infoLayout.setVisibility(View.GONE);
+            }
+        });
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
@@ -99,10 +117,22 @@ public class BooksActivity extends AppCompatActivity {
         if(thisContent != null){
             isBookAddedView.setText("This book is currently on your profile marked as: " + thisContent.getStatus());
             addBookButton.setText("Edit this Book");
+            userCurrentScore.setText(Integer.toString(thisContent.getScore()));
+            userCurrentReview.setText(thisContent.getReview());
             addBookButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     showEditDialog(thisContent);
+                }
+            });
+            toggleReviewHeader.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(reviewLayout.getVisibility() == View.GONE) {
+                        reviewLayout.setVisibility(View.VISIBLE);
+                        infoLayout.setVisibility(View.GONE);
+                    }
+                    else reviewLayout.setVisibility(View.GONE);
                 }
             });
         }else{
@@ -111,9 +141,10 @@ public class BooksActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     showAddDialog(b.get());
-
                 }
             });
+            if(toggleReviewHeader.getVisibility() == View.VISIBLE)
+                toggleReviewHeader.setVisibility(View.GONE);
         }
     }
 

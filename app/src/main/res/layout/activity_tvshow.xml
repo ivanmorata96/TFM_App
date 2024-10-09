@@ -5,61 +5,54 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_constraintTop_toBottomOf="@id/headerLayout"
     app:layout_constraintBottom_toTopOf="@id/footerLayout"
+    app:layout_constraintTop_toBottomOf="@id/headerLayout"
     tools:context=".details.TVShowActivity">
 
     <LinearLayout
         android:id="@+id/headerLayout"
         android:layout_width="0dp"
         android:layout_height="45dp"
-        android:orientation="horizontal"
         android:background="@android:color/holo_green_dark"
-        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/header_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="HobbyTrack"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textAlignment="center"
             android:background="@android:color/holo_green_dark"
-            android:textColor="@android:color/white"/>
+            android:gravity="center"
+            android:text="HobbyTrack"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/footerLayout"
         android:layout_width="0dp"
         android:layout_height="25dp"
-        android:orientation="horizontal"
         android:background="@android:color/holo_green_dark"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-    </LinearLayout>
+        app:layout_constraintRight_toRightOf="parent"></LinearLayout>
+
     <ImageView
         android:id="@+id/posterView"
         android:layout_width="120dp"
         android:layout_height="180dp"
-        app:srcCompat="@drawable/placeholder"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintBottom_toTopOf="@id/titleGuideline"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@id/titleView"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:srcCompat="@drawable/placeholder"
         tools:layout_editor_absoluteY="37dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/titleGuideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="279dp" />
 
     <TextView
         android:id="@+id/titleView"
@@ -71,7 +64,7 @@
         app:layout_constraintLeft_toRightOf="@id/posterView"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerLayout"
-        app:layout_constraintVertical_bias="0.2"/>
+        app:layout_constraintVertical_bias="0.2" />
 
     <TextView
         android:id="@+id/isTVShowAddedView"
@@ -87,95 +80,183 @@
         android:id="@+id/addTVShowButton"
         android:layout_width="180dp"
         android:layout_height="30dp"
-        android:text="Add to My Shows"
         android:background="@android:color/holo_green_light"
+        android:text="Add to My Shows"
         app:layout_constraintBottom_toTopOf="@+id/titleGuideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/posterView"
         app:layout_constraintTop_toBottomOf="@+id/isTVShowAddedView" />
 
-    <TextView
-        android:id="@+id/overviewView"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/titleGuideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        app:layout_constraintBottom_toTopOf="@id/castView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="279dp" />
+
+    <TextView
+        android:id="@+id/toggleInfoHeaderView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_green_light"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="10dp"
+        android:text="TV Show Details"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleGuideline" />
 
-    <TextView
-        android:id="@+id/castView"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/infoLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/studioView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/overviewView" />
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toggleInfoHeaderView">
+
+        <TextView
+            android:id="@+id/overviewView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:layout_constraintBottom_toTopOf="@id/castView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/castView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/studioView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/overviewView" />
+
+        <TextView
+            android:id="@+id/studioView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/genresView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/releaseDateView"
+            app:layout_constraintTop_toBottomOf="@id/castView" />
+
+        <TextView
+            android:id="@+id/releaseDateView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/genresView"
+            app:layout_constraintLeft_toRightOf="@id/studioView"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/castView" />
+
+        <TextView
+            android:id="@+id/genresView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/seasonsView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/studioView" />
+
+        <TextView
+            android:id="@+id/seasonsView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/episodesView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/statusView"
+            app:layout_constraintTop_toBottomOf="@id/genresView" />
+
+        <TextView
+            android:id="@+id/statusView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/seasonsView"
+            app:layout_constraintRight_toLeftOf="@id/TVscoreView"
+            app:layout_constraintTop_toBottomOf="@id/genresView" />
+
+        <TextView
+            android:id="@+id/episodesView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/statusView"
+            app:layout_constraintTop_toBottomOf="@id/seasonsView" />
+
+        <TextView
+            android:id="@+id/TVscoreView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/statusView"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/genresView" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/studioView"
-        android:layout_width="wrap_content"
+        android:id="@+id/toggleReviewHeaderView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/genresView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/releaseDateView"
-        app:layout_constraintTop_toBottomOf="@id/castView" />
+        android:background="@android:color/holo_green_light"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="10dp"
+        android:text="On my profile"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/infoLayout" />
 
-    <TextView
-        android:id="@+id/releaseDateView"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/reviewLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/genresView"
-        app:layout_constraintLeft_toRightOf="@id/studioView"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/castView" />
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toggleReviewHeaderView">
 
-    <TextView
-        android:id="@+id/genresView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/seasonsView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/studioView" />
+        <TextView
+            android:id="@+id/userCurrentStateView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/seasonsView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/episodesView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/statusView"
-        app:layout_constraintTop_toBottomOf="@id/genresView" />
+        <TextView
+            android:id="@+id/userCurrentScoreView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/userCurrentStateView" />
 
-    <TextView
-        android:id="@+id/statusView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/footerLayout"
-        app:layout_constraintLeft_toRightOf="@id/seasonsView"
-        app:layout_constraintRight_toLeftOf="@id/TVscoreView"
-        app:layout_constraintTop_toBottomOf="@id/genresView" />
+        <TextView
+            android:id="@+id/userCurrentReviewView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/userCurrentScoreView" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/episodesView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/statusView"
-        app:layout_constraintTop_toBottomOf="@id/seasonsView"
-        app:layout_constraintBottom_toTopOf="@id/footerLayout"/>
-
-    <TextView
-        android:id="@+id/TVscoreView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/statusView"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/genresView"
-        app:layout_constraintBottom_toTopOf="@id/footerLayout"
-        android:text=""/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -113,6 +113,10 @@ public class MovieActivity extends AppCompatActivity {
         if(thisContent != null){
             isMovieAddedView.setText("This movie is currently on your profile marked as: " + thisContent.getStatus());
             addMovieButton.setText("Edit this Movie");
+            userCurrentScore.setText(Integer.toString(thisContent.getScore()));
+            userCurrentReview.setText(thisContent.getReview());
+            if(toggleReviewHeader.getVisibility() == View.GONE)
+                toggleReviewHeader.setVisibility(View.VISIBLE);
             addMovieButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -137,6 +141,8 @@ public class MovieActivity extends AppCompatActivity {
                     showAddDialog(m.get());
                 }
             });
+            if(toggleReviewHeader.getVisibility() == View.VISIBLE)
+                toggleReviewHeader.setVisibility(View.GONE);
         }
     }
 

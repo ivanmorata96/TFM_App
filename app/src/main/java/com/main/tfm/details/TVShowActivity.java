@@ -16,6 +16,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -38,7 +39,8 @@ import com.main.tfm.support.UserContent;
 
 public class TVShowActivity extends AppCompatActivity {
 
-    TextView titleView, releaseDateView, castView, overviewView, genresView, studioView, seasonsView, episodesView, statusView, scoreView, isTVShowAddedView;
+    ConstraintLayout infoLayout, reviewLayout;
+    TextView titleView, releaseDateView, castView, overviewView, genresView, studioView, seasonsView, episodesView, statusView, scoreView, isTVShowAddedView, toggleInfoHeader, toggleReviewHeader, userCurrentState, userCurrentScore, userCurrentReview;;
     ImageView posterView;
     AppCompatButton addTVShowButton;
     UserContent thisContent;
@@ -58,6 +60,8 @@ public class TVShowActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        infoLayout = findViewById(R.id.infoLayout);
+        reviewLayout = findViewById(R.id.reviewLayout);
         titleView = findViewById(R.id.titleView);
         releaseDateView = findViewById(R.id.releaseDateView);
         castView = findViewById(R.id.castView);
@@ -71,6 +75,21 @@ public class TVShowActivity extends AppCompatActivity {
         posterView = findViewById(R.id.posterView);
         isTVShowAddedView = findViewById(R.id.isTVShowAddedView);
         addTVShowButton = findViewById(R.id.addTVShowButton);
+        toggleInfoHeader = findViewById(R.id.toggleInfoHeaderView);
+        toggleReviewHeader = findViewById(R.id.toggleReviewHeaderView);
+        userCurrentState = findViewById(R.id.userCurrentStateView);
+        userCurrentScore = findViewById(R.id.userCurrentScoreView);
+        userCurrentReview = findViewById(R.id.userCurrentReviewView);
+        toggleInfoHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(infoLayout.getVisibility() == View.GONE) {
+                    infoLayout.setVisibility(View.VISIBLE);
+                    reviewLayout.setVisibility(View.GONE);
+                }
+                else infoLayout.setVisibility(View.GONE);
+            }
+        });
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
@@ -97,10 +116,22 @@ public class TVShowActivity extends AppCompatActivity {
         if(thisContent != null){
             isTVShowAddedView.setText("This show is currently on your profile marked as: " + thisContent.getStatus());
             addTVShowButton.setText("Edit this Show");
+            userCurrentScore.setText(Integer.toString(thisContent.getScore()));
+            userCurrentReview.setText(thisContent.getReview());
             addTVShowButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     showAddDialog(tv.get());
+                }
+            });
+            toggleReviewHeader.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(reviewLayout.getVisibility() == View.GONE) {
+                        reviewLayout.setVisibility(View.VISIBLE);
+                        infoLayout.setVisibility(View.GONE);
+                    }
+                    else reviewLayout.setVisibility(View.GONE);
                 }
             });
         }else{
@@ -111,6 +142,8 @@ public class TVShowActivity extends AppCompatActivity {
                     showEditDialog(thisContent);
                 }
             });
+            if(toggleReviewHeader.getVisibility() == View.VISIBLE)
+                toggleReviewHeader.setVisibility(View.GONE);
         }
     }
 
