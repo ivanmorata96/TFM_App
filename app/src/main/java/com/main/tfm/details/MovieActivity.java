@@ -82,8 +82,10 @@ public class MovieActivity extends AppCompatActivity {
         toggleInfoHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(infoLayout.getVisibility() == View.GONE)
+                if(infoLayout.getVisibility() == View.GONE) {
                     infoLayout.setVisibility(View.VISIBLE);
+                    reviewLayout.setVisibility(View.GONE);
+                }
                 else infoLayout.setVisibility(View.GONE);
             }
         });
@@ -120,8 +122,10 @@ public class MovieActivity extends AppCompatActivity {
             toggleReviewHeader.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(reviewLayout.getVisibility() == View.GONE)
+                    if(reviewLayout.getVisibility() == View.GONE) {
                         reviewLayout.setVisibility(View.VISIBLE);
+                        infoLayout.setVisibility(View.GONE);
+                    }
                     else reviewLayout.setVisibility(View.GONE);
                 }
             });
