@@ -1,5 +1,4 @@
 package com.main.tfm.APIAccess.Movies_TVShows;
-
 import com.main.tfm.support.Content;
 
 import java.util.ArrayList;
@@ -101,6 +100,10 @@ public class TVShow extends Content {
         for(String g : genres)
             result = result + g + ", ";
         return result.substring(0, result.length()-2);
+    }
+
+    public ArrayList<String> getGenresArray(){
+        return genres;
     }
 
     public void setGenres(ArrayList<String> genres) {

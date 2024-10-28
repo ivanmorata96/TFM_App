@@ -1,7 +1,5 @@
 package com.main.tfm.APIAccess.Videogames;
-
 import com.main.tfm.support.Content;
-
 import java.util.ArrayList;
 
 public class Videogame extends Content {
@@ -26,6 +24,15 @@ public class Videogame extends Content {
         this.developers = new ArrayList<>(developers);
         this.genres = new ArrayList<>(genres);
         this.score = score;
+    }
+
+    public Videogame(Videogame other){
+        super(other);
+        this.release_date = other.release_date;
+        this.platforms = new ArrayList<>(other.platforms);
+        this.developers = new ArrayList<>(other.developers);
+        this.genres = new ArrayList<>(other.genres);
+        this.score = other.score;
     }
 
     public String getRelease_date() {
@@ -71,6 +78,10 @@ public class Videogame extends Content {
         for(String g : genres)
             result = result + g + "\n";
         return result;
+    }
+
+    public ArrayList<String> getGenresArray(){
+        return genres;
     }
 
     public void setGenres(ArrayList<String> genres) {

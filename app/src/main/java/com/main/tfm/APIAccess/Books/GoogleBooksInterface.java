@@ -1,5 +1,4 @@
 package com.main.tfm.APIAccess.Books;
-
 import com.main.tfm.support.Content;
 
 import java.io.BufferedReader;
@@ -14,8 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class GoogleBooksInterface {
-    private static final String API_KEY = "AIzaSyDgdOeUefmkshxMrOSiYi6U2Pn_zOslpmI"; // Reemplaza con tu clave de API
-
+    private static final String API_KEY = "AIzaSyDgdOeUefmkshxMrOSiYi6U2Pn_zOslpmI";
     private static String arrangeTitle(JSONObject book) throws JSONException {
         String result = "N/A";
         JSONObject bookInfo = book.optJSONObject("volumeInfo");
@@ -185,5 +183,39 @@ public class GoogleBooksInterface {
         result.setScore(bookJSON.getJSONObject("volumeInfo").optDouble("averageRating"));
         result.setPoster(arrangeCoverDetails(bookJSON));
         return result;
+    }
+
+    public static ArrayList<Content> searchBooksByTag(String tag) throws IOException, JSONException{
+        tag = tag.replace(" ", "%20");
+        ArrayList<Content> results = new ArrayList<>();
+        URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=subject:" + tag + "&key=" + API_KEY);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+        }
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+        StringBuilder sb = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            sb.append(output);
+        }
+        conn.disconnect();
+
+        JSONObject jsonResponse = new JSONObject(sb.toString());
+        JSONArray books = jsonResponse.getJSONArray("items");
+        for (int i = 0; i < books.length(); i++) {
+            JSONObject currentBook = books.getJSONObject(i);
+            Book book = new Book();
+            book.setId(currentBook.getString("id"));
+            book.setTitle(arrangeTitle(currentBook));
+            book.setAuthor(arrangeAuthors(currentBook));
+            book.setOverview(arrangeOverview(currentBook));
+            book.setDate_of_publishing(arrangeDoP(currentBook));
+            book.setPoster(arrangeCoverSearch(currentBook));
+            results.add(book);
+        }
+        return results;
     }
 }

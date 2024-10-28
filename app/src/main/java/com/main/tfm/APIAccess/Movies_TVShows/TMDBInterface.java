@@ -1,7 +1,5 @@
 package com.main.tfm.APIAccess.Movies_TVShows;
-
 import com.main.tfm.support.Content;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -249,4 +247,151 @@ public class TMDBInterface {
         result.setScore(tv.getDouble("vote_average"));
         return result;
     }
+
+    public static ArrayList<String> getTMDBTagsString(String ID, int type) throws IOException, JSONException {
+        ArrayList<String> result = new ArrayList<>();
+        URL url = new URL("https://api.themoviedb.org/3/movie/0/keywords?api_key=" + APIKey);
+        switch (type){
+            case 1:
+                url = new URL("https://api.themoviedb.org/3/movie/" + ID + "/keywords?api_key=" + APIKey);
+                break;
+            case 2:
+                url = new URL("https://api.themoviedb.org/3/tv/" + ID + "/keywords?api_key=" + APIKey);
+                break;
+        }
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+        }
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+        StringBuilder sb = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            sb.append(output);
+        }
+        conn.disconnect();
+
+        JSONObject movieTags = new JSONObject(sb.toString());
+        JSONArray tagList = new JSONArray();
+        switch (type){
+            case 1:
+                tagList = movieTags.getJSONArray("keywords");
+                break;
+            case 2:
+                tagList = movieTags.getJSONArray("results");
+                break;
+        }
+        for(int i = 0; i < tagList.length(); i++){
+            JSONObject currentTag = tagList.getJSONObject(i);
+            result.add(currentTag.optString("name"));
+        }
+        return result;
+    }
+
+    public static ArrayList<String> getAvailableTagsID(ArrayList<String> tags) throws IOException, JSONException{
+        ArrayList<String> result = new ArrayList<>();
+        for(String t : tags){
+            t = t.replace(" ", "%20");
+            URL url = new URL("https://api.themoviedb.org/3/search/keyword?api_key=" + APIKey + "&query=" + t);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
+            if (conn.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+            }
+            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+            StringBuilder sb = new StringBuilder();
+            String output;
+            while ((output = br.readLine()) != null) {
+                sb.append(output);
+            }
+            conn.disconnect();
+
+            JSONObject jsonTags = new JSONObject(sb.toString());
+            JSONArray tagVerify = new JSONArray(jsonTags.getJSONArray("results"));
+            if(tagVerify.length() > 0)
+                result.add(String.valueOf(tagVerify.optJSONObject(0).optInt("id")));
+
+        }
+        return result;
+    }
+
+    public static ArrayList<Content> searchMoviesByTags(ArrayList<String> tagList) throws IOException, JSONException{
+        ArrayList<Content> results = new ArrayList<>();
+        String tags = formatTags(tagList);
+        URL url = new URL("https://api.themoviedb.org/3/discover/movie?api_key="+ APIKey +"&with_keywords=" + tags);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+        }
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+        StringBuilder sb = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            sb.append(output);
+        }
+        conn.disconnect();
+
+        JSONObject jsonResponse = new JSONObject(sb.toString());
+        JSONArray movies = jsonResponse.getJSONArray("results");
+        for(int i = 0; i < movies.length(); i++){
+            JSONObject currentMovie = movies.getJSONObject(i);
+            Movie movie = new Movie();
+            movie.setId(String.valueOf(currentMovie.getInt("id")));
+            movie.setTitle(currentMovie.getString("title"));
+            movie.setRelease_date(currentMovie.getString("release_date"));
+            movie.setOverview(currentMovie.getString("overview"));
+            movie.setPoster(arrangePoster(currentMovie));
+            results.add(movie);
+        }
+        return results;
+    }
+
+    public static ArrayList<Content> searchTVShowsByTags(ArrayList<String> tagList) throws IOException, JSONException{
+        ArrayList<Content> results = new ArrayList<>();
+        String tags = formatTags(tagList);
+        URL url = new URL("https://api.themoviedb.org/3/discover/tv?api_key="+ APIKey +"&with_keywords=" + tags);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+        }
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+        StringBuilder sb = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            sb.append(output);
+        }
+        conn.disconnect();
+
+        JSONObject jsonResponse = new JSONObject(sb.toString());
+        JSONArray shows = jsonResponse.getJSONArray("results");
+        for(int i = 0; i < shows.length(); i++){
+            JSONObject currentShow = shows.getJSONObject(i);
+            TVShow show = new TVShow();
+            show.setId(String.valueOf(currentShow.getInt("id")));
+            show.setTitle(currentShow.getString("title"));
+            show.setRelease_date(currentShow.getString("release_date"));
+            show.setOverview(currentShow.getString("overview"));
+            show.setPoster(arrangePoster(currentShow));
+            results.add(show);
+        }
+        return results;
+    }
+
+    private static String formatTags(ArrayList<String> tags){
+        String result ="";
+        for(String t : tags){
+            result += (t + ",");
+        }
+        result = result.substring(0, result.length()-1);
+        result = result.replace(" ", "%20");
+        return result;
+    }
+
 }

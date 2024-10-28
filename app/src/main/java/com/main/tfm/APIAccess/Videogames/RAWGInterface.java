@@ -1,7 +1,4 @@
 package com.main.tfm.APIAccess.Videogames;
-
-import android.util.Log;
-
 import com.main.tfm.support.Content;
 
 import java.io.BufferedReader;
@@ -9,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -67,8 +65,6 @@ public class RAWGInterface {
                 v.setPlatforms(currentGamePlatforms);
                 result.add(v);
             }
-        } else {
-            Log.i("API", "Error en la solicitud: " + conn.getResponseCode());
         }
         return result;
     }
@@ -78,7 +74,7 @@ public class RAWGInterface {
         ArrayList<String> currentGamePlatforms, currentGameDevelopers, currentGameGenres;
         JSONObject game, platformObject, platform, developerObject, genreObject;
         JSONArray platforms, developers, genres;
-        String busqueda = "https://api.rawg.io/api/games/"+ id + "?key=" + API_KEY;
+        String busqueda = "https://api.rawg.io/api/games/" + id + "?key=" + API_KEY;
         HttpURLConnection conn = (HttpURLConnection) new URL(busqueda).openConnection();
         conn.setRequestMethod("GET");
         if (conn.getResponseCode() == 200) {
@@ -135,16 +131,14 @@ public class RAWGInterface {
                 }
             }
             result.setGenres(currentGameGenres);
-        }else{
-            Log.i("API", "Error en la solicitud: " + conn.getResponseCode());
         }
 
         return result;
     }
 
     public static String retrieveOverview(int id) throws IOException, JSONException {
-        String result="";
-        String busqueda = "https://api.rawg.io/api/games/"+ id + "?key=" + API_KEY;
+        String result = "";
+        String busqueda = "https://api.rawg.io/api/games/" + id + "?key=" + API_KEY;
         JSONObject game;
         HttpURLConnection conn = (HttpURLConnection) new URL(busqueda).openConnection();
         conn.setRequestMethod("GET");
@@ -158,10 +152,91 @@ public class RAWGInterface {
             in.close();
             game = new JSONObject(response.toString());
             result = game.optString("description");
-        }else{
-            Log.i("API", "Error en la solicitud: " + conn.getResponseCode());
         }
 
+        return result;
+    }
+
+    public static ArrayList<String> getVideogameTags(String id) throws IOException, JSONException {
+        ArrayList<String> result = new ArrayList<>();
+        JSONArray tags;
+        JSONObject singularTag;
+        String busqueda = "https://api.rawg.io/api/games/" + id + "?key=" + API_KEY;
+        JSONObject game;
+        HttpURLConnection conn = (HttpURLConnection) new URL(busqueda).openConnection();
+        conn.setRequestMethod("GET");
+        if (conn.getResponseCode() == 200) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            game = new JSONObject(response.toString());
+            tags = game.optJSONArray("tags");
+            if (tags != null) {
+                for (int j = 0; j < tags.length(); j++) {
+                    singularTag = tags.optJSONObject(j);
+                    if (singularTag != null) {
+                        String tagName = singularTag.optString("name", null);
+                        result.add(tagName);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public static ArrayList<Content> searchVideogamesByTags(String tags) throws IOException, JSONException{
+        tags = tags.replace(" ", "%20");
+        tags = tags.replace("+",",");
+        ArrayList<Content> result = new ArrayList<>();
+        ArrayList<String> currentGamePlatforms;
+        JSONObject jsonResponse, game, platformObject, platform;
+        JSONArray games, platforms;
+        String busqueda = "https://api.rawg.io/api/games?key=" + API_KEY + "&tags=" + tags;
+        HttpURLConnection conn = (HttpURLConnection) new URL(busqueda).openConnection();
+        conn.setRequestMethod("GET");
+
+        if (conn.getResponseCode() == 200) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            jsonResponse = new JSONObject(response.toString());
+            games = jsonResponse.getJSONArray("results");
+            for (int i = 0; i < games.length(); i++) {
+                game = games.getJSONObject(i);
+                Videogame v = new Videogame();
+                v.setId(String.valueOf(game.getInt("id")));
+                v.setTitle(game.getString("name"));
+                v.setRelease_date(game.optString("released"));
+                v.setOverview(retrieveOverview(game.getInt("id")));
+                v.setPoster(game.optString("background_image"));
+                v.setScore(game.optInt("metacritic"));
+                currentGamePlatforms = new ArrayList<>();
+                platforms = game.optJSONArray("platforms");
+                if (platforms != null) {
+                    for (int j = 0; j < platforms.length(); j++) {
+                        platformObject = platforms.optJSONObject(j);
+                        if (platformObject != null) {
+                            platform = platformObject.optJSONObject("platform");
+                            if (platform != null) {
+                                String platformName = platform.optString("name", "Unknown");
+                                currentGamePlatforms.add(platformName);
+                            }
+                        }
+                    }
+                }
+                v.setPlatforms(currentGamePlatforms);
+                result.add(v);
+            }
+        }
         return result;
     }
 }

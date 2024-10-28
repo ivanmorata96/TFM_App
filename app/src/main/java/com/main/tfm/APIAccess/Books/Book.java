@@ -1,7 +1,5 @@
 package com.main.tfm.APIAccess.Books;
-
 import com.main.tfm.support.Content;
-
 import java.util.ArrayList;
 
 public class Book extends Content {
@@ -96,12 +94,31 @@ public class Book extends Content {
         this.pages = pages;
     }
 
+    public ArrayList<String> getGenresArray(){
+        ArrayList<String> fixedArray = new ArrayList<>();
+        String [] split;
+        for(String g : genres){
+            if(g.contains("/")){
+                split = g.split("/");
+                for(int i = 0; i < split.length; i++){
+                    fixedArray.add(split[i].trim());
+                }
+            }else fixedArray.add(g);
+        }
+
+        return fixedArray;
+    }
+
     public String getGenres() {
         String result="";
         String [] split;
-        split = genres.get(0).split("/");
-        for(int i = 0; i < split.length; i++){
-            result = result+ split[i];
+        for(String g : genres) {
+            if (g.contains("/")) {
+                split = g.split("/");
+                for (int i = 0; i < split.length; i++) {
+                    result += split[i].trim();
+                }
+            } else result += g;
         }
         return result;
     }
