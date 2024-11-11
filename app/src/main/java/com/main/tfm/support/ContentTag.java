@@ -11,13 +11,29 @@ public class ContentTag {
 
     private static ArrayList<String> relevantTags = new ArrayList<>();
 
-    public ContentTag(String id, ArrayList<String> tags, ArrayList<String> genres, int userScore) {
+    public ContentTag(){
+        this.id = "";
+        tags = new ArrayList<>();
+        genres = new ArrayList<>();
+        userScore = 0;
         fillRelevantTags();
+    }
+
+    public ContentTag(String id, ArrayList<String> tags, ArrayList<String> genres, int userScore) {
         this.id = id;
         this.tags = new ArrayList<>(tags);
         sortTags();
         this.genres = new ArrayList<>(genres);
         this.userScore = userScore;
+        fillRelevantTags();
+    }
+
+    public ContentTag(ContentTag other){
+        this.id = other.id;
+        this.tags = new ArrayList<>(other.tags);
+        this.genres = new ArrayList<>(other.genres);
+        this.userScore = other.userScore;
+        fillRelevantTags();
     }
 
     public String getId() {
@@ -33,18 +49,14 @@ public class ContentTag {
     }
 
     public String getTagsAsString(String type){
-        String result="";
-        if(type.equals("book")){
+        String result = "";
+        if(type.equals("book") || type.equals("videogame")){
             for (String t : genres) {
                 result += (t + "+");
             }
-        }else if (type.equals("movie") || type.equals("tvshow")) {
+        }else{
             for(String t : tags){
                 result += (t + ",");
-            }
-        }else{
-            for (String t : tags) {
-                result += (t + "+");
             }
         }
         result = result.substring(0, result.length()-1);
@@ -58,6 +70,15 @@ public class ContentTag {
 
     public ArrayList<String> getGenres() {
         return genres;
+    }
+
+    public String getGenresAsString(){
+        String result = "";
+        for(String g : genres){
+            result += (g + ",");
+        }
+        result = result.substring(0, result.length()-1);
+        return result;
     }
 
     public void setGenres(ArrayList<String> genres) {

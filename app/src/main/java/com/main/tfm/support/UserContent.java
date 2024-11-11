@@ -5,11 +5,13 @@ public class UserContent extends Content{
     private int score;
     private String review;
     private String status;
+    private ContentTag tags;
 
     public UserContent() {
         super();
         type = review = status = "";
         score = 0;
+        tags = new ContentTag();
     }
 
     public UserContent(String id, String title, String overview, String poster, String type, int score, String review, String status) {
@@ -20,11 +22,21 @@ public class UserContent extends Content{
         this.status = status;
     }
 
-    public UserContent(Content other, String type, int score, String review) {
+    public UserContent(String id, String title, String overview, String poster, String type, int score, String review, String status, ContentTag tags) {
+        super(id, title, overview, poster);
+        this.type = type;
+        this.score = score;
+        this.review = review;
+        this.status = status;
+        this.tags = new ContentTag(tags);
+    }
+
+    public UserContent(Content other, String type, int score, String review, ContentTag tags) {
         super(other);
         this.type = type;
         this.score = score;
         this.review = review;
+        this.tags = new ContentTag(tags);
     }
 
     public UserContent(UserContent other){
@@ -35,6 +47,7 @@ public class UserContent extends Content{
         this.type = other.type;
         this.score = other.score;
         this.review = other.review;
+        this.tags = new ContentTag(other.tags);
     }
 
     public String getType() {
@@ -67,6 +80,14 @@ public class UserContent extends Content{
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public ContentTag getTags() {
+        return tags;
+    }
+
+    public void setTags(ContentTag tags) {
+        this.tags = new ContentTag(tags);
     }
 
     @Override

@@ -40,6 +40,7 @@ public class GoalsFragment extends Fragment {
         if(!db.checkIfGoalsAreSet()){
             titleView.setText("You currently don't have any goals set for this year! Would you like to?");
             setGoalsButton.setVisibility(View.VISIBLE);
+            editGoalsButton.setVisibility(View.GONE);
             setGoalsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -8,10 +8,11 @@ import androidx.annotation.Nullable;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION =2;
+    private static final int DATABASE_VERSION =3;
     private static final String DATABASE_NAME = "userData.db";
     public static final String USER_CONTENT_TABLE = "userContentList";
     public static final String USER_GOAL_TABLE = "userGoals";
+    public static final String USER_TAGS_TABLE = "userContentTags";
 
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -38,6 +39,13 @@ public class DBHelper extends SQLiteOpenHelper {
                 "    showsCompleted INTEGER," +
                 "    videogamesCompleted INTEGER," +
                 "    booksCompleted INTEGER" +
+                ");");
+        sqLiteDatabase.execSQL("CREATE TABLE " + USER_TAGS_TABLE + " (" +
+                "    id TEXT PRIMARY KEY," +
+                "    name TEXT NOT NULL," +
+                "    userScore INTEGER," +
+                "    genres TEXT," +
+                "    tags TEXT" +
                 ");");
     }
 

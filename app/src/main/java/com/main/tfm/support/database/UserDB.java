@@ -353,6 +353,26 @@ public class UserDB extends DBHelper{
         return ok;
     }
 
+    public long addContentToTagsReference(UserContent item){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        long result;
+        values.put("id", item.getId());
+        values.put("name", item.getTitle());
+        values.put("userScore", item.getScore());
+        values.put("genres", item.getTags().getGenresAsString());
+        values.put("tags", item.getTags().getTagsAsString("DB"));
+        result = db.insert(USER_CONTENT_TABLE, null, values);
+        db.close();
+        return result;
+    }
+
+    public UserContent retrieveTagsReference(String id){
+        UserContent result = new UserContent();
+
+        return result;
+    }
+
     public void purgeDatabase(){
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
