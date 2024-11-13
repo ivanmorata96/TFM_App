@@ -43,6 +43,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE " + USER_TAGS_TABLE + " (" +
                 "    id TEXT PRIMARY KEY," +
                 "    name TEXT NOT NULL," +
+                "    type TEXT NOT NULL," +
                 "    userScore INTEGER," +
                 "    genres TEXT," +
                 "    tags TEXT" +

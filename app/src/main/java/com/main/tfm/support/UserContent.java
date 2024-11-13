@@ -31,6 +31,14 @@ public class UserContent extends Content{
         this.tags = new ContentTag(tags);
     }
 
+    public UserContent(String id, String title, String type, int score, ContentTag contentTag){
+        this.setId(id);
+        this.setTitle(title);
+        this.type = type;
+        this.score = score;
+        this.tags = new ContentTag(contentTag);
+    }
+
     public UserContent(Content other, String type, int score, String review, ContentTag tags) {
         super(other);
         this.type = type;

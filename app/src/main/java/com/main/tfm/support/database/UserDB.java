@@ -9,10 +9,12 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 
 import com.main.tfm.support.Content;
+import com.main.tfm.support.ContentTag;
 import com.main.tfm.support.UserContent;
 
 public class UserDB extends DBHelper{
@@ -359,6 +361,7 @@ public class UserDB extends DBHelper{
         long result;
         values.put("id", item.getId());
         values.put("name", item.getTitle());
+        values.put("type", item.getType());
         values.put("userScore", item.getScore());
         values.put("genres", item.getTags().getGenresAsString());
         values.put("tags", item.getTags().getTagsAsString("DB"));
@@ -367,9 +370,47 @@ public class UserDB extends DBHelper{
         return result;
     }
 
+    public String retrieveRatedIDForTags(){
+        String result = "";
+        try{
+            DBHelper dbHelper = new DBHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor contentCursor;
+            contentCursor = db.rawQuery("", null); //TODO
+            if(contentCursor.moveToFirst()){
+
+            }else return null;
+            contentCursor.close();
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }
+        return result;
+    }
+
     public UserContent retrieveTagsReference(String id){
         UserContent result = new UserContent();
-
+        ContentTag ct = new ContentTag();
+        String name, type;
+        ArrayList<String> genres, tags;
+        int userScore;
+        try{
+            DBHelper dbHelper = new DBHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor contentCursor;
+            contentCursor = db.rawQuery("SELECT * FROM " + USER_TAGS_TABLE + " WHERE id = '" + id + "' LIMIT 1", null);
+            if(contentCursor.moveToFirst()){
+                name = contentCursor.getString(1);
+                type = contentCursor.getString(2);
+                userScore = contentCursor.getInt(3);
+                genres = new ArrayList<>(toArrays(contentCursor.getString(4)));
+                tags = new ArrayList<>(toArrays(contentCursor.getString(5)));
+                ct = new ContentTag(id, tags, genres, userScore);
+                result = new UserContent(id, name, type, userScore, ct);
+            }else return null;
+            contentCursor.close();
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }
         return result;
     }
 
@@ -378,6 +419,11 @@ public class UserDB extends DBHelper{
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("DELETE FROM " + USER_CONTENT_TABLE + ";");
         db.execSQL("DELETE FROM " + USER_GOAL_TABLE + ";");
+    }
+
+    private ArrayList<String> toArrays(String text){
+        ArrayList<String> result = new ArrayList<>(Arrays.asList(text.split(",")));
+        return result;
     }
 
 }
