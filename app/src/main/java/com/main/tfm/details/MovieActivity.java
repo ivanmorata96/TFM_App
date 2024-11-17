@@ -33,8 +33,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.main.tfm.APIAccess.Movies_TVShows.Movie;
-import com.main.tfm.APIAccess.Movies_TVShows.TMDBInterface;
+import com.main.tfm.mediaAPIs.Movies_TVShows.Movie;
+import com.main.tfm.mediaAPIs.Movies_TVShows.TMDBInterface;
 import com.main.tfm.support.UserContent;
 
 public class MovieActivity extends AppCompatActivity {

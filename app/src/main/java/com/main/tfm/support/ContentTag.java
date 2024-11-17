@@ -1,5 +1,12 @@
 package com.main.tfm.support;
 
+import com.main.tfm.mediaAPIs.Books.GoogleBooksInterface;
+import com.main.tfm.mediaAPIs.Movies_TVShows.TMDBInterface;
+import com.main.tfm.mediaAPIs.Videogames.RAWGInterface;
+
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ContentTag {
@@ -17,6 +24,28 @@ public class ContentTag {
         genres = new ArrayList<>();
         userScore = 0;
         fillRelevantTags();
+    }
+
+    public ContentTag(String id, String type) throws JSONException, IOException {
+        this.id = id;
+        switch(type){
+            case "movie":
+                this.tags = new ArrayList<>(TMDBInterface.getTMDBTagsString(id, 1));
+                break;
+            case "tvshow":
+                this.tags = new ArrayList<>(TMDBInterface.getTMDBTagsString(id, 2));
+                break;
+            case "videogame":
+                this.tags = new ArrayList<>(RAWGInterface.getVideogameTags(id));
+                break;
+            case "book":
+                this.tags = new ArrayList<>(GoogleBooksInterface.getBookTags(id));
+                break;
+            default:
+                this.tags = new ArrayList<>();
+        }
+        this.genres = new ArrayList<>();
+        this.userScore = -1;
     }
 
     public ContentTag(String id, ArrayList<String> tags, ArrayList<String> genres, int userScore) {

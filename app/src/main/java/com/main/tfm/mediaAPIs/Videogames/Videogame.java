@@ -1,4 +1,4 @@
-package com.main.tfm.APIAccess.Videogames;
+package com.main.tfm.mediaAPIs.Videogames;
 import com.main.tfm.support.Content;
 import java.util.ArrayList;
 

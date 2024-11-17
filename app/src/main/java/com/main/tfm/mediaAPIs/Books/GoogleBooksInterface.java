@@ -1,4 +1,4 @@
-package com.main.tfm.APIAccess.Books;
+package com.main.tfm.mediaAPIs.Books;
 import com.main.tfm.support.Content;
 
 import java.io.BufferedReader;
@@ -217,5 +217,27 @@ public class GoogleBooksInterface {
             results.add(book);
         }
         return results;
+    }
+
+    public static ArrayList<String> getBookTags(String id) throws IOException, JSONException{
+        ArrayList<String> result;
+        URL url = new URL("https://www.googleapis.com/books/v1/volumes/" + id + "?key=" + API_KEY);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+        }
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+        StringBuilder sb = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            sb.append(output);
+        }
+        conn.disconnect();
+
+        JSONObject bookJSON = new JSONObject(sb.toString());
+        result = new ArrayList<>(arrangeGenre(bookJSON));
+        return result;
     }
 }

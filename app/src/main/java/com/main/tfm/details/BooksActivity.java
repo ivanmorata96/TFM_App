@@ -1,6 +1,6 @@
 package com.main.tfm.details;
 
-import static com.main.tfm.APIAccess.Books.GoogleBooksInterface.getBookDetails;
+import static com.main.tfm.mediaAPIs.Books.GoogleBooksInterface.getBookDetails;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -36,7 +36,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.main.tfm.APIAccess.Books.Book;
+import com.main.tfm.mediaAPIs.Books.Book;
 import com.main.tfm.support.UserContent;
 
 public class BooksActivity extends AppCompatActivity {

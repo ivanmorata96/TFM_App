@@ -33,8 +33,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.main.tfm.APIAccess.Movies_TVShows.TMDBInterface;
-import com.main.tfm.APIAccess.Movies_TVShows.TVShow;
+import com.main.tfm.mediaAPIs.Movies_TVShows.TMDBInterface;
+import com.main.tfm.mediaAPIs.Movies_TVShows.TVShow;
 import com.main.tfm.support.UserContent;
 
 public class TVShowActivity extends AppCompatActivity {
@@ -121,7 +121,7 @@ public class TVShowActivity extends AppCompatActivity {
             addTVShowButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showAddDialog(tv.get());
+                    showEditDialog(thisContent);
                 }
             });
             toggleReviewHeader.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +139,7 @@ public class TVShowActivity extends AppCompatActivity {
             addTVShowButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showEditDialog(thisContent);
+                    showAddDialog(tv.get());
                 }
             });
             if(toggleReviewHeader.getVisibility() == View.VISIBLE)

@@ -36,6 +36,7 @@ public class GoalsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_goals, container, false);
         titleView = view.findViewById(R.id.goalsMainTitleView);
         setGoalsButton = view.findViewById(R.id.setGoalsButton);
+        editGoalsButton = view.findViewById(R.id.editGoalsButton);
         db = new UserDB(getContext());
         if(!db.checkIfGoalsAreSet()){
             titleView.setText("You currently don't have any goals set for this year! Would you like to?");

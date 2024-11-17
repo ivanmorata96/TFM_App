@@ -55,7 +55,8 @@ public class UserContent extends Content{
         this.type = other.type;
         this.score = other.score;
         this.review = other.review;
-        this.tags = new ContentTag(other.tags);
+        if(other.tags != null)
+            this.tags = new ContentTag(other.tags);
     }
 
     public String getType() {

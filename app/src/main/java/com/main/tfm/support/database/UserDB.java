@@ -40,7 +40,6 @@ public class UserDB extends DBHelper{
         values.put("userReview", userReview);
         values.put("status", status);
         result = db.insert(USER_CONTENT_TABLE, null, values);
-        db.close();
         return result;
     }
 
@@ -55,8 +54,10 @@ public class UserDB extends DBHelper{
         values.put("userScore", item.getScore());
         values.put("userReview", item.getReview());
         values.put("status", item.getStatus());
+        if(item.getStatus().equals("Completed") && item.getScore() >= 7){
+            addContentToTagsReference(item);
+        }
         result = db.insert(USER_CONTENT_TABLE, null, values);
-        db.close();
         return result;
     }
 
@@ -69,8 +70,6 @@ public class UserDB extends DBHelper{
             updateOK=true;
         }catch (Exception ex){
             Log.i("BD", ex.toString());
-        }finally {
-            db.close();
         }
         return updateOK;
     }
@@ -141,6 +140,7 @@ public class UserDB extends DBHelper{
     public UserContent checkContent(String id){
         UserContent result = new UserContent();
         String name, poster, type, userReview, status;
+        ContentTag ct = new ContentTag();
         int userScore;
         try{
             DBHelper dbHelper = new DBHelper(context);
@@ -172,8 +172,6 @@ public class UserDB extends DBHelper{
             deleteOK=true;
         }catch (Exception ex){
             Log.i("BD", ex.toString());
-        }finally {
-            db.close();
         }
         return deleteOK;
     }
@@ -232,7 +230,6 @@ public class UserDB extends DBHelper{
         values.put("videogamesCompleted", 0);
         values.put("booksCompleted", 0);
         result = db.insert(USER_GOAL_TABLE, null, values);
-        db.close();
         return result;
     }
 
@@ -258,8 +255,6 @@ public class UserDB extends DBHelper{
             updateOK=true;
         }catch (Exception ex){
             Log.i("BD", ex.toString());
-        }finally {
-            db.close();
         }
         return updateOK;
     }
@@ -271,13 +266,11 @@ public class UserDB extends DBHelper{
         try{
             db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET moviesTarget = " + movies + ", " +
                     "showsTarget = " + shows + ", " +
-                    "videogamesTarget = " + shows + ", " +
-                    "booksTarget = " + shows +
+                    "videogamesTarget = " + videogames + ", " +
+                    "booksTarget = " + books +
                     " WHERE year = '" + currentDate + "' ;");
         }catch (Exception ex){
             Log.i("BD", ex.toString());
-        }finally{
-            db.close();
         }
         return updateOK;
     }
@@ -365,8 +358,7 @@ public class UserDB extends DBHelper{
         values.put("userScore", item.getScore());
         values.put("genres", item.getTags().getGenresAsString());
         values.put("tags", item.getTags().getTagsAsString("DB"));
-        result = db.insert(USER_CONTENT_TABLE, null, values);
-        db.close();
+        result = db.insert(USER_TAGS_TABLE, null, values);
         return result;
     }
 
@@ -376,9 +368,9 @@ public class UserDB extends DBHelper{
             DBHelper dbHelper = new DBHelper(context);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             Cursor contentCursor;
-            contentCursor = db.rawQuery("", null); //TODO
+            contentCursor = db.rawQuery("SELECT id FROM " + USER_TAGS_TABLE + " WHERE userScore >= 7 ORDER BY RANDOM() LIMIT 1;", null); //TODO
             if(contentCursor.moveToFirst()){
-
+                result = contentCursor.getString(0);
             }else return null;
             contentCursor.close();
         }catch (Exception ex){
