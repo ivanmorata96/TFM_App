@@ -22,6 +22,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.main.tfm.R;
+import com.main.tfm.mediaAPIs.Videogames.RAWGInterface;
+import com.main.tfm.mediaAPIs.Videogames.Videogame;
+import com.main.tfm.support.ContentTag;
 import com.main.tfm.support.database.UserDB;
 import com.main.tfm.support.ScoreInputFilter;
 import com.squareup.picasso.Picasso;
@@ -29,8 +32,10 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.main.tfm.mediaAPIs.Movies_TVShows.Movie;
@@ -43,7 +48,8 @@ public class MovieActivity extends AppCompatActivity {
     TextView titleView, releaseDateView, creditsView, overviewView, genresView, studioView, runtimeView, scoreView, isMovieAddedView, toggleInfoHeader, toggleReviewHeader, userCurrentState, userCurrentScore, userCurrentReview;
     ImageView posterView;
     AppCompatButton addMovieButton;
-    UserContent thisContent;
+    UserContent thisContent = new UserContent();
+    ContentTag thisContentTags = new ContentTag();
     final UserDB db = new UserDB(this);
     boolean confirmDelete = true;
 
@@ -51,7 +57,7 @@ public class MovieActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
         String movieID = intent.getStringExtra("id");
-        AtomicReference<Movie> m = new AtomicReference<>(new Movie());
+        Movie m;
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_movie);
@@ -60,6 +66,33 @@ public class MovieActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        linkObjectToView();
+        thisContent = db.checkContent(movieID);
+        try {
+            m = setMediaInfo(movieID);
+            thisContentTags = initContentTag(movieID, m);
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        toggleInfoHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(infoLayout.getVisibility() == View.GONE) {
+                    infoLayout.setVisibility(View.VISIBLE);
+                    reviewLayout.setVisibility(View.GONE);
+                }
+                else infoLayout.setVisibility(View.GONE);
+            }
+        });
+
+        if(thisContent != null){
+            showIfOnDB(movieID, m);
+        }else{
+            showIfNotOnDB(m);
+        }
+    }
+
+    private void linkObjectToView(){
         infoLayout = findViewById(R.id.infoLayout);
         reviewLayout = findViewById(R.id.reviewLayout);
         titleView = findViewById(R.id.titleView);
@@ -78,72 +111,88 @@ public class MovieActivity extends AppCompatActivity {
         userCurrentState = findViewById(R.id.userCurrentStateView);
         userCurrentScore = findViewById(R.id.userCurrentScoreView);
         userCurrentReview = findViewById(R.id.userCurrentReviewView);
+    }
 
-        toggleInfoHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(infoLayout.getVisibility() == View.GONE) {
-                    infoLayout.setVisibility(View.VISIBLE);
-                    reviewLayout.setVisibility(View.GONE);
-                }
-                else infoLayout.setVisibility(View.GONE);
-            }
-        });
+    private Movie setMediaInfo(String movieID) throws ExecutionException, InterruptedException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> {
+        Future<Movie> future = executor.submit(() -> {
             try {
-                m.set(TMDBInterface.getMovieDetails(movieID));
+                return TMDBInterface.getMovieDetails(movieID);
             } catch (IOException | JSONException e) {
                 throw new RuntimeException(e);
             }
-            handler.post(() -> {
-                titleView.setText(m.get().getTitle());
-                releaseDateView.setText(m.get().getRelease_date());
-                creditsView.setText(m.get().getMovieCredits());
-                overviewView.setText(m.get().getOverview());
-                genresView.setText(m.get().getGenres());
-                studioView.setText(m.get().getStudios());
-                runtimeView.setText(String.valueOf(m.get().getRuntime()));
-                scoreView.setText(String.valueOf(m.get().getScore()));
-                Picasso.get().load(m.get().getPoster()).into(posterView);
-            });
         });
-        thisContent = db.checkContent(movieID);
-        if(thisContent != null){
-            isMovieAddedView.setText("This movie is currently on your profile marked as: " + thisContent.getStatus());
-            addMovieButton.setText("Edit this Movie");
-            userCurrentScore.setText(Integer.toString(thisContent.getScore()));
-            userCurrentReview.setText(thisContent.getReview());
-            if(toggleReviewHeader.getVisibility() == View.GONE)
-                toggleReviewHeader.setVisibility(View.VISIBLE);
-            addMovieButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showEditDialog(thisContent);
+        Movie movie = future.get();
+        new Handler(Looper.getMainLooper()).post(() -> {
+            titleView.setText(movie.getTitle());
+            releaseDateView.setText(movie.getRelease_date());
+            creditsView.setText(movie.getMovieCredits());
+            overviewView.setText(movie.getOverview());
+            genresView.setText(movie.getGenres());
+            studioView.setText(movie.getStudios());
+            runtimeView.setText(String.valueOf(movie.getRuntime()));
+            scoreView.setText(String.valueOf(movie.getScore()));
+            Picasso.get().load(movie.getPoster()).into(posterView);
+        });
+
+        return movie;
+    }
+
+    private ContentTag initContentTag(String id, Movie m) throws ExecutionException, InterruptedException {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<ContentTag> future = executor.submit(() -> {
+            try {
+                ContentTag contentTag = new ContentTag(id, "movie");
+                contentTag.setGenres(m.getGenresArray());
+                return contentTag;
+            } catch (IOException | JSONException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        ContentTag contentTag = future.get();
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (thisContent != null) {
+                thisContent.setTags(contentTag);
+            }
+        });
+        return contentTag;
+    }
+
+    private void showIfOnDB(String movieID, Movie m){
+        isMovieAddedView.setText("This movie is currently on your profile marked as: " + thisContent.getStatus());
+        addMovieButton.setText("Edit this Movie");
+        userCurrentScore.setText(Integer.toString(thisContent.getScore()));
+        userCurrentReview.setText(thisContent.getReview());
+        addMovieButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showEditDialog(thisContent);
+            }
+        });
+        if(toggleReviewHeader.getVisibility() == View.GONE)
+            toggleReviewHeader.setVisibility(View.VISIBLE);
+        toggleReviewHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(reviewLayout.getVisibility() == View.GONE) {
+                    reviewLayout.setVisibility(View.VISIBLE);
+                    infoLayout.setVisibility(View.GONE);
                 }
-            });
-            toggleReviewHeader.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(reviewLayout.getVisibility() == View.GONE) {
-                        reviewLayout.setVisibility(View.VISIBLE);
-                        infoLayout.setVisibility(View.GONE);
-                    }
-                    else reviewLayout.setVisibility(View.GONE);
-                }
-            });
-        }else{
-            isMovieAddedView.setText("You can add this movie to your profile.");
-            addMovieButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showAddDialog(m.get());
-                }
-            });
-            if(toggleReviewHeader.getVisibility() == View.VISIBLE)
-                toggleReviewHeader.setVisibility(View.GONE);
-        }
+                else reviewLayout.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void showIfNotOnDB(Movie m){
+        isMovieAddedView.setText("You can add this movie to your profile.");
+        addMovieButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddDialog(m);
+            }
+        });
+        if(toggleReviewHeader.getVisibility() == View.VISIBLE)
+            toggleReviewHeader.setVisibility(View.GONE);
     }
 
     private void showAddDialog(Movie m){

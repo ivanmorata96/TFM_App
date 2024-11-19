@@ -74,7 +74,6 @@ public class VideogameActivity extends AppCompatActivity {
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-
         toggleInfoHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,7 +131,6 @@ public class VideogameActivity extends AppCompatActivity {
             scoreView.setText(String.valueOf(videogame.getScore()));
             Picasso.get().load(videogame.getPoster()).into(posterView);
         });
-
         return videogame;
     }
 
@@ -142,9 +140,9 @@ public class VideogameActivity extends AppCompatActivity {
             try {
                 ContentTag contentTag = new ContentTag(id, "videogame");
                 contentTag.setGenres(vg.getGenresArray());
-                return contentTag; // Devuelve la instancia creada.
+                return contentTag;
             } catch (IOException | JSONException e) {
-                throw new RuntimeException(e); // Manejo de excepciones.
+                throw new RuntimeException(e);
             }
         });
         ContentTag contentTag = future.get();

@@ -25,6 +25,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.main.tfm.R;
+import com.main.tfm.mediaAPIs.Books.GoogleBooksInterface;
+import com.main.tfm.mediaAPIs.Videogames.RAWGInterface;
+import com.main.tfm.mediaAPIs.Videogames.Videogame;
+import com.main.tfm.support.ContentTag;
 import com.main.tfm.support.database.UserDB;
 import com.main.tfm.support.ScoreInputFilter;
 import com.squareup.picasso.Picasso;
@@ -32,8 +36,10 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.main.tfm.mediaAPIs.Books.Book;
@@ -45,7 +51,8 @@ public class BooksActivity extends AppCompatActivity {
     TextView titleView, overviewView, releaseDateView, authorView, genresView, publisherView, isbnView, pagesView, scoreView, isBookAddedView, toggleInfoHeader, toggleReviewHeader, userCurrentState, userCurrentScore, userCurrentReview;;
     ImageView posterView;
     AppCompatButton addBookButton;
-    UserContent thisContent;
+    UserContent thisContent = new UserContent();
+    ContentTag thisContentTags = new ContentTag();
     final UserDB db = new UserDB(this);
     boolean confirmDelete = true;
 
@@ -53,7 +60,7 @@ public class BooksActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
         String bookID = intent.getStringExtra("id");
-        AtomicReference<Book> b = new AtomicReference<>(new Book());
+        Book b;
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_books);
@@ -62,6 +69,33 @@ public class BooksActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        linkObjectToView();
+        thisContent = db.checkContent(bookID);
+        try {
+            b = setMediaInfo(bookID);
+            thisContentTags = initContentTag(bookID, b);
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        toggleInfoHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(infoLayout.getVisibility() == View.GONE) {
+                    infoLayout.setVisibility(View.VISIBLE);
+                    reviewLayout.setVisibility(View.GONE);
+                }
+                else infoLayout.setVisibility(View.GONE);
+            }
+        });
+
+        if(thisContent != null){
+            showIfOnDB(bookID, b);
+        }else {
+            showIfNotOnDB(b);
+        }
+    }
+
+    private void linkObjectToView(){
         infoLayout = findViewById(R.id.infoLayout);
         reviewLayout = findViewById(R.id.reviewLayout);
         titleView = findViewById(R.id.titleView);
@@ -81,71 +115,87 @@ public class BooksActivity extends AppCompatActivity {
         userCurrentState = findViewById(R.id.userCurrentStateView);
         userCurrentScore = findViewById(R.id.userCurrentScoreView);
         userCurrentReview = findViewById(R.id.userCurrentReviewView);
-        toggleInfoHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(infoLayout.getVisibility() == View.GONE) {
-                    infoLayout.setVisibility(View.VISIBLE);
-                    reviewLayout.setVisibility(View.GONE);
-                }
-                else infoLayout.setVisibility(View.GONE);
-            }
-        });
+    }
+
+    private Book setMediaInfo(String bookID) throws ExecutionException, InterruptedException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> {
+        Future<Book> future = executor.submit(() -> {
             try {
-                b.set(getBookDetails(bookID));
+                return GoogleBooksInterface.getBookDetails(bookID);
             } catch (IOException | JSONException e) {
                 throw new RuntimeException(e);
             }
-            handler.post(() -> {
-                Uri uri = Uri.parse(b.get().getPoster());
-                titleView.setText(b.get().getTitle());
-                releaseDateView.setText(b.get().getDate_of_publishing());
-                authorView.setText(b.get().getAuthor());
-                overviewView.setText(b.get().getOverview());
-                genresView.setText(b.get().getGenres());
-                publisherView.setText(b.get().getPublisher());
-                isbnView.setText(b.get().getISBN());
-                pagesView.setText(String.valueOf(b.get().getPages()) + " pages");
-                scoreView.setText(String.valueOf(b.get().getScore()));
-                Picasso.get().load(uri).into(posterView);
-            });
         });
-        thisContent = db.checkContent(bookID);
-        if(thisContent != null){
-            isBookAddedView.setText("This book is currently on your profile marked as: " + thisContent.getStatus());
-            addBookButton.setText("Edit this Book");
-            userCurrentScore.setText(Integer.toString(thisContent.getScore()));
-            userCurrentReview.setText(thisContent.getReview());
-            addBookButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showEditDialog(thisContent);
+        Book b = future.get();
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Uri uri = Uri.parse(b.getPoster());
+            titleView.setText(b.getTitle());
+            releaseDateView.setText(b.getDate_of_publishing());
+            authorView.setText(b.getAuthor());
+            overviewView.setText(b.getOverview());
+            genresView.setText(b.getGenres());
+            publisherView.setText(b.getPublisher());
+            isbnView.setText(b.getISBN());
+            pagesView.setText(String.valueOf(b.getPages()) + " pages");
+            scoreView.setText(String.valueOf(b.getScore()));
+            Picasso.get().load(uri).into(posterView);
+        });
+        return b;
+    }
+
+    private ContentTag initContentTag(String bookID, Book b) throws ExecutionException, InterruptedException {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<ContentTag> future = executor.submit(() -> {
+            try {
+                ContentTag contentTag = new ContentTag(bookID, "book");
+                contentTag.setGenres(b.getGenresArray());
+                return contentTag;
+            } catch (IOException | JSONException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        ContentTag contentTag = future.get();
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (thisContent != null) {
+                thisContent.setTags(contentTag);
+            }
+        });
+        return contentTag;
+    }
+
+    private void showIfOnDB(String bookID, Book b){
+        isBookAddedView.setText("This book is currently on your profile marked as: " + thisContent.getStatus());
+        addBookButton.setText("Edit this Book");
+        userCurrentScore.setText(Integer.toString(thisContent.getScore()));
+        userCurrentReview.setText(thisContent.getReview());
+        addBookButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showEditDialog(thisContent);
+            }
+        });
+        toggleReviewHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(reviewLayout.getVisibility() == View.GONE) {
+                    reviewLayout.setVisibility(View.VISIBLE);
+                    infoLayout.setVisibility(View.GONE);
                 }
-            });
-            toggleReviewHeader.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(reviewLayout.getVisibility() == View.GONE) {
-                        reviewLayout.setVisibility(View.VISIBLE);
-                        infoLayout.setVisibility(View.GONE);
-                    }
-                    else reviewLayout.setVisibility(View.GONE);
-                }
-            });
-        }else{
+                else reviewLayout.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void showIfNotOnDB(Book b){
             isBookAddedView.setText("You can add this book to your profile.");
             addBookButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showAddDialog(b.get());
+                    showAddDialog(b);
                 }
             });
             if(toggleReviewHeader.getVisibility() == View.VISIBLE)
                 toggleReviewHeader.setVisibility(View.GONE);
-        }
     }
 
     private void showAddDialog(Book b) {

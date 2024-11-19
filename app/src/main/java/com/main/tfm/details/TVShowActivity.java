@@ -22,6 +22,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.main.tfm.R;
+import com.main.tfm.mediaAPIs.Movies_TVShows.Movie;
+import com.main.tfm.support.ContentTag;
 import com.main.tfm.support.database.UserDB;
 import com.main.tfm.support.ScoreInputFilter;
 import com.squareup.picasso.Picasso;
@@ -29,8 +31,10 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.main.tfm.mediaAPIs.Movies_TVShows.TMDBInterface;
@@ -43,7 +47,8 @@ public class TVShowActivity extends AppCompatActivity {
     TextView titleView, releaseDateView, castView, overviewView, genresView, studioView, seasonsView, episodesView, statusView, scoreView, isTVShowAddedView, toggleInfoHeader, toggleReviewHeader, userCurrentState, userCurrentScore, userCurrentReview;;
     ImageView posterView;
     AppCompatButton addTVShowButton;
-    UserContent thisContent;
+    UserContent thisContent = new UserContent();
+    ContentTag thisContentTags = new ContentTag();
     final UserDB db = new UserDB(this);
     boolean confirmDelete = true;
 
@@ -51,7 +56,7 @@ public class TVShowActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
         String tvshowID = intent.getStringExtra("id");
-        AtomicReference<TVShow> tv = new AtomicReference<>(new TVShow());
+        TVShow tv = new TVShow();
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tvshow);
@@ -60,6 +65,33 @@ public class TVShowActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        linkObjectToView();
+        thisContent = db.checkContent(tvshowID);
+        try {
+            tv = setMediaInfo(tvshowID);
+            thisContentTags = initContentTag(tvshowID, tv);
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        toggleInfoHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(infoLayout.getVisibility() == View.GONE) {
+                    infoLayout.setVisibility(View.VISIBLE);
+                    reviewLayout.setVisibility(View.GONE);
+                }
+                else infoLayout.setVisibility(View.GONE);
+            }
+        });
+
+        if(thisContent != null){
+            showIfOnDB(tvshowID, tv);
+        }else{
+            showIfNotOnDB(tv);
+        }
+    }
+
+    private void linkObjectToView(){
         infoLayout = findViewById(R.id.infoLayout);
         reviewLayout = findViewById(R.id.reviewLayout);
         titleView = findViewById(R.id.titleView);
@@ -80,71 +112,87 @@ public class TVShowActivity extends AppCompatActivity {
         userCurrentState = findViewById(R.id.userCurrentStateView);
         userCurrentScore = findViewById(R.id.userCurrentScoreView);
         userCurrentReview = findViewById(R.id.userCurrentReviewView);
-        toggleInfoHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(infoLayout.getVisibility() == View.GONE) {
-                    infoLayout.setVisibility(View.VISIBLE);
-                    reviewLayout.setVisibility(View.GONE);
-                }
-                else infoLayout.setVisibility(View.GONE);
-            }
-        });
+    }
+
+    private TVShow setMediaInfo(String tvShowID) throws ExecutionException, InterruptedException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> {
+        Future<TVShow> future = executor.submit(() -> {
             try {
-                tv.set(TMDBInterface.getTVShowDetails(tvshowID));
+                return TMDBInterface.getTVShowDetails(tvShowID);
             } catch (IOException | JSONException e) {
                 throw new RuntimeException(e);
             }
-            handler.post(() -> {
-                titleView.setText(tv.get().getTitle());
-                releaseDateView.setText(tv.get().getRelease_date());
-                castView.setText(tv.get().getCast());
-                overviewView.setText(tv.get().getOverview());
-                genresView.setText(tv.get().getGenres());
-                studioView.setText(tv.get().getStudios());
-                seasonsView.setText(tv.get().getNumber_of_seasons());
-                episodesView.setText(tv.get().getNumber_of_episodes());
-                statusView.setText(tv.get().getStatus());
-                scoreView.setText(String.valueOf(tv.get().getScore()));
-                Picasso.get().load(tv.get().getPoster()).into(posterView);
-            });
         });
-        thisContent = db.checkContent(tvshowID);
-        if(thisContent != null){
-            isTVShowAddedView.setText("This show is currently on your profile marked as: " + thisContent.getStatus());
-            addTVShowButton.setText("Edit this Show");
-            userCurrentScore.setText(Integer.toString(thisContent.getScore()));
-            userCurrentReview.setText(thisContent.getReview());
-            addTVShowButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showEditDialog(thisContent);
+        TVShow tv = future.get();
+        new Handler(Looper.getMainLooper()).post(() -> {
+            titleView.setText(tv.getTitle());
+            releaseDateView.setText(tv.getRelease_date());
+            castView.setText(tv.getCast());
+            overviewView.setText(tv.getOverview());
+            genresView.setText(tv.getGenres());
+            studioView.setText(tv.getStudios());
+            seasonsView.setText(tv.getNumber_of_seasons());
+            episodesView.setText(tv.getNumber_of_episodes());
+            statusView.setText(tv.getStatus());
+            scoreView.setText(String.valueOf(tv.getScore()));
+            Picasso.get().load(tv.getPoster()).into(posterView);
+        });
+        return tv;
+    }
+
+    private ContentTag initContentTag(String tvShowID, TVShow tv) throws ExecutionException, InterruptedException {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<ContentTag> future = executor.submit(() -> {
+            try {
+                ContentTag contentTag = new ContentTag(tvShowID, "tvshow");
+                contentTag.setGenres(tv.getGenresArray());
+                return contentTag;
+            } catch (IOException | JSONException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        ContentTag contentTag = future.get();
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (thisContent != null) {
+                thisContent.setTags(contentTag);
+            }
+        });
+        return contentTag;
+    }
+
+    private void showIfOnDB(String tvShowID, TVShow tv){
+        isTVShowAddedView.setText("This show is currently on your profile marked as: " + thisContent.getStatus());
+        addTVShowButton.setText("Edit this Show");
+        userCurrentScore.setText(Integer.toString(thisContent.getScore()));
+        userCurrentReview.setText(thisContent.getReview());
+        addTVShowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showEditDialog(thisContent);
+            }
+        });
+        toggleReviewHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(reviewLayout.getVisibility() == View.GONE) {
+                    reviewLayout.setVisibility(View.VISIBLE);
+                    infoLayout.setVisibility(View.GONE);
                 }
-            });
-            toggleReviewHeader.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(reviewLayout.getVisibility() == View.GONE) {
-                        reviewLayout.setVisibility(View.VISIBLE);
-                        infoLayout.setVisibility(View.GONE);
-                    }
-                    else reviewLayout.setVisibility(View.GONE);
-                }
-            });
-        }else{
-            isTVShowAddedView.setText("You can add this show to your profile.");
-            addTVShowButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showAddDialog(tv.get());
-                }
-            });
-            if(toggleReviewHeader.getVisibility() == View.VISIBLE)
-                toggleReviewHeader.setVisibility(View.GONE);
-        }
+                else reviewLayout.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void showIfNotOnDB(TVShow tv){
+        isTVShowAddedView.setText("You can add this show to your profile.");
+        addTVShowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddDialog(tv);
+            }
+        });
+        if(toggleReviewHeader.getVisibility() == View.VISIBLE)
+            toggleReviewHeader.setVisibility(View.GONE);
     }
 
     private void showAddDialog(TVShow tv) {
