@@ -356,6 +356,7 @@ public class UserDB extends DBHelper{
         values.put("name", item.getTitle());
         values.put("type", item.getType());
         values.put("userScore", item.getScore());
+        values.put("poster", item.getPoster());
         values.put("genres", item.getTags().getGenresAsString());
         values.put("tags", item.getTags().getTagsAsString("DB"));
         result = db.insert(USER_TAGS_TABLE, null, values);
@@ -382,7 +383,7 @@ public class UserDB extends DBHelper{
     public UserContent retrieveTagsReference(String id){
         UserContent result = new UserContent();
         ContentTag ct = new ContentTag();
-        String name, type;
+        String name, type, poster;
         ArrayList<String> genres, tags;
         int userScore;
         try{
@@ -394,10 +395,11 @@ public class UserDB extends DBHelper{
                 name = contentCursor.getString(1);
                 type = contentCursor.getString(2);
                 userScore = contentCursor.getInt(3);
-                genres = new ArrayList<>(toArrays(contentCursor.getString(4)));
-                tags = new ArrayList<>(toArrays(contentCursor.getString(5)));
+                poster = contentCursor.getString(4) ;
+                genres = new ArrayList<>(toArrays(contentCursor.getString(5)));
+                tags = new ArrayList<>(toArrays(contentCursor.getString(6)));
                 ct = new ContentTag(id, tags, genres, userScore);
-                result = new UserContent(id, name, type, userScore, ct);
+                result = new UserContent(id, name, type, userScore, poster, ct);
             }else return null;
             contentCursor.close();
         }catch (Exception ex){
@@ -411,6 +413,7 @@ public class UserDB extends DBHelper{
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("DELETE FROM " + USER_CONTENT_TABLE + ";");
         db.execSQL("DELETE FROM " + USER_GOAL_TABLE + ";");
+        db.execSQL("DELETE FROM " + USER_TAGS_TABLE + ";");
     }
 
     private ArrayList<String> toArrays(String text){
