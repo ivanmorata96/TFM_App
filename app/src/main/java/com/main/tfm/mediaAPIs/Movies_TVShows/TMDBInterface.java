@@ -351,6 +351,35 @@ public class TMDBInterface {
         return results;
     }
 
+    public static Movie getSingleMovieByTags(String tags) throws IOException, JSONException{
+        Movie result = new Movie();
+        URL url = new URL("https://api.themoviedb.org/3/discover/movie?api_key="+ APIKey +"&with_keywords=" + tags);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+        }
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+        StringBuilder sb = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            sb.append(output);
+        }
+        conn.disconnect();
+
+        JSONObject jsonResponse = new JSONObject(sb.toString());
+        JSONArray movies = jsonResponse.getJSONArray("results");
+        int randomIndex = (int) (Math.random()*movies.length());
+        JSONObject currentMovie = movies.getJSONObject(randomIndex);
+        result.setId(String.valueOf(currentMovie.getInt("id")));
+        result.setTitle(currentMovie.getString("title"));
+        result.setRelease_date(currentMovie.getString("release_date"));
+        result.setOverview(currentMovie.getString("overview"));
+        result.setPoster(arrangePoster(currentMovie));
+        return result;
+    }
+
     public static ArrayList<Content> searchTVShowsByTags(ArrayList<String> tagList) throws IOException, JSONException{
         ArrayList<Content> results = new ArrayList<>();
         String tags = formatTags(tagList);
@@ -382,6 +411,35 @@ public class TMDBInterface {
             results.add(show);
         }
         return results;
+    }
+
+    public static TVShow getSingleTVShowByTags(String tags) throws IOException, JSONException{
+        TVShow result = new TVShow();
+        URL url = new URL("https://api.themoviedb.org/3/discover/tv?api_key="+ APIKey +"&with_keywords=" + tags);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+        }
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+        StringBuilder sb = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            sb.append(output);
+        }
+        conn.disconnect();
+
+        JSONObject jsonResponse = new JSONObject(sb.toString());
+        JSONArray shows = jsonResponse.getJSONArray("results");
+        int randomIndex = (int) (Math.random()*shows.length());
+        JSONObject currentShow = shows.getJSONObject(randomIndex);
+        result.setId(String.valueOf(currentShow.getInt("id")));
+        result.setTitle(currentShow.getString("title"));
+        result.setRelease_date(currentShow.getString("release_date"));
+        result.setOverview(currentShow.getString("overview"));
+        result.setPoster(arrangePoster(currentShow));
+        return result;
     }
 
     private static String formatTags(ArrayList<String> tags){

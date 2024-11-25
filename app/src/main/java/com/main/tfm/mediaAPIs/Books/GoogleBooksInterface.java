@@ -219,6 +219,37 @@ public class GoogleBooksInterface {
         return results;
     }
 
+    public static Book getSingleBookByTags(String tag) throws IOException, JSONException{
+        tag = tag.replace(" ", "%20");
+        Book result = new Book();
+        URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=subject:" + tag + "&key=" + API_KEY);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+        }
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+        StringBuilder sb = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            sb.append(output);
+        }
+        conn.disconnect();
+
+        JSONObject jsonResponse = new JSONObject(sb.toString());
+        JSONArray books = jsonResponse.getJSONArray("items");
+        int randomIndex = (int) (Math.random()*books.length());
+        JSONObject currentBook = books.getJSONObject(randomIndex);
+        result.setId(currentBook.getString("id"));
+        result.setTitle(arrangeTitle(currentBook));
+        result.setAuthor(arrangeAuthors(currentBook));
+        result.setOverview(arrangeOverview(currentBook));
+        result.setDate_of_publishing(arrangeDoP(currentBook));
+        result.setPoster(arrangeCoverSearch(currentBook));
+        return result;
+    }
+
     public static ArrayList<String> getBookTags(String id) throws IOException, JSONException{
         ArrayList<String> result;
         URL url = new URL("https://www.googleapis.com/books/v1/volumes/" + id + "?key=" + API_KEY);
