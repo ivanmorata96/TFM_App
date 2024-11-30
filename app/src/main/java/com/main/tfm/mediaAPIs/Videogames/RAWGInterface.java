@@ -186,14 +186,13 @@ public class RAWGInterface {
         return result;
     }
 
-    public static ArrayList<Content> searchVideogamesByTags(String tags) throws IOException, JSONException{
-        tags = tags.replace(" ", "%20");
-        tags = tags.replace("+",",");
+    public static ArrayList<Content> searchVideogamesByTags(ArrayList<String> tags) throws IOException, JSONException{
+        String tagList = formatTags(tags);
         ArrayList<Content> result = new ArrayList<>();
         ArrayList<String> currentGamePlatforms;
         JSONObject jsonResponse, game, platformObject, platform;
         JSONArray games, platforms;
-        String busqueda = "https://api.rawg.io/api/games?key=" + API_KEY + "&tags=" + tags;
+        String busqueda = "https://api.rawg.io/api/games?key=" + API_KEY + "&tags=" + tagList;
         HttpURLConnection conn = (HttpURLConnection) new URL(busqueda).openConnection();
         conn.setRequestMethod("GET");
 
@@ -283,6 +282,16 @@ public class RAWGInterface {
             }
             result.setPlatforms(currentGamePlatforms);
         }
+        return result;
+    }
+
+    private static String formatTags(ArrayList<String> tags){
+        String result ="";
+        for(String t : tags){
+            result += (t + ",");
+        }
+        result = result.substring(0, result.length()-1);
+        result = result.replace(" ", "%20");
         return result;
     }
 }

@@ -408,6 +408,39 @@ public class UserDB extends DBHelper{
         return result;
     }
 
+    public ArrayList<String> retrieveUserTags(){
+        ArrayList<String> result = new ArrayList<>();
+        ArrayList<String> allTags = new ArrayList<>();
+        try {
+            DBHelper dbHelper = new DBHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor contentCursor;
+            contentCursor = db.rawQuery("SELECT * FROM " + USER_TAGS_TABLE , null);
+
+            if(contentCursor.moveToFirst()){
+                do{
+                    allTags.addAll(toArrays(contentCursor.getString(6)));
+                }while(contentCursor.moveToNext());
+            }
+            contentCursor.close();
+            for(int i = 0; i < allTags.size(); i++){
+                int contador = 0;
+                for(int j = i; j < allTags.size(); j++){
+                    if(allTags.get(j).equals(allTags.get(i)))
+                        contador++;
+                }
+                if(contador >= 2){
+                    result.add(allTags.get(i));
+                }else if(result.isEmpty()){
+                    result.add(allTags.get(i));
+                }
+            }
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }
+        return result;
+    }
+
     public void purgeDatabase(){
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();

@@ -185,10 +185,10 @@ public class GoogleBooksInterface {
         return result;
     }
 
-    public static ArrayList<Content> searchBooksByTag(String tag) throws IOException, JSONException{
-        tag = tag.replace(" ", "%20");
+    public static ArrayList<Content> searchBooksByTag(ArrayList<String> tags) throws IOException, JSONException{
+        String tagList = formatTags(tags);
         ArrayList<Content> results = new ArrayList<>();
-        URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=subject:" + tag + "&key=" + API_KEY);
+        URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=subject:" + tagList + "&key=" + API_KEY);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
@@ -269,6 +269,16 @@ public class GoogleBooksInterface {
 
         JSONObject bookJSON = new JSONObject(sb.toString());
         result = new ArrayList<>(arrangeGenre(bookJSON));
+        return result;
+    }
+
+    private static String formatTags(ArrayList<String> tags){
+        String result ="";
+        for(String t : tags){
+            result += (t + ",");
+        }
+        result = result.substring(0, result.length()-1);
+        result = result.replace(" ", "%20");
         return result;
     }
 }
