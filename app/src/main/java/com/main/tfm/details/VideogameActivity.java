@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -22,6 +23,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.main.tfm.R;
+import com.main.tfm.support.ContentTag;
 import com.main.tfm.support.database.UserDB;
 import com.main.tfm.support.ScoreInputFilter;
 import com.squareup.picasso.Picasso;
@@ -29,13 +31,16 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.main.tfm.support.UserContent;
-import com.main.tfm.APIAccess.Videogames.RAWGInterface;
-import com.main.tfm.APIAccess.Videogames.Videogame;
+import com.main.tfm.mediaAPIs.Videogames.RAWGInterface;
+import com.main.tfm.mediaAPIs.Videogames.Videogame;
 
 public class VideogameActivity extends AppCompatActivity {
 
@@ -43,7 +48,8 @@ public class VideogameActivity extends AppCompatActivity {
     TextView titleView, overviewView, releaseDateView, developersView, genresView, platformView, scoreView, isGameAddedView, toggleInfoHeader, toggleReviewHeader, userCurrentState, userCurrentScore, userCurrentReview;;
     ImageView posterView;
     AppCompatButton addGameButton;
-    UserContent thisContent;
+    UserContent thisContent = new UserContent();
+    ContentTag thisContentTags = new ContentTag();
     final UserDB db = new UserDB(this);
     boolean confirmDelete = true;
 
@@ -51,7 +57,7 @@ public class VideogameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
         String vgID = intent.getStringExtra("id");
-        AtomicReference<Videogame> vg = new AtomicReference<>(new Videogame());
+        Videogame vg;
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_videogame);
@@ -60,6 +66,33 @@ public class VideogameActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        linkObjectToView();
+        thisContent = db.checkContent(vgID);
+        try {
+            vg = setMediaInfo(vgID);
+            thisContentTags = initContentTag(vgID, vg);
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        toggleInfoHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(infoLayout.getVisibility() == View.GONE) {
+                    infoLayout.setVisibility(View.VISIBLE);
+                    reviewLayout.setVisibility(View.GONE);
+                }
+                else infoLayout.setVisibility(View.GONE);
+            }
+        });
+
+        if(thisContent != null){
+            showIfOnDB(vgID, vg);
+        }else{
+            showIfNotOnDB(vg);
+        }
+    }
+
+    private void linkObjectToView(){
         infoLayout = findViewById(R.id.infoLayout);
         reviewLayout = findViewById(R.id.reviewLayout);
         titleView = findViewById(R.id.titleView);
@@ -77,70 +110,82 @@ public class VideogameActivity extends AppCompatActivity {
         userCurrentState = findViewById(R.id.userCurrentStateView);
         userCurrentScore = findViewById(R.id.userCurrentScoreView);
         userCurrentReview = findViewById(R.id.userCurrentReviewView);
-        toggleInfoHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(infoLayout.getVisibility() == View.GONE) {
-                    infoLayout.setVisibility(View.VISIBLE);
-                    reviewLayout.setVisibility(View.GONE);
-                }
-                else infoLayout.setVisibility(View.GONE);
-            }
-        });
+    }
+    private Videogame setMediaInfo(String vgID) throws ExecutionException, InterruptedException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> {
+        Future<Videogame> future = executor.submit(() -> {
             try {
-                vg.set(RAWGInterface.getVideogameDetails(vgID));
+                return RAWGInterface.getVideogameDetails(vgID);
             } catch (IOException | JSONException e) {
                 throw new RuntimeException(e);
             }
-            handler.post(() -> {
-                titleView.setText(vg.get().getTitle());
-                releaseDateView.setText(vg.get().getRelease_date());
-                developersView.setText(vg.get().getDevelopers());
-                overviewView.setText(vg.get().getOverview());
-                genresView.setText(vg.get().getGenres());
-                platformView.setText(vg.get().getPlatforms());
-                scoreView.setText(String.valueOf(vg.get().getScore()));
-                Picasso.get().load(vg.get().getPoster()).into(posterView);
-            });
         });
-        thisContent = db.checkContent(vgID);
-        if(thisContent != null){
-            isGameAddedView.setText("This game is currently on your profile marked as: " + thisContent.getStatus());
-            addGameButton.setText("Edit this Game");
-            userCurrentScore.setText(Integer.toString(thisContent.getScore()));
-            userCurrentReview.setText(thisContent.getReview());
-            addGameButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showEditDialog(thisContent);
-                }
-            });
-            toggleReviewHeader.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(reviewLayout.getVisibility() == View.GONE) {
-                        reviewLayout.setVisibility(View.VISIBLE);
-                        infoLayout.setVisibility(View.GONE);
-                    }
-                    else reviewLayout.setVisibility(View.GONE);
-                }
-            });
-        }else{
-            isGameAddedView.setText("You can add this game to your profile.");
-            addGameButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showAddDialog(vg.get());
-                }
-            });
-            if(toggleReviewHeader.getVisibility() == View.VISIBLE)
-                toggleReviewHeader.setVisibility(View.GONE);
-        }
+        Videogame videogame = future.get();
+        new Handler(Looper.getMainLooper()).post(() -> {
+            titleView.setText(videogame.getTitle());
+            releaseDateView.setText(videogame.getRelease_date());
+            developersView.setText(videogame.getDevelopers());
+            overviewView.setText(videogame.getOverview());
+            genresView.setText(videogame.getGenres());
+            platformView.setText(videogame.getPlatforms());
+            scoreView.setText(String.valueOf(videogame.getScore()));
+            Picasso.get().load(videogame.getPoster()).into(posterView);
+        });
+        return videogame;
     }
 
+    private ContentTag initContentTag(String id, Videogame vg) throws ExecutionException, InterruptedException {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<ContentTag> future = executor.submit(() -> {
+            try {
+                ContentTag contentTag = new ContentTag(id, "videogame");
+                contentTag.setGenres(vg.getGenresArray());
+                return contentTag;
+            } catch (IOException | JSONException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        ContentTag contentTag = future.get();
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (thisContent != null) {
+                thisContent.setTags(contentTag);
+            }
+        });
+        return contentTag;
+    }
+    private void showIfOnDB(String vgID, Videogame vg){
+        isGameAddedView.setText("This game is currently on your profile marked as: " + thisContent.getStatus());
+        addGameButton.setText("Edit this Game");
+        userCurrentScore.setText(Integer.toString(thisContent.getScore()));
+        userCurrentReview.setText(thisContent.getReview());
+        addGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showEditDialog(thisContent);
+            }
+        });
+        toggleReviewHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(reviewLayout.getVisibility() == View.GONE) {
+                    reviewLayout.setVisibility(View.VISIBLE);
+                    infoLayout.setVisibility(View.GONE);
+                }
+                else reviewLayout.setVisibility(View.GONE);
+            }
+        });
+    }
+    private void showIfNotOnDB(Videogame vg){
+        isGameAddedView.setText("You can add this game to your profile.");
+        addGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddDialog(vg);
+            }
+        });
+        if(toggleReviewHeader.getVisibility() == View.VISIBLE)
+            toggleReviewHeader.setVisibility(View.GONE);
+    }
     private void showAddDialog(Videogame vg) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View dialogView;
@@ -156,14 +201,13 @@ public class VideogameActivity extends AppCompatActivity {
                     String category = categoryInput.getSelectedItem().toString();
                     int userScore = Integer.parseInt(scoreInput.getText().toString());
                     String userReview = reviewInput.getText().toString();
-                    thisContent = new UserContent(vg.getId(), vg.getTitle(), vg.getOverview(), vg.getPoster(), "videogame", userScore, userReview, category);
+                    thisContent = new UserContent(vg.getId(), vg.getTitle(), vg.getOverview(), vg.getPoster(), "videogame", userScore, userReview, category, thisContentTags);
                     db.addContent(thisContent);
                     recreate();
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
-
     private void showEditDialog(UserContent vg) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View dialogView;

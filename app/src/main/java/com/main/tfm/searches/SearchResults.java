@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.main.tfm.APIAccess.Books.GoogleBooksInterface;
+import com.main.tfm.mediaAPIs.Books.GoogleBooksInterface;
 import com.main.tfm.support.Content;
-import com.main.tfm.APIAccess.Movies_TVShows.TMDBInterface;
-import com.main.tfm.APIAccess.Videogames.RAWGInterface;
+import com.main.tfm.mediaAPIs.Movies_TVShows.TMDBInterface;
+import com.main.tfm.mediaAPIs.Videogames.RAWGInterface;
 
 public class SearchResults extends AppCompatActivity {
 

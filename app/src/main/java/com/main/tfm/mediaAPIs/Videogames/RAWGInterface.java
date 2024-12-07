@@ -1,12 +1,12 @@
-package com.main.tfm.APIAccess.Videogames;
+package com.main.tfm.mediaAPIs.Videogames;
+import android.util.Log;
+
 import com.main.tfm.support.Content;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -188,14 +188,13 @@ public class RAWGInterface {
         return result;
     }
 
-    public static ArrayList<Content> searchVideogamesByTags(String tags) throws IOException, JSONException{
-        tags = tags.replace(" ", "%20");
-        tags = tags.replace("+",",");
+    public static ArrayList<Content> searchVideogamesByTags(ArrayList<String> tags) throws IOException, JSONException{
+        String tagList = formatTags(tags);
         ArrayList<Content> result = new ArrayList<>();
         ArrayList<String> currentGamePlatforms;
         JSONObject jsonResponse, game, platformObject, platform;
         JSONArray games, platforms;
-        String busqueda = "https://api.rawg.io/api/games?key=" + API_KEY + "&tags=" + tags;
+        String busqueda = "https://api.rawg.io/api/games?key=" + API_KEY + "&tags=" + tagList;
         HttpURLConnection conn = (HttpURLConnection) new URL(busqueda).openConnection();
         conn.setRequestMethod("GET");
 
@@ -237,6 +236,64 @@ public class RAWGInterface {
                 result.add(v);
             }
         }
+        return result;
+    }
+
+    public static Videogame getSingleVideogameByTag(String tags) throws IOException, JSONException{
+        tags = tags.replace(" ", "%20");
+        tags = tags.replace("+",",");
+        Videogame result = new Videogame();
+        ArrayList<String> currentGamePlatforms;
+        JSONObject jsonResponse, game, platformObject, platform;
+        JSONArray games, platforms;
+        String busqueda = "https://api.rawg.io/api/games?key=" + API_KEY + "&tags=" + tags.toLowerCase();
+        HttpURLConnection conn = (HttpURLConnection) new URL(busqueda).openConnection();
+        conn.setRequestMethod("GET");
+        if (conn.getResponseCode() == 200) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            jsonResponse = new JSONObject(response.toString());
+            games = jsonResponse.getJSONArray("results");
+            int randomIndex = (int) (Math.random()*games.length());
+            game = games.getJSONObject(randomIndex);
+            result.setId(String.valueOf(game.getInt("id")));
+            result.setTitle(game.getString("name"));
+            result.setRelease_date(game.optString("released"));
+            result.setOverview(retrieveOverview(game.getInt("id")));
+            result.setPoster(game.optString("background_image"));
+            result.setScore(game.optInt("metacritic"));
+            currentGamePlatforms = new ArrayList<>();
+            platforms = game.optJSONArray("platforms");
+            if (platforms != null) {
+                for (int j = 0; j < platforms.length(); j++) {
+                    platformObject = platforms.optJSONObject(j);
+                    if (platformObject != null) {
+                        platform = platformObject.optJSONObject("platform");
+                        if (platform != null) {
+                            String platformName = platform.optString("name", "Unknown");
+                            currentGamePlatforms.add(platformName);
+                        }
+                    }
+                }
+            }
+            result.setPlatforms(currentGamePlatforms);
+        }
+        return result;
+    }
+
+    private static String formatTags(ArrayList<String> tags){
+        String result ="";
+        for(String t : tags){
+            result += (t + ",");
+        }
+        result = result.substring(0, result.length()-1);
+        result = result.replace(" ", "%20");
         return result;
     }
 }

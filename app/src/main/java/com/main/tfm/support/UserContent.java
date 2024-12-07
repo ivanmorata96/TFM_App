@@ -1,5 +1,7 @@
 package com.main.tfm.support;
 
+import android.util.Log;
+
 public class UserContent extends Content{
     private String type;
     private int score;
@@ -31,9 +33,10 @@ public class UserContent extends Content{
         this.tags = new ContentTag(tags);
     }
 
-    public UserContent(String id, String title, String type, int score, ContentTag contentTag){
+    public UserContent(String id, String title, String type, int score, String poster, ContentTag contentTag){
         this.setId(id);
         this.setTitle(title);
+        this.setPoster(poster);
         this.type = type;
         this.score = score;
         this.tags = new ContentTag(contentTag);
@@ -55,7 +58,10 @@ public class UserContent extends Content{
         this.type = other.type;
         this.score = other.score;
         this.review = other.review;
-        this.tags = new ContentTag(other.tags);
+        if(other.tags != null)
+        {
+            this.tags = new ContentTag(other.tags);
+        }
     }
 
     public String getType() {
@@ -100,11 +106,12 @@ public class UserContent extends Content{
 
     @Override
     public String toString() {
-        return super.toString() + "\nUserContent{" +
+        return "UserContent{" +
                 "type='" + type + '\'' +
                 ", score=" + score +
                 ", review='" + review + '\'' +
                 ", status='" + status + '\'' +
+                ", tags=" + tags.toString() +
                 '}';
     }
 }

@@ -1,4 +1,6 @@
-package com.main.tfm.APIAccess.Books;
+package com.main.tfm.mediaAPIs.Books;
+import android.util.Log;
+
 import com.main.tfm.support.Content;
 
 import java.io.BufferedReader;
@@ -185,10 +187,10 @@ public class GoogleBooksInterface {
         return result;
     }
 
-    public static ArrayList<Content> searchBooksByTag(String tag) throws IOException, JSONException{
-        tag = tag.replace(" ", "%20");
+    public static ArrayList<Content> searchBooksByTag(ArrayList<String> tags) throws IOException, JSONException{
+        String tagList = formatTags(tags);
         ArrayList<Content> results = new ArrayList<>();
-        URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=subject:" + tag + "&key=" + API_KEY);
+        URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=subject:" + tagList + "&key=" + API_KEY);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
@@ -217,5 +219,69 @@ public class GoogleBooksInterface {
             results.add(book);
         }
         return results;
+    }
+
+    public static Book getSingleBookByTags(String tag) throws IOException, JSONException{
+        tag = tag.replace("+", "+OR+");
+        Book result = new Book();
+        URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=subject:("+ tag +")&key=" + API_KEY);
+        Log.i("TBR", url.toString());
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+        }
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+        StringBuilder sb = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            sb.append(output);
+        }
+        conn.disconnect();
+
+        JSONObject jsonResponse = new JSONObject(sb.toString());
+        JSONArray books = jsonResponse.getJSONArray("items");
+        int randomIndex = (int) (Math.random()*books.length());
+        JSONObject currentBook = books.getJSONObject(randomIndex);
+        result.setId(currentBook.getString("id"));
+        result.setTitle(arrangeTitle(currentBook));
+        result.setAuthor(arrangeAuthors(currentBook));
+        result.setOverview(arrangeOverview(currentBook));
+        result.setDate_of_publishing(arrangeDoP(currentBook));
+        result.setPoster(arrangeCoverSearch(currentBook));
+        return result;
+    }
+
+    public static ArrayList<String> getBookTags(String id) throws IOException, JSONException{
+        ArrayList<String> result;
+        URL url = new URL("https://www.googleapis.com/books/v1/volumes/" + id + "?key=" + API_KEY);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + conn.getResponseCode());
+        }
+        BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+        StringBuilder sb = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            sb.append(output);
+        }
+        conn.disconnect();
+
+        JSONObject bookJSON = new JSONObject(sb.toString());
+        result = new ArrayList<>(arrangeGenre(bookJSON));
+        return result;
+    }
+
+    private static String formatTags(ArrayList<String> tags){
+        String result ="";
+        for(String t : tags){
+            result += (t + ",");
+        }
+        result = result.substring(0, result.length()-1);
+        result = result.replace(" ", "%20");
+        return result;
     }
 }

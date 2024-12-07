@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION =3;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "userData.db";
     public static final String USER_CONTENT_TABLE = "userContentList";
     public static final String USER_GOAL_TABLE = "userGoals";
@@ -45,6 +45,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "    name TEXT NOT NULL," +
                 "    type TEXT NOT NULL," +
                 "    userScore INTEGER," +
+                "    poster TEXT ," +
                 "    genres TEXT," +
                 "    tags TEXT" +
                 ");");
@@ -53,6 +54,8 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE " + USER_CONTENT_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE " + USER_GOAL_TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE " + USER_TAGS_TABLE);
         onCreate(sqLiteDatabase);
     }
 }

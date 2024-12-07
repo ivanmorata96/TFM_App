@@ -40,7 +40,6 @@ public class UserDB extends DBHelper{
         values.put("userReview", userReview);
         values.put("status", status);
         result = db.insert(USER_CONTENT_TABLE, null, values);
-        db.close();
         return result;
     }
 
@@ -55,8 +54,10 @@ public class UserDB extends DBHelper{
         values.put("userScore", item.getScore());
         values.put("userReview", item.getReview());
         values.put("status", item.getStatus());
+        if(item.getStatus().equals("Completed") && item.getScore() >= 7){
+            addContentToTagsReference(item);
+        }
         result = db.insert(USER_CONTENT_TABLE, null, values);
-        db.close();
         return result;
     }
 
@@ -69,8 +70,6 @@ public class UserDB extends DBHelper{
             updateOK=true;
         }catch (Exception ex){
             Log.i("BD", ex.toString());
-        }finally {
-            db.close();
         }
         return updateOK;
     }
@@ -141,6 +140,7 @@ public class UserDB extends DBHelper{
     public UserContent checkContent(String id){
         UserContent result = new UserContent();
         String name, poster, type, userReview, status;
+        ContentTag ct = new ContentTag();
         int userScore;
         try{
             DBHelper dbHelper = new DBHelper(context);
@@ -172,8 +172,6 @@ public class UserDB extends DBHelper{
             deleteOK=true;
         }catch (Exception ex){
             Log.i("BD", ex.toString());
-        }finally {
-            db.close();
         }
         return deleteOK;
     }
@@ -232,7 +230,6 @@ public class UserDB extends DBHelper{
         values.put("videogamesCompleted", 0);
         values.put("booksCompleted", 0);
         result = db.insert(USER_GOAL_TABLE, null, values);
-        db.close();
         return result;
     }
 
@@ -258,8 +255,6 @@ public class UserDB extends DBHelper{
             updateOK=true;
         }catch (Exception ex){
             Log.i("BD", ex.toString());
-        }finally {
-            db.close();
         }
         return updateOK;
     }
@@ -271,13 +266,11 @@ public class UserDB extends DBHelper{
         try{
             db.execSQL("UPDATE " + USER_GOAL_TABLE + " SET moviesTarget = " + movies + ", " +
                     "showsTarget = " + shows + ", " +
-                    "videogamesTarget = " + shows + ", " +
-                    "booksTarget = " + shows +
+                    "videogamesTarget = " + videogames + ", " +
+                    "booksTarget = " + books +
                     " WHERE year = '" + currentDate + "' ;");
         }catch (Exception ex){
             Log.i("BD", ex.toString());
-        }finally{
-            db.close();
         }
         return updateOK;
     }
@@ -363,10 +356,27 @@ public class UserDB extends DBHelper{
         values.put("name", item.getTitle());
         values.put("type", item.getType());
         values.put("userScore", item.getScore());
+        values.put("poster", item.getPoster());
         values.put("genres", item.getTags().getGenresAsString());
         values.put("tags", item.getTags().getTagsAsString("DB"));
-        result = db.insert(USER_CONTENT_TABLE, null, values);
-        db.close();
+        result = db.insert(USER_TAGS_TABLE, null, values);
+        return result;
+    }
+
+    public boolean checkIfUserHasTagCompatibleContent(){
+        boolean result = false;
+        try{
+            DBHelper dbHelper = new DBHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor contentCursor;
+            contentCursor = db.rawQuery("SELECT id FROM " + USER_TAGS_TABLE + " ORDER BY RANDOM() LIMIT 1;", null); //TODO
+            if(contentCursor.moveToFirst()){
+                result = true;
+            }
+            contentCursor.close();
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }
         return result;
     }
 
@@ -376,9 +386,9 @@ public class UserDB extends DBHelper{
             DBHelper dbHelper = new DBHelper(context);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             Cursor contentCursor;
-            contentCursor = db.rawQuery("", null); //TODO
+            contentCursor = db.rawQuery("SELECT id FROM " + USER_CONTENT_TABLE + " WHERE userScore >= 7 ORDER BY RANDOM() LIMIT 1;", null); //TODO
             if(contentCursor.moveToFirst()){
-
+                result = contentCursor.getString(0);
             }else return null;
             contentCursor.close();
         }catch (Exception ex){
@@ -389,8 +399,8 @@ public class UserDB extends DBHelper{
 
     public UserContent retrieveTagsReference(String id){
         UserContent result = new UserContent();
-        ContentTag ct = new ContentTag();
-        String name, type;
+        ContentTag ct;
+        String name, type, poster;
         ArrayList<String> genres, tags;
         int userScore;
         try{
@@ -402,10 +412,11 @@ public class UserDB extends DBHelper{
                 name = contentCursor.getString(1);
                 type = contentCursor.getString(2);
                 userScore = contentCursor.getInt(3);
-                genres = new ArrayList<>(toArrays(contentCursor.getString(4)));
-                tags = new ArrayList<>(toArrays(contentCursor.getString(5)));
+                poster = contentCursor.getString(4) ;
+                genres = new ArrayList<>(toArrays(contentCursor.getString(5)));
+                tags = new ArrayList<>(toArrays(contentCursor.getString(6)));
                 ct = new ContentTag(id, tags, genres, userScore);
-                result = new UserContent(id, name, type, userScore, ct);
+                result = new UserContent(id, name, type, userScore, poster, ct);
             }else return null;
             contentCursor.close();
         }catch (Exception ex){
@@ -414,11 +425,77 @@ public class UserDB extends DBHelper{
         return result;
     }
 
+    public ArrayList<String> retrieveUserTags(){
+        ArrayList<String> result = new ArrayList<>();
+        ArrayList<String> allTags = new ArrayList<>();
+        try {
+            DBHelper dbHelper = new DBHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor contentCursor;
+            contentCursor = db.rawQuery("SELECT * FROM " + USER_TAGS_TABLE , null);
+
+            if(contentCursor.moveToFirst()){
+                do{
+                    allTags.addAll(toArrays(contentCursor.getString(6)));
+                }while(contentCursor.moveToNext());
+            }
+            contentCursor.close();
+            for(int i = 0; i < allTags.size(); i++){
+                int contador = 0;
+                for(int j = i; j < allTags.size(); j++){
+                    if(allTags.get(j).equals(allTags.get(i)))
+                        contador++;
+                }
+                if(contador >= 2){
+                    result.add(allTags.get(i));
+                }else if(result.isEmpty()){
+                    result.add(allTags.get(i));
+                }
+            }
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }
+        return result;
+    }
+
+    public HashMap<String, Boolean> checkIfRecsAvailable(){
+        HashMap<String, Boolean> result = new HashMap<>();
+        result.put("movies", false);
+        result.put("tvshows", false);
+        result.put("videogames", false);
+        result.put("books", false);
+        DBHelper dbHelper = new DBHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor contentCursor;
+        contentCursor = db.rawQuery("SELECT * FROM " + USER_TAGS_TABLE + ";", null);
+        if(contentCursor.moveToFirst()){
+            do{
+                switch(contentCursor.getString(2)){
+                    case "movie":
+                        result.replace("movies", true);
+                        break;
+                    case "tvshow":
+                        result.replace("tvshows", true);
+                        break;
+                    case "videogame":
+                        result.replace("videogames", true);
+                        break;
+                    case "book":
+                        result.replace("books", true);
+                        break;
+                }
+            }while(contentCursor.moveToNext());
+        }
+        contentCursor.close();
+        return result;
+    }
+
     public void purgeDatabase(){
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("DELETE FROM " + USER_CONTENT_TABLE + ";");
         db.execSQL("DELETE FROM " + USER_GOAL_TABLE + ";");
+        db.execSQL("DELETE FROM " + USER_TAGS_TABLE + ";");
     }
 
     private ArrayList<String> toArrays(String text){

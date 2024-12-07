@@ -1,4 +1,4 @@
-package com.main.tfm.APIAccess.Movies_TVShows;
+package com.main.tfm.mediaAPIs.Movies_TVShows;
 import com.main.tfm.support.Content;
 
 import java.util.ArrayList;
@@ -40,7 +40,8 @@ public class TVShow extends Content {
         this.number_of_seasons = other.number_of_seasons;
         this.cast = new ArrayList<>(other.cast);
         this.studios = new ArrayList<>(other.studios);
-        this.genres = new ArrayList<>(other.genres);
+        if(other.genres != null)
+            this.genres = new ArrayList<>(other.genres);
         this.status = other.status;
         this.score = other.score;
     }

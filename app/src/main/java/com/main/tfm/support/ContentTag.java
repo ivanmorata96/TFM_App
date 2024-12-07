@@ -1,5 +1,14 @@
 package com.main.tfm.support;
 
+import android.util.Log;
+
+import com.main.tfm.mediaAPIs.Books.GoogleBooksInterface;
+import com.main.tfm.mediaAPIs.Movies_TVShows.TMDBInterface;
+import com.main.tfm.mediaAPIs.Videogames.RAWGInterface;
+
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ContentTag {
@@ -19,13 +28,35 @@ public class ContentTag {
         fillRelevantTags();
     }
 
+    public ContentTag(String id, String type) throws JSONException, IOException {
+        this.id = id;
+        switch(type){
+            case "movie":
+                this.tags = new ArrayList<>(TMDBInterface.getTMDBTagsString(id, 1));
+                break;
+            case "tvshow":
+                this.tags = new ArrayList<>(TMDBInterface.getTMDBTagsString(id, 2));
+                break;
+            case "videogame":
+                this.tags = new ArrayList<>(RAWGInterface.getVideogameTags(id));
+                break;
+            case "book":
+                this.tags = new ArrayList<>(GoogleBooksInterface.getBookTags(id));
+                break;
+            default:
+                this.tags = new ArrayList<>();
+        }
+        this.genres = new ArrayList<>();
+        this.userScore = -1;
+    }
+
     public ContentTag(String id, ArrayList<String> tags, ArrayList<String> genres, int userScore) {
+        fillRelevantTags();
         this.id = id;
         this.tags = new ArrayList<>(tags);
         sortTags();
         this.genres = new ArrayList<>(genres);
         this.userScore = userScore;
-        fillRelevantTags();
     }
 
     public ContentTag(ContentTag other){
@@ -50,17 +81,19 @@ public class ContentTag {
 
     public String getTagsAsString(String type){
         String result = "";
-        if(type.equals("book") || type.equals("videogame")){
-            for (String t : genres) {
-                result += (t + "+");
+        if (!tags.isEmpty()) {
+            if (type.equals("book") || type.equals("videogame")) {
+                for (String t : genres) {
+                    result += (t + "+");
+                }
+            } else {
+                for (String t : tags) {
+                    result += (t + ",");
+                }
             }
-        }else{
-            for(String t : tags){
-                result += (t + ",");
-            }
+            result = result.substring(0, result.length() - 1);
+            result = result.replace(" ", "%20");
         }
-        result = result.substring(0, result.length()-1);
-        result = result.replace(" ", "%20");
         return result;
     }
 
@@ -93,15 +126,33 @@ public class ContentTag {
         this.userScore = userScore;
     }
 
-    private static void fillRelevantTags(){
-        relevantTags.add("Fantasy");
-        relevantTags.add("Science Fiction");
+    private static void fillRelevantTags(){ //Los números son las ID para las API de TMDB
+        relevantTags.add("fantasy");
+        relevantTags.add("293198");
+        relevantTags.add("science ciction");
+        relevantTags.add("281358");
         relevantTags.add("Horror");
-        relevantTags.add("Comedy");
-        relevantTags.add("Drama");
-        relevantTags.add("Romance");
-        relevantTags.add("Mystery");
-        relevantTags.add("Thriller");
+        relevantTags.add("315058");
+        relevantTags.add("comedy");
+        relevantTags.add("322268");
+        relevantTags.add("drama");
+        relevantTags.add("316421");
+        relevantTags.add("romance");
+        relevantTags.add("9840");
+        relevantTags.add("mystery");
+        relevantTags.add("316332");
+        relevantTags.add("thriller");
+        relevantTags.add("316362");
+        relevantTags.add("epic");
+        relevantTags.add("6917");
+        relevantTags.add("historical");
+        relevantTags.add("15126");
+        relevantTags.add("history");
+        relevantTags.add("282633");
+        relevantTags.add("historical fiction");
+        relevantTags.add("12995");
+        relevantTags.add("revenge");
+        relevantTags.add("9748");
     }
 
     private void sortTags(){
@@ -110,7 +161,6 @@ public class ContentTag {
             if(relevantTags.contains(t))
                 sortedTags.add(t);
         }
-        tags.removeAll(sortedTags);
         tags = new ArrayList<>(sortedTags);
     }
 
