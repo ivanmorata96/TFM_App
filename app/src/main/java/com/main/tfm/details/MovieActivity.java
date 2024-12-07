@@ -211,7 +211,7 @@ public class MovieActivity extends AppCompatActivity {
                     String category = categoryInput.getSelectedItem().toString();
                     int userScore = Integer.parseInt(scoreInput.getText().toString());
                     String userReview = reviewInput.getText().toString();
-                    thisContent = new UserContent(m.getId(), m.getTitle(), m.getOverview(), m.getPoster(), "movie", userScore, userReview, category);
+                    thisContent = new UserContent(m.getId(), m.getTitle(), m.getOverview(), m.getPoster(), "movie", userScore, userReview, category, thisContentTags);
                     db.addContent(thisContent);
                     recreate();
                 })

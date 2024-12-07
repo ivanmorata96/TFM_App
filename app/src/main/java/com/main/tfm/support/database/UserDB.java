@@ -363,13 +363,30 @@ public class UserDB extends DBHelper{
         return result;
     }
 
+    public boolean checkIfUserHasTagCompatibleContent(){
+        boolean result = false;
+        try{
+            DBHelper dbHelper = new DBHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor contentCursor;
+            contentCursor = db.rawQuery("SELECT id FROM " + USER_TAGS_TABLE + " ORDER BY RANDOM() LIMIT 1;", null); //TODO
+            if(contentCursor.moveToFirst()){
+                result = true;
+            }
+            contentCursor.close();
+        }catch (Exception ex){
+            Log.i("BD", ex.toString());
+        }
+        return result;
+    }
+
     public String retrieveRatedIDForTags(){
         String result = "";
         try{
             DBHelper dbHelper = new DBHelper(context);
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             Cursor contentCursor;
-            contentCursor = db.rawQuery("SELECT id FROM " + USER_TAGS_TABLE + " WHERE userScore >= 7 ORDER BY RANDOM() LIMIT 1;", null); //TODO
+            contentCursor = db.rawQuery("SELECT id FROM " + USER_CONTENT_TABLE + " WHERE userScore >= 7 ORDER BY RANDOM() LIMIT 1;", null); //TODO
             if(contentCursor.moveToFirst()){
                 result = contentCursor.getString(0);
             }else return null;
@@ -382,7 +399,7 @@ public class UserDB extends DBHelper{
 
     public UserContent retrieveTagsReference(String id){
         UserContent result = new UserContent();
-        ContentTag ct = new ContentTag();
+        ContentTag ct;
         String name, type, poster;
         ArrayList<String> genres, tags;
         int userScore;
@@ -438,6 +455,38 @@ public class UserDB extends DBHelper{
         }catch (Exception ex){
             Log.i("BD", ex.toString());
         }
+        return result;
+    }
+
+    public HashMap<String, Boolean> checkIfRecsAvailable(){
+        HashMap<String, Boolean> result = new HashMap<>();
+        result.put("movies", false);
+        result.put("tvshows", false);
+        result.put("videogames", false);
+        result.put("books", false);
+        DBHelper dbHelper = new DBHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor contentCursor;
+        contentCursor = db.rawQuery("SELECT * FROM " + USER_TAGS_TABLE + ";", null);
+        if(contentCursor.moveToFirst()){
+            do{
+                switch(contentCursor.getString(2)){
+                    case "movie":
+                        result.replace("movies", true);
+                        break;
+                    case "tvshow":
+                        result.replace("tvshows", true);
+                        break;
+                    case "videogame":
+                        result.replace("videogames", true);
+                        break;
+                    case "book":
+                        result.replace("books", true);
+                        break;
+                }
+            }while(contentCursor.moveToNext());
+        }
+        contentCursor.close();
         return result;
     }
 

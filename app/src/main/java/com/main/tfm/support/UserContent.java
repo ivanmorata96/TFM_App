@@ -1,5 +1,7 @@
 package com.main.tfm.support;
 
+import android.util.Log;
+
 public class UserContent extends Content{
     private String type;
     private int score;
@@ -57,7 +59,9 @@ public class UserContent extends Content{
         this.score = other.score;
         this.review = other.review;
         if(other.tags != null)
+        {
             this.tags = new ContentTag(other.tags);
+        }
     }
 
     public String getType() {
@@ -102,11 +106,12 @@ public class UserContent extends Content{
 
     @Override
     public String toString() {
-        return super.toString() + "\nUserContent{" +
+        return "UserContent{" +
                 "type='" + type + '\'' +
                 ", score=" + score +
                 ", review='" + review + '\'' +
                 ", status='" + status + '\'' +
+                ", tags=" + tags.toString() +
                 '}';
     }
 }

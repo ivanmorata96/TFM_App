@@ -1,4 +1,6 @@
 package com.main.tfm.mediaAPIs.Movies_TVShows;
+import android.util.Log;
+
 import com.main.tfm.support.Content;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -285,7 +287,7 @@ public class TMDBInterface {
         }
         for(int i = 0; i < tagList.length(); i++){
             JSONObject currentTag = tagList.getJSONObject(i);
-            result.add(currentTag.optString("name"));
+            result.add(String.valueOf(currentTag.optString("id")));
         }
         return result;
     }
@@ -353,7 +355,7 @@ public class TMDBInterface {
 
     public static Movie getSingleMovieByTags(String tags) throws IOException, JSONException{
         Movie result = new Movie();
-        URL url = new URL("https://api.themoviedb.org/3/discover/movie?api_key="+ APIKey +"&with_keywords=" + tags);
+        URL url = new URL("https://api.themoviedb.org/3/discover/movie?api_key="+ APIKey +"&with_keywords=" + tags); //hay que trabajar con las IDs de las tags, no con las propias tags...
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
@@ -367,7 +369,6 @@ public class TMDBInterface {
             sb.append(output);
         }
         conn.disconnect();
-
         JSONObject jsonResponse = new JSONObject(sb.toString());
         JSONArray movies = jsonResponse.getJSONArray("results");
         int randomIndex = (int) (Math.random()*movies.length());
@@ -435,8 +436,8 @@ public class TMDBInterface {
         int randomIndex = (int) (Math.random()*shows.length());
         JSONObject currentShow = shows.getJSONObject(randomIndex);
         result.setId(String.valueOf(currentShow.getInt("id")));
-        result.setTitle(currentShow.getString("title"));
-        result.setRelease_date(currentShow.getString("release_date"));
+        result.setTitle(currentShow.getString("name"));
+        result.setRelease_date(currentShow.getString("first_air_date"));
         result.setOverview(currentShow.getString("overview"));
         result.setPoster(arrangePoster(currentShow));
         return result;

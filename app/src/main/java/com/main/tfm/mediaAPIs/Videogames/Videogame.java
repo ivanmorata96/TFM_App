@@ -30,8 +30,10 @@ public class Videogame extends Content {
         super(other);
         this.release_date = other.release_date;
         this.platforms = new ArrayList<>(other.platforms);
-        this.developers = new ArrayList<>(other.developers);
-        this.genres = new ArrayList<>(other.genres);
+        if(other.developers != null)
+            this.developers = new ArrayList<>(other.developers);
+        if(other.genres != null)
+            this.genres = new ArrayList<>(other.genres);
         this.score = other.score;
     }
 

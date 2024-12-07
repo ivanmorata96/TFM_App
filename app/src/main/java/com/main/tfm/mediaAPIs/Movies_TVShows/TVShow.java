@@ -40,7 +40,8 @@ public class TVShow extends Content {
         this.number_of_seasons = other.number_of_seasons;
         this.cast = new ArrayList<>(other.cast);
         this.studios = new ArrayList<>(other.studios);
-        this.genres = new ArrayList<>(other.genres);
+        if(other.genres != null)
+            this.genres = new ArrayList<>(other.genres);
         this.status = other.status;
         this.score = other.score;
     }

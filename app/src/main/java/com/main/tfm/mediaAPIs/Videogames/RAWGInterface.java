@@ -1,4 +1,6 @@
 package com.main.tfm.mediaAPIs.Videogames;
+import android.util.Log;
+
 import com.main.tfm.support.Content;
 
 import java.io.BufferedReader;
@@ -244,7 +246,7 @@ public class RAWGInterface {
         ArrayList<String> currentGamePlatforms;
         JSONObject jsonResponse, game, platformObject, platform;
         JSONArray games, platforms;
-        String busqueda = "https://api.rawg.io/api/games?key=" + API_KEY + "&tags=" + tags;
+        String busqueda = "https://api.rawg.io/api/games?key=" + API_KEY + "&tags=" + tags.toLowerCase();
         HttpURLConnection conn = (HttpURLConnection) new URL(busqueda).openConnection();
         conn.setRequestMethod("GET");
         if (conn.getResponseCode() == 200) {

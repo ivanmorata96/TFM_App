@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +35,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,8 +47,8 @@ public class SearchFragment extends Fragment {
     TextView recsTextView, rec1TextView, rec2TextView, rec3TextView, rec4TextView, recsLinkTextView;
     ImageView rec1ImageView, rec2ImageView, rec3ImageView, rec4ImageView;
     Spinner spinner;
+    ConstraintLayout recsConstraintLayout;
     UserDB db;
-
 
     public SearchFragment() {
 
@@ -78,18 +81,24 @@ public class SearchFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        try {
-            loadRecommendations();
-        } catch (JSONException | IOException | ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        recsLinkTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Recommendations_Activity.class);
-                startActivity(intent);
+        if(db.checkIfUserHasTagCompatibleContent()){
+            recsConstraintLayout.setVisibility(View.VISIBLE);
+            try {
+                loadRecommendations();
+            } catch (JSONException | IOException | ExecutionException | InterruptedException e) {
+                throw new RuntimeException(e);
             }
-        });
+            recsLinkTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), Recommendations_Activity.class);
+                    startActivity(intent);
+                }
+            });
+        }else{
+            recsConstraintLayout.setVisibility(View.GONE);
+        }
+
         return view;
     }
 
@@ -97,6 +106,7 @@ public class SearchFragment extends Fragment {
         searchButton = view.findViewById(R.id.searchButton);
         searchQuery = view.findViewById(R.id.searchET);
         spinner = view.findViewById(R.id.searchOptions);
+        recsConstraintLayout = view.findViewById(R.id.recsConstraintLayout);
         recsTextView = view.findViewById(R.id.recsTextView);
         rec1TextView = view.findViewById(R.id.recTextView1);
         rec2TextView = view.findViewById(R.id.recTextView2);
@@ -113,7 +123,6 @@ public class SearchFragment extends Fragment {
         ExecutorService executor = Executors.newFixedThreadPool(4);
         String recommendID = db.retrieveRatedIDForTags();
         UserContent referencedMedia = new UserContent(db.retrieveTagsReference(recommendID));
-
         Future<Movie> movieFuture = executor.submit(() -> {
             String movieTags = referencedMedia.getTags().getTagsAsString("movie");
             return new Movie(TMDBInterface.getSingleMovieByTags(movieTags));
