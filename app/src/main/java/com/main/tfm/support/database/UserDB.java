@@ -464,13 +464,15 @@ public class UserDB extends DBHelper{
                     }catch (NumberFormatException e){
                         result.put(allTags.get(i), ContentTag.returnTMDBTagID(allTags.get(i)));
                     }
-                }else if(result.isEmpty()){
-                    try{
-                        int id = Integer.parseInt(allTags.get(i));
-                        result.put(ContentTag.returnTMDBTagName(allTags.get(i)), allTags.get(i));
-                    }catch (NumberFormatException e){
-                        result.put(allTags.get(i), ContentTag.returnTMDBTagID(allTags.get(i)));
-                    }
+                }
+            }
+            if(result.isEmpty()){
+                int randomIndex = (int) (Math.random()*allTags.size());
+                try{
+                    int id = Integer.parseInt(allTags.get(randomIndex));
+                    result.put(ContentTag.returnTMDBTagName(allTags.get(randomIndex)), allTags.get(randomIndex));
+                }catch (NumberFormatException e){
+                    result.put(allTags.get(randomIndex), ContentTag.returnTMDBTagID(allTags.get(randomIndex)));
                 }
             }
         }catch (Exception ex){
