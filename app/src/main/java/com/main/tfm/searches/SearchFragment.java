@@ -20,6 +20,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.main.tfm.R;
+import com.main.tfm.details.BooksActivity;
+import com.main.tfm.details.MovieActivity;
+import com.main.tfm.details.TVShowActivity;
+import com.main.tfm.details.VideogameActivity;
 import com.main.tfm.mediaAPIs.Books.Book;
 import com.main.tfm.mediaAPIs.Books.GoogleBooksInterface;
 import com.main.tfm.mediaAPIs.Movies_TVShows.Movie;
@@ -82,6 +86,7 @@ public class SearchFragment extends Fragment {
             }
         });
         if(db.checkIfUserHasTagCompatibleContent()){
+            Log.i("TBR", "Estamos mostrando, prometido.");
             recsConstraintLayout.setVisibility(View.VISIBLE);
             try {
                 loadRecommendations();
@@ -123,6 +128,7 @@ public class SearchFragment extends Fragment {
         ExecutorService executor = Executors.newFixedThreadPool(4);
         String recommendID = db.retrieveRatedIDForTags();
         UserContent referencedMedia = new UserContent(db.retrieveTagsReference(recommendID));
+        recsTextView.setText("If you enjoyed " + referencedMedia.getTitle() + " then you may enjoy: ");
         Future<Movie> movieFuture = executor.submit(() -> {
             String movieTags = referencedMedia.getTags().getTagsAsString("movie");
             return new Movie(TMDBInterface.getSingleMovieByTags(movieTags));
@@ -139,25 +145,60 @@ public class SearchFragment extends Fragment {
             String bookTags = referencedMedia.getTags().getTagsAsString("book");
             return new Book(GoogleBooksInterface.getSingleBookByTags(bookTags));
         });
-
         Movie recommendedMovie = movieFuture.get();
         TVShow recommendedTVShow = tvShowFuture.get();
         Videogame recommendedVideogame = videogameFuture.get();
         Book recommendedBook = bookFuture.get();
         new Handler(Looper.getMainLooper()).post(() -> {
-            try {
-                rec1TextView.setText(recommendedMovie.getTitle());
-                Picasso.get().load(recommendedMovie.getPoster()).into(rec1ImageView);
-                rec2TextView.setText(recommendedTVShow.getTitle());
-                Picasso.get().load(recommendedTVShow.getPoster()).into(rec2ImageView);
-                rec3TextView.setText(recommendedVideogame.getTitle());
-                Picasso.get().load(recommendedVideogame.getPoster()).into(rec3ImageView);
-                rec4TextView.setText(recommendedBook.getTitle());
-                Picasso.get().load(recommendedBook.getPoster()).into(rec4ImageView);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            setUpRecommendations(recommendedMovie, recommendedTVShow, recommendedVideogame, recommendedBook);
         });
         executor.shutdown();
+    }
+
+    private void setUpRecommendations(Movie recommendedMovie, TVShow recommendedTVShow, Videogame recommendedVideogame, Book recommendedBook){
+        try {
+            rec1TextView.setText(recommendedMovie.getTitle());
+            Picasso.get().load(recommendedMovie.getPoster()).into(rec1ImageView);
+            rec1ImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), MovieActivity.class);
+                    intent.putExtra("id", recommendedMovie.getId());
+                    startActivity(intent);
+                }
+            });
+            rec2TextView.setText(recommendedTVShow.getTitle());
+            Picasso.get().load(recommendedTVShow.getPoster()).into(rec2ImageView);
+            rec2ImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), TVShowActivity.class);
+                    intent.putExtra("id", recommendedTVShow.getId());
+                    startActivity(intent);
+                }
+            });
+            rec3TextView.setText(recommendedVideogame.getTitle());
+            Picasso.get().load(recommendedVideogame.getPoster()).into(rec3ImageView);
+            rec3ImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), VideogameActivity.class);
+                    intent.putExtra("id", recommendedVideogame.getId());
+                    startActivity(intent);
+                }
+            });
+            rec4TextView.setText(recommendedBook.getTitle());
+            Picasso.get().load(recommendedBook.getPoster()).into(rec4ImageView);
+            rec4ImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), BooksActivity.class);
+                    intent.putExtra("id", recommendedBook.getId());
+                    startActivity(intent);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

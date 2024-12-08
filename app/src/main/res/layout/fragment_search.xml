@@ -6,182 +6,203 @@
     android:layout_height="match_parent"
     tools:context=".searches.SearchFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/searchLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Search the hobby databases!"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/searchET"
-            app:layout_constraintVertical_chainStyle="packed"
-            />
-
-        <EditText
-            android:id="@+id/searchET"
-            android:layout_width="0dp"
-            android:layout_height="72dp"
-            android:hint=""
-            android:textAlignment="center"
-            android:padding="12dp"
-            android:inputType="text"
-            app:layout_constraintTop_toBottomOf="@id/searchLabel"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/searchOptions"
-            app:layout_constraintWidth_default="spread" />
-
-        <Spinner
-            android:id="@+id/searchOptions"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:background="@android:color/holo_green_light"
-            android:textColor="@android:color/white"
-            android:textAlignment="center"
-            app:layout_constraintTop_toBottomOf="@id/searchET"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/searchRecsGuideline"
-            app:layout_constraintVertical_bias="0.1"
-            app:layout_constraintWidth_default="spread" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/searchButton"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:background="@android:color/holo_green_dark"
-            android:text="Search"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toTopOf="@id/searchRecsGuideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchOptions"
-            app:layout_constraintVertical_bias="0.1" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/searchRecsGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="433dp" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/recsConstraintLayout"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/searchRecsGuideline"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/recsTextView"
+                android:id="@+id/searchLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="Search the hobby databases!"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@id/searchET"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/recPoster2"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <EditText
+                android:id="@+id/searchET"
+                android:layout_width="0dp"
+                android:layout_height="72dp"
+                android:hint=""
+                android:inputType="text"
+                android:padding="12dp"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toTopOf="@id/searchOptions"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@id/searchLabel"
+                app:layout_constraintWidth_default="spread" />
 
-            <ImageView
-                android:id="@+id/recPoster1"
-                android:layout_width="88dp"
-                android:layout_height="113dp"
-                android:src="@drawable/placeholder"
-                app:layout_constraintTop_toBottomOf="@id/recsTextView"
-                app:layout_constraintBottom_toTopOf="@id/recTextView1"
+            <Spinner
+                android:id="@+id/searchOptions"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:background="@android:color/holo_green_light"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                app:layout_constraintBottom_toTopOf="@id/searchRecsGuideline"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/recPoster2" />
+                app:layout_constraintTop_toBottomOf="@id/searchET"
+                app:layout_constraintVertical_bias="0.1"
+                app:layout_constraintWidth_default="spread" />
 
-            <ImageView
-                android:id="@+id/recPoster2"
-                android:layout_width="88dp"
-                android:layout_height="113dp"
-                android:src="@drawable/placeholder"
-                app:layout_constraintTop_toBottomOf="@id/recsTextView"
-                app:layout_constraintBottom_toTopOf="@id/recTextView2"
-                app:layout_constraintStart_toEndOf="@id/recPoster1"
-                app:layout_constraintEnd_toStartOf="@id/recPoster3" />
-
-            <ImageView
-                android:id="@+id/recPoster3"
-                android:layout_width="88dp"
-                android:layout_height="113dp"
-                android:src="@drawable/placeholder"
-                app:layout_constraintTop_toBottomOf="@id/recsTextView"
-                app:layout_constraintBottom_toTopOf="@id/recTextView3"
-                app:layout_constraintStart_toEndOf="@id/recPoster2"
-                app:layout_constraintEnd_toStartOf="@id/recPoster4"/>
-
-            <ImageView
-                android:id="@+id/recPoster4"
-                android:layout_width="88dp"
-                android:layout_height="113dp"
-                android:src="@drawable/placeholder"
-                app:layout_constraintTop_toBottomOf="@id/recsTextView"
-                app:layout_constraintBottom_toTopOf="@id/recTextView4"
-                app:layout_constraintStart_toEndOf="@id/recPoster3"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-            <TextView
-                android:id="@+id/recTextView1"
-                android:layout_width="wrap_content"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/searchButton"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text=""
-                app:layout_constraintTop_toBottomOf="@id/recPoster1"
-                app:layout_constraintBottom_toTopOf="@id/recsLinkTextView"
+                android:background="@android:color/holo_green_dark"
+                android:text="Search"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toTopOf="@id/searchRecsGuideline"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/recTextView2"/>
+                app:layout_constraintTop_toBottomOf="@id/searchOptions"
+                app:layout_constraintVertical_bias="0.1" />
 
-            <TextView
-                android:id="@+id/recTextView2"
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/searchRecsGuideline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
-                app:layout_constraintTop_toBottomOf="@id/recPoster2"
-                app:layout_constraintBottom_toTopOf="@id/recsLinkTextView"
-                app:layout_constraintStart_toEndOf="@id/recTextView1"
-                app:layout_constraintEnd_toStartOf="@id/recTextView3"/>
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="399dp" />
 
-            <TextView
-                android:id="@+id/recTextView3"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/recsConstraintLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                app:layout_constraintTop_toBottomOf="@id/recPoster3"
-                app:layout_constraintBottom_toTopOf="@id/recsLinkTextView"
-                app:layout_constraintStart_toEndOf="@id/recTextView2"
-                app:layout_constraintEnd_toStartOf="@id/recTextView4"/>
-
-            <TextView
-                android:id="@+id/recTextView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                app:layout_constraintTop_toBottomOf="@id/recPoster4"
-                app:layout_constraintBottom_toTopOf="@id/recsLinkTextView"
-                app:layout_constraintStart_toEndOf="@id/recTextView3"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-            <TextView
-                android:id="@+id/recsLinkTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Click here to get more customized recommendations!"
-                app:layout_constraintTop_toBottomOf="@id/recTextView2"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/searchRecsGuideline">
+
+                <!-- TODO -> Pendiente alinear los IV para que cuando el texto sea muy largo no se desajusten -->
+
+                <TextView
+                    android:id="@+id/recsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/recPoster2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/recPoster1"
+                    android:layout_width="88dp"
+                    android:layout_height="113dp"
+                    android:src="@drawable/placeholder"
+                    android:scaleType="centerCrop"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintBottom_toTopOf="@id/recTextView1"
+                    app:layout_constraintEnd_toStartOf="@id/recPoster2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/recsTextView" />
+
+                <ImageView
+                    android:id="@+id/recPoster2"
+                    android:layout_width="88dp"
+                    android:layout_height="113dp"
+                    android:src="@drawable/placeholder"
+                    android:scaleType="centerCrop"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintBottom_toTopOf="@id/recTextView2"
+                    app:layout_constraintEnd_toStartOf="@id/recPoster3"
+                    app:layout_constraintStart_toEndOf="@id/recPoster1"
+                    app:layout_constraintTop_toBottomOf="@id/recsTextView" />
+
+                <ImageView
+                    android:id="@+id/recPoster3"
+                    android:layout_width="88dp"
+                    android:layout_height="113dp"
+                    android:src="@drawable/placeholder"
+                    android:scaleType="centerCrop"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintBottom_toTopOf="@id/recTextView3"
+                    app:layout_constraintEnd_toStartOf="@id/recPoster4"
+                    app:layout_constraintStart_toEndOf="@id/recPoster2"
+                    app:layout_constraintTop_toBottomOf="@id/recsTextView" />
+
+                <ImageView
+                    android:id="@+id/recPoster4"
+                    android:layout_width="88dp"
+                    android:layout_height="113dp"
+                    android:src="@drawable/placeholder"
+                    android:scaleType="centerCrop"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintBottom_toTopOf="@id/recTextView4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/recPoster3"
+                    app:layout_constraintTop_toBottomOf="@id/recsTextView" />
+
+                <TextView
+                    android:id="@+id/recTextView1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:gravity="center"
+                    app:layout_constraintBottom_toTopOf="@id/recsLinkTextView"
+                    app:layout_constraintTop_toBottomOf="@id/recPoster1"
+                    app:layout_constraintStart_toStartOf="@id/recPoster1"
+                    app:layout_constraintEnd_toEndOf="@id/recPoster1" />
+
+                <TextView
+                    android:id="@+id/recTextView2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:gravity="center"
+                    app:layout_constraintBottom_toTopOf="@id/recsLinkTextView"
+                    app:layout_constraintTop_toBottomOf="@id/recPoster2"
+                    app:layout_constraintStart_toStartOf="@id/recPoster2"
+                    app:layout_constraintEnd_toEndOf="@id/recPoster2" />
+
+                <TextView
+                    android:id="@+id/recTextView3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:gravity="center"
+                    app:layout_constraintBottom_toTopOf="@id/recsLinkTextView"
+                    app:layout_constraintTop_toBottomOf="@id/recPoster3"
+                    app:layout_constraintStart_toStartOf="@id/recPoster3"
+                    app:layout_constraintEnd_toEndOf="@id/recPoster3" />
+
+                <TextView
+                    android:id="@+id/recTextView4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:gravity="center"
+                    app:layout_constraintBottom_toTopOf="@id/recsLinkTextView"
+                    app:layout_constraintTop_toBottomOf="@id/recPoster4"
+                    app:layout_constraintStart_toStartOf="@id/recPoster4"
+                    app:layout_constraintEnd_toEndOf="@id/recPoster4" />
+
+                <TextView
+                    android:id="@+id/recsLinkTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Click here to get more customized recommendations!"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/holo_green_dark"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/recTextView2" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </FrameLayout>
