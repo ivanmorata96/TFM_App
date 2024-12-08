@@ -10,19 +10,20 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ContentTag {
 
     private String id;
-    private ArrayList<String> tags;
+    private HashMap<String, String> tags;
     private ArrayList<String> genres;
     private int userScore;
 
-    private static ArrayList<String> relevantTags = new ArrayList<>();
+    private static HashMap<String, String> relevantTags = new HashMap<>();
 
     public ContentTag(){
         this.id = "";
-        tags = new ArrayList<>();
+        tags = new HashMap<>();
         genres = new ArrayList<>();
         userScore = 0;
         fillRelevantTags();
@@ -32,28 +33,28 @@ public class ContentTag {
         this.id = id;
         switch(type){
             case "movie":
-                this.tags = new ArrayList<>(TMDBInterface.getTMDBTagsString(id, 1));
+                this.tags = new HashMap<>(TMDBInterface.getTMDBTagsString(id, 1));
                 break;
             case "tvshow":
-                this.tags = new ArrayList<>(TMDBInterface.getTMDBTagsString(id, 2));
+                this.tags = new HashMap<>(TMDBInterface.getTMDBTagsString(id, 2));
                 break;
             case "videogame":
-                this.tags = new ArrayList<>(RAWGInterface.getVideogameTags(id));
+                this.tags = new HashMap<>(RAWGInterface.getVideogameTags(id));
                 break;
             case "book":
-                this.tags = new ArrayList<>(GoogleBooksInterface.getBookTags(id));
+                this.tags = new HashMap<>(GoogleBooksInterface.getBookTags(id));
                 break;
             default:
-                this.tags = new ArrayList<>();
+                this.tags = new HashMap<>();
         }
         this.genres = new ArrayList<>();
         this.userScore = -1;
     }
 
-    public ContentTag(String id, ArrayList<String> tags, ArrayList<String> genres, int userScore) {
+    public ContentTag(String id, HashMap<String, String> tags, ArrayList<String> genres, int userScore) {
         fillRelevantTags();
         this.id = id;
-        this.tags = new ArrayList<>(tags);
+        this.tags = new HashMap<>(tags);
         sortTags();
         this.genres = new ArrayList<>(genres);
         this.userScore = userScore;
@@ -61,7 +62,7 @@ public class ContentTag {
 
     public ContentTag(ContentTag other){
         this.id = other.id;
-        this.tags = new ArrayList<>(other.tags);
+        this.tags = new HashMap<>(other.tags);
         this.genres = new ArrayList<>(other.genres);
         this.userScore = other.userScore;
         fillRelevantTags();
@@ -75,19 +76,23 @@ public class ContentTag {
         this.id = id;
     }
 
-    public ArrayList<String> getTags() {
+    public HashMap<String, String> getTags() {
         return tags;
     }
 
     public String getTagsAsString(String type){
         String result = "";
         if (!tags.isEmpty()) {
-            if (type.equals("book") || type.equals("videogame")) {
+            if (type.equals("book")) {
                 for (String t : genres) {
                     result += (t + "+");
                 }
-            } else {
-                for (String t : tags) {
+            } else if(type.equals("videogame")) {
+                for (String t : tags.values()) {
+                    result += (t + "+");
+                }
+            }else{
+                for (String t : tags.values()) {
                     result += (t + ",");
                 }
             }
@@ -97,8 +102,8 @@ public class ContentTag {
         return result;
     }
 
-    public void setTags(ArrayList<String> tags) {
-        this.tags = new ArrayList<>(tags);
+    public void setTags(HashMap<String, String> tags) {
+        this.tags = new HashMap<>(tags);
     }
 
     public ArrayList<String> getGenres() {
@@ -127,43 +132,42 @@ public class ContentTag {
     }
 
     private static void fillRelevantTags(){ //Los números son las ID para las API de TMDB
-        relevantTags.add("fantasy");
-        relevantTags.add("293198");
-        relevantTags.add("science ciction");
-        relevantTags.add("281358");
-        relevantTags.add("Horror");
-        relevantTags.add("315058");
-        relevantTags.add("comedy");
-        relevantTags.add("322268");
-        relevantTags.add("drama");
-        relevantTags.add("316421");
-        relevantTags.add("romance");
-        relevantTags.add("9840");
-        relevantTags.add("mystery");
-        relevantTags.add("316332");
-        relevantTags.add("thriller");
-        relevantTags.add("316362");
-        relevantTags.add("epic");
-        relevantTags.add("6917");
-        relevantTags.add("historical");
-        relevantTags.add("15126");
-        relevantTags.add("history");
-        relevantTags.add("282633");
-        relevantTags.add("historical fiction");
-        relevantTags.add("12995");
-        relevantTags.add("revenge");
-        relevantTags.add("9748");
+        relevantTags.put("fantasy", "293198");
+        relevantTags.put("science ciction", "281358");
+        relevantTags.put("Horror", "315058");
+        relevantTags.put("comedy", "322268");
+        relevantTags.put("drama", "316421");
+        relevantTags.put("romance", "9840");
+        relevantTags.put("mystery", "316332");
+        relevantTags.put("thriller", "316362");
+        relevantTags.put("epic", "6917");
+        relevantTags.put("historical", "15126");
+        relevantTags.put("history", "282633");
+        relevantTags.put("historical fiction", "12995");
+        relevantTags.put("revenge", "9748");
     }
 
     private void sortTags(){
-        ArrayList<String> sortedTags = new ArrayList<>();
-        for(String t : tags){
-            if(relevantTags.contains(t)){
-                sortedTags.add(t);
+        HashMap<String, String> sortedTags = new HashMap<>();
+        for(String t : tags.keySet()){
+            if(relevantTags.containsKey(t)){
+                sortedTags.put(t, tags.get(t));
             }
-
         }
-        tags = new ArrayList<>(sortedTags);
+        tags = new HashMap<>(sortedTags);
+    }
+
+    public static String returnTMDBTagID(String tagName){
+        return relevantTags.getOrDefault(tagName, "");
+    }
+
+    public static String returnTMDBTagName(String tagID){
+        String result = "";
+        for(String t : relevantTags.keySet()){
+            if(relevantTags.get(t).equals(tagID))
+                result = t;
+        }
+        return result;
     }
 
     @Override

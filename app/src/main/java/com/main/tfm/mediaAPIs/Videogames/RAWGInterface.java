@@ -2,6 +2,7 @@ package com.main.tfm.mediaAPIs.Videogames;
 import android.util.Log;
 
 import com.main.tfm.support.Content;
+import com.main.tfm.support.ContentTag;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -157,8 +159,8 @@ public class RAWGInterface {
         return result;
     }
 
-    public static ArrayList<String> getVideogameTags(String id) throws IOException, JSONException {
-        ArrayList<String> result = new ArrayList<>();
+    public static HashMap<String, String> getVideogameTags(String id) throws IOException, JSONException {
+        HashMap<String, String> result = new HashMap<>();
         JSONArray tags;
         JSONObject singularTag;
         String busqueda = "https://api.rawg.io/api/games/" + id + "?key=" + API_KEY;
@@ -180,7 +182,8 @@ public class RAWGInterface {
                     singularTag = tags.optJSONObject(j);
                     if (singularTag != null) {
                         String tagName = singularTag.optString("name", null);
-                        result.add(tagName);
+                        String tagID = ContentTag.returnTMDBTagID(tagName);
+                        result.put(tagName, tagID);
                     }
                 }
             }
@@ -188,14 +191,14 @@ public class RAWGInterface {
         return result;
     }
 
-    public static ArrayList<Content> searchVideogamesByTags(ArrayList<String> tags) throws IOException, JSONException{
-        String tagList = formatTags(tags);
+    public static ArrayList<Content> searchVideogamesByTags(HashMap<String, String> tags) throws IOException, JSONException{
+        ArrayList<String> tempTags = new ArrayList<>(tags.keySet());
+        String tagList = formatTags(tempTags);
         ArrayList<Content> result = new ArrayList<>();
         ArrayList<String> currentGamePlatforms;
         JSONObject jsonResponse, game, platformObject, platform;
         JSONArray games, platforms;
         String busqueda = "https://api.rawg.io/api/games?key=" + API_KEY + "&tags=" + tagList;
-        Log.i("TBR", busqueda);
         HttpURLConnection conn = (HttpURLConnection) new URL(busqueda).openConnection();
         conn.setRequestMethod("GET");
 

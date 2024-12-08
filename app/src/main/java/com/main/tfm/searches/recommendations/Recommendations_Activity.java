@@ -24,6 +24,7 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -107,7 +108,7 @@ public class Recommendations_Activity extends AppCompatActivity {
     private void initContentLists() throws IOException, JSONException {
         ExecutorService executorService = Executors.newFixedThreadPool(4);
         try {
-            ArrayList<String> tags = db.retrieveUserTags();
+            HashMap<String, String> tags = db.retrieveUserTags();
             Future<ArrayList<Content>> moviesFuture = executorService.submit(() -> TMDBInterface.searchMoviesByTags(tags));
             Future<ArrayList<Content>> tvShowsFuture = executorService.submit(() -> TMDBInterface.searchTVShowsByTags(tags));
             Future<ArrayList<Content>> videogamesFuture = executorService.submit(() -> RAWGInterface.searchVideogamesByTags(tags));

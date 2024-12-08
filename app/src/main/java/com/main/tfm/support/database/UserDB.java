@@ -401,7 +401,8 @@ public class UserDB extends DBHelper{
         UserContent result = new UserContent();
         ContentTag ct;
         String name, type, poster;
-        ArrayList<String> genres, tags;
+        ArrayList<String> genres, tempTags;
+        HashMap<String, String> tags = new HashMap<>();
         int userScore;
         try{
             DBHelper dbHelper = new DBHelper(context);
@@ -414,7 +415,17 @@ public class UserDB extends DBHelper{
                 userScore = contentCursor.getInt(3);
                 poster = contentCursor.getString(4) ;
                 genres = new ArrayList<>(toArrays(contentCursor.getString(5)));
-                tags = new ArrayList<>(toArrays(contentCursor.getString(6)));
+                tempTags = new ArrayList<>(toArrays(contentCursor.getString(6)));
+                for(String t : tempTags){
+                    if(type.equals("movie") || type.equals("tvshow")){
+                        String tagName = ContentTag.returnTMDBTagName(t);
+                        tags.put(tagName, t);
+                    }else{
+                        String tagID = ContentTag.returnTMDBTagID(t);
+                        tags.put(t, tagID);
+                    }
+
+                }
                 ct = new ContentTag(id, tags, genres, userScore);
                 result = new UserContent(id, name, type, userScore, poster, ct);
             }else return null;
@@ -425,8 +436,8 @@ public class UserDB extends DBHelper{
         return result;
     }
 
-    public ArrayList<String> retrieveUserTags(){
-        ArrayList<String> result = new ArrayList<>();
+    public HashMap<String, String> retrieveUserTags(){
+        HashMap<String, String> result = new HashMap<>();
         ArrayList<String> allTags = new ArrayList<>();
         try {
             DBHelper dbHelper = new DBHelper(context);
@@ -447,9 +458,19 @@ public class UserDB extends DBHelper{
                         contador++;
                 }
                 if(contador >= 2){
-                    result.add(allTags.get(i));
+                    try{
+                        int id = Integer.parseInt(allTags.get(i));
+                        result.put(ContentTag.returnTMDBTagName(allTags.get(i)), allTags.get(i));
+                    }catch (NumberFormatException e){
+                        result.put(allTags.get(i), ContentTag.returnTMDBTagID(allTags.get(i)));
+                    }
                 }else if(result.isEmpty()){
-                    result.add(allTags.get(i));
+                    try{
+                        int id = Integer.parseInt(allTags.get(i));
+                        result.put(ContentTag.returnTMDBTagName(allTags.get(i)), allTags.get(i));
+                    }catch (NumberFormatException e){
+                        result.put(allTags.get(i), ContentTag.returnTMDBTagID(allTags.get(i)));
+                    }
                 }
             }
         }catch (Exception ex){

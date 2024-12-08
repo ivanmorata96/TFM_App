@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -250,8 +251,8 @@ public class TMDBInterface {
         return result;
     }
 
-    public static ArrayList<String> getTMDBTagsString(String ID, int type) throws IOException, JSONException {
-        ArrayList<String> result = new ArrayList<>();
+    public static HashMap<String, String> getTMDBTagsString(String ID, int type) throws IOException, JSONException {
+        HashMap<String, String> result = new HashMap<>();
         URL url = new URL("https://api.themoviedb.org/3/movie/0/keywords?api_key=" + APIKey);
         switch (type){
             case 1:
@@ -287,7 +288,7 @@ public class TMDBInterface {
         }
         for(int i = 0; i < tagList.length(); i++){
             JSONObject currentTag = tagList.getJSONObject(i);
-            result.add(String.valueOf(currentTag.optString("id")));
+            result.put(currentTag.optString("name"), String.valueOf(currentTag.optString("id")));
         }
         return result;
     }
@@ -320,9 +321,10 @@ public class TMDBInterface {
         return result;
     }
 
-    public static ArrayList<Content> searchMoviesByTags(ArrayList<String> tagList) throws IOException, JSONException{
+    public static ArrayList<Content> searchMoviesByTags(HashMap<String, String> tagList) throws IOException, JSONException{
         ArrayList<Content> results = new ArrayList<>();
-        String tags = formatTags(tagList);
+        ArrayList<String> tempTag = new ArrayList<>(tagList.values());
+        String tags = formatTags(tempTag);
         URL url = new URL("https://api.themoviedb.org/3/discover/movie?api_key="+ APIKey +"&with_keywords=" + tags);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -381,9 +383,10 @@ public class TMDBInterface {
         return result;
     }
 
-    public static ArrayList<Content> searchTVShowsByTags(ArrayList<String> tagList) throws IOException, JSONException{
+    public static ArrayList<Content> searchTVShowsByTags(HashMap<String, String> tagList) throws IOException, JSONException{
         ArrayList<Content> results = new ArrayList<>();
-        String tags = formatTags(tagList);
+        ArrayList<String> tempTag = new ArrayList<>(tagList.values());
+        String tags = formatTags(tempTag);
         URL url = new URL("https://api.themoviedb.org/3/discover/tv?api_key="+ APIKey +"&with_keywords=" + tags);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");

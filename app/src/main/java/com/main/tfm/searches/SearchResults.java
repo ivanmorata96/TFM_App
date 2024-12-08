@@ -80,8 +80,6 @@ public class SearchResults extends AppCompatActivity {
                         throw new RuntimeException(e);
                     }
                     break;
-                default:
-                    //TODO
             }
             handler.post(() -> {
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));

@@ -2,6 +2,7 @@ package com.main.tfm.mediaAPIs.Books;
 import android.util.Log;
 
 import com.main.tfm.support.Content;
+import com.main.tfm.support.ContentTag;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -187,11 +189,11 @@ public class GoogleBooksInterface {
         return result;
     }
 
-    public static ArrayList<Content> searchBooksByTag(ArrayList<String> tags) throws IOException, JSONException{
-        String tagList = formatTags(tags);
+    public static ArrayList<Content> searchBooksByTag(HashMap<String, String> tags) throws IOException, JSONException{
+        ArrayList<String> tempTags = new ArrayList<>(tags.keySet());
+        String tagList = formatTags(tempTags);
         ArrayList<Content> results = new ArrayList<>();
         URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=subject:" + tagList + "&key=" + API_KEY);
-        Log.i("TBR", url.toString());
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
@@ -222,11 +224,10 @@ public class GoogleBooksInterface {
         return results;
     }
 
-    public static Book getSingleBookByTags(String tag) throws IOException, JSONException{
-        tag = tag.replace("+", "+OR+");
+    public static Book getSingleBookByTags(String tags) throws IOException, JSONException{
+        tags = tags.replace("+", "+OR+");
         Book result = new Book();
-        URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=subject:("+ tag +")&key=" + API_KEY);
-        Log.i("TBR", url.toString());
+        URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=subject:("+ tags +")&key=" + API_KEY);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
@@ -254,8 +255,8 @@ public class GoogleBooksInterface {
         return result;
     }
 
-    public static ArrayList<String> getBookTags(String id) throws IOException, JSONException{
-        ArrayList<String> result;
+    public static HashMap<String, String> getBookTags(String id) throws IOException, JSONException{
+        HashMap<String, String> result = new HashMap<>();
         URL url = new URL("https://www.googleapis.com/books/v1/volumes/" + id + "?key=" + API_KEY);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -272,7 +273,11 @@ public class GoogleBooksInterface {
         conn.disconnect();
 
         JSONObject bookJSON = new JSONObject(sb.toString());
-        result = new ArrayList<>(arrangeGenre(bookJSON));
+        ArrayList<String> arrangedJson = arrangeGenre(bookJSON);
+        for(String t : arrangedJson){
+            String tagID = ContentTag.returnTMDBTagID(t);
+            result.put(t, tagID);
+        }
         return result;
     }
 
