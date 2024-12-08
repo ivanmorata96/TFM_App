@@ -264,29 +264,31 @@ public class RAWGInterface {
 
             jsonResponse = new JSONObject(response.toString());
             games = jsonResponse.getJSONArray("results");
-            int randomIndex = (int) (Math.random()*games.length());
-            game = games.getJSONObject(randomIndex);
-            result.setId(String.valueOf(game.getInt("id")));
-            result.setTitle(game.getString("name"));
-            result.setRelease_date(game.optString("released"));
-            result.setOverview(retrieveOverview(game.getInt("id")));
-            result.setPoster(game.optString("background_image"));
-            result.setScore(game.optInt("metacritic"));
-            currentGamePlatforms = new ArrayList<>();
-            platforms = game.optJSONArray("platforms");
-            if (platforms != null) {
-                for (int j = 0; j < platforms.length(); j++) {
-                    platformObject = platforms.optJSONObject(j);
-                    if (platformObject != null) {
-                        platform = platformObject.optJSONObject("platform");
-                        if (platform != null) {
-                            String platformName = platform.optString("name", "Unknown");
-                            currentGamePlatforms.add(platformName);
+            if(games.length() != 0){
+                int randomIndex = (int) (Math.random()*games.length());
+                game = games.getJSONObject(randomIndex);
+                result.setId(String.valueOf(game.getInt("id")));
+                result.setTitle(game.getString("name"));
+                result.setRelease_date(game.optString("released"));
+                result.setOverview(retrieveOverview(game.getInt("id")));
+                result.setPoster(game.optString("background_image"));
+                result.setScore(game.optInt("metacritic"));
+                currentGamePlatforms = new ArrayList<>();
+                platforms = game.optJSONArray("platforms");
+                if (platforms != null) {
+                    for (int j = 0; j < platforms.length(); j++) {
+                        platformObject = platforms.optJSONObject(j);
+                        if (platformObject != null) {
+                            platform = platformObject.optJSONObject("platform");
+                            if (platform != null) {
+                                String platformName = platform.optString("name", "Unknown");
+                                currentGamePlatforms.add(platformName);
+                            }
                         }
                     }
                 }
+                result.setPlatforms(currentGamePlatforms);
             }
-            result.setPlatforms(currentGamePlatforms);
         }
         return result;
     }

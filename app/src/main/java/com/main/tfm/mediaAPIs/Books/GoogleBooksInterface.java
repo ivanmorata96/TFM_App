@@ -243,15 +243,17 @@ public class GoogleBooksInterface {
         conn.disconnect();
 
         JSONObject jsonResponse = new JSONObject(sb.toString());
-        JSONArray books = jsonResponse.getJSONArray("items");
-        int randomIndex = (int) (Math.random()*books.length());
-        JSONObject currentBook = books.getJSONObject(randomIndex);
-        result.setId(currentBook.getString("id"));
-        result.setTitle(arrangeTitle(currentBook));
-        result.setAuthor(arrangeAuthors(currentBook));
-        result.setOverview(arrangeOverview(currentBook));
-        result.setDate_of_publishing(arrangeDoP(currentBook));
-        result.setPoster(arrangeCoverSearch(currentBook));
+        if(jsonResponse.has("items")){
+            JSONArray books = jsonResponse.getJSONArray("items");
+            int randomIndex = (int) (Math.random()*books.length());
+            JSONObject currentBook = books.getJSONObject(randomIndex);
+            result.setId(currentBook.getString("id"));
+            result.setTitle(arrangeTitle(currentBook));
+            result.setAuthor(arrangeAuthors(currentBook));
+            result.setOverview(arrangeOverview(currentBook));
+            result.setDate_of_publishing(arrangeDoP(currentBook));
+            result.setPoster(arrangeCoverSearch(currentBook));
+        }
         return result;
     }
 

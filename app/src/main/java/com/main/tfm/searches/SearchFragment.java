@@ -129,19 +129,19 @@ public class SearchFragment extends Fragment {
         UserContent referencedMedia = new UserContent(db.retrieveTagsReference(recommendID));
         recsTextView.setText("If you enjoyed " + referencedMedia.getTitle() + " then you may enjoy: ");
         Future<Movie> movieFuture = executor.submit(() -> {
-            String movieTags = referencedMedia.getTags().getTagsAsString("movie");
+            String movieTags = referencedMedia.getTags().getRandomTag("movie");
             return new Movie(TMDBInterface.getSingleMovieByTags(movieTags));
         });
         Future<TVShow> tvShowFuture = executor.submit(() -> {
-            String tvShowTags = referencedMedia.getTags().getTagsAsString("tvshow");
+            String tvShowTags = referencedMedia.getTags().getRandomTag("tvshow");
             return new TVShow(TMDBInterface.getSingleTVShowByTags(tvShowTags));
         });
         Future<Videogame> videogameFuture = executor.submit(() -> {
-            String videogameTags = referencedMedia.getTags().getTagsAsString("videogame");
+            String videogameTags = referencedMedia.getTags().getRandomTag("videogame");
             return new Videogame(RAWGInterface.getSingleVideogameByTag(videogameTags));
         });
         Future<Book> bookFuture = executor.submit(() -> {
-            String bookTags = referencedMedia.getTags().getTagsAsString("book");
+            String bookTags = referencedMedia.getTags().getRandomTag("book");
             return new Book(GoogleBooksInterface.getSingleBookByTags(bookTags));
         });
         Movie recommendedMovie = movieFuture.get();
@@ -156,46 +156,64 @@ public class SearchFragment extends Fragment {
 
     private void setUpRecommendations(Movie recommendedMovie, TVShow recommendedTVShow, Videogame recommendedVideogame, Book recommendedBook){
         try {
-            rec1TextView.setText(recommendedMovie.getTitle());
-            Picasso.get().load(recommendedMovie.getPoster()).into(rec1ImageView);
-            rec1ImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getActivity(), MovieActivity.class);
-                    intent.putExtra("id", recommendedMovie.getId());
-                    startActivity(intent);
-                }
-            });
-            rec2TextView.setText(recommendedTVShow.getTitle());
-            Picasso.get().load(recommendedTVShow.getPoster()).into(rec2ImageView);
-            rec2ImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getActivity(), TVShowActivity.class);
-                    intent.putExtra("id", recommendedTVShow.getId());
-                    startActivity(intent);
-                }
-            });
-            rec3TextView.setText(recommendedVideogame.getTitle());
-            Picasso.get().load(recommendedVideogame.getPoster()).into(rec3ImageView);
-            rec3ImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getActivity(), VideogameActivity.class);
-                    intent.putExtra("id", recommendedVideogame.getId());
-                    startActivity(intent);
-                }
-            });
-            rec4TextView.setText(recommendedBook.getTitle());
-            Picasso.get().load(recommendedBook.getPoster()).into(rec4ImageView);
-            rec4ImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getActivity(), BooksActivity.class);
-                    intent.putExtra("id", recommendedBook.getId());
-                    startActivity(intent);
-                }
-            });
+            if(!recommendedMovie.getId().isEmpty()){
+                rec1TextView.setText(recommendedMovie.getTitle());
+                Picasso.get().load(recommendedMovie.getPoster()).into(rec1ImageView);
+                rec1ImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), MovieActivity.class);
+                        intent.putExtra("id", recommendedMovie.getId());
+                        startActivity(intent);
+                    }
+                });
+            }else{
+                rec1TextView.setText("Not available.");
+            }
+            if(!recommendedTVShow.getId().isEmpty()){
+                rec2TextView.setText(recommendedTVShow.getTitle());
+                Picasso.get().load(recommendedTVShow.getPoster()).into(rec2ImageView);
+                rec2ImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), TVShowActivity.class);
+                        intent.putExtra("id", recommendedTVShow.getId());
+                        startActivity(intent);
+                    }
+                });
+            }else{
+                rec2TextView.setText("Not available.");
+            }
+
+            if(!recommendedVideogame.getId().isEmpty()){
+                rec3TextView.setText(recommendedVideogame.getTitle());
+                Picasso.get().load(recommendedVideogame.getPoster()).into(rec3ImageView);
+                rec3ImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), VideogameActivity.class);
+                        intent.putExtra("id", recommendedVideogame.getId());
+                        startActivity(intent);
+                    }
+                });
+            }else{
+                rec3TextView.setText("Not available.");
+            }
+            if(!recommendedBook.getId().isEmpty()){
+                rec4TextView.setText(recommendedBook.getTitle());
+                Picasso.get().load(recommendedBook.getPoster()).into(rec4ImageView);
+                rec4ImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), BooksActivity.class);
+                        intent.putExtra("id", recommendedBook.getId());
+                        startActivity(intent);
+                    }
+                });
+            }else{
+                rec4TextView.setText("Not available.");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

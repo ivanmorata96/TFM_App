@@ -102,6 +102,18 @@ public class ContentTag {
         return result;
     }
 
+    public String getRandomTag(String type){
+        if(type.equals("movie") || type.equals("tvshow")){
+            ArrayList<String> currentTags = new ArrayList<>(tags.values());
+            int randomIndex = (int) (Math.random()*currentTags.size());
+            return currentTags.get(randomIndex);
+        }else{
+            ArrayList<String> currentTags = new ArrayList<>(tags.keySet());
+            int randomIndex = (int) (Math.random()*currentTags.size());
+            return currentTags.get(randomIndex);
+        }
+    }
+
     public void setTags(HashMap<String, String> tags) {
         this.tags = new HashMap<>(tags);
     }
@@ -145,6 +157,9 @@ public class ContentTag {
         relevantTags.put("history", "282633");
         relevantTags.put("historical fiction", "12995");
         relevantTags.put("revenge", "9748");
+        relevantTags.put("theft", "14604");
+        relevantTags.put("melodramatic", "325835");
+        relevantTags.put("speculative", "190531");
     }
 
     private void sortTags(){
