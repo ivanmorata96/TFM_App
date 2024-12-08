@@ -158,8 +158,10 @@ public class ContentTag {
     private void sortTags(){
         ArrayList<String> sortedTags = new ArrayList<>();
         for(String t : tags){
-            if(relevantTags.contains(t))
+            if(relevantTags.contains(t)){
                 sortedTags.add(t);
+            }
+
         }
         tags = new ArrayList<>(sortedTags);
     }

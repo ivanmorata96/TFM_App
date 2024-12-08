@@ -86,7 +86,6 @@ public class SearchFragment extends Fragment {
             }
         });
         if(db.checkIfUserHasTagCompatibleContent()){
-            Log.i("TBR", "Estamos mostrando, prometido.");
             recsConstraintLayout.setVisibility(View.VISIBLE);
             try {
                 loadRecommendations();

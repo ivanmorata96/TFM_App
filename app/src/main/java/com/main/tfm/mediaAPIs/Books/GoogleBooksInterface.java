@@ -191,6 +191,7 @@ public class GoogleBooksInterface {
         String tagList = formatTags(tags);
         ArrayList<Content> results = new ArrayList<>();
         URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=subject:" + tagList + "&key=" + API_KEY);
+        Log.i("TBR", url.toString());
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");

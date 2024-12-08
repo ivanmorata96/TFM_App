@@ -195,6 +195,7 @@ public class RAWGInterface {
         JSONObject jsonResponse, game, platformObject, platform;
         JSONArray games, platforms;
         String busqueda = "https://api.rawg.io/api/games?key=" + API_KEY + "&tags=" + tagList;
+        Log.i("TBR", busqueda);
         HttpURLConnection conn = (HttpURLConnection) new URL(busqueda).openConnection();
         conn.setRequestMethod("GET");
 

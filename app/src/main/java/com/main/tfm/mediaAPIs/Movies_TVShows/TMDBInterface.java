@@ -405,8 +405,8 @@ public class TMDBInterface {
             JSONObject currentShow = shows.getJSONObject(i);
             TVShow show = new TVShow();
             show.setId(String.valueOf(currentShow.getInt("id")));
-            show.setTitle(currentShow.getString("title"));
-            show.setRelease_date(currentShow.getString("release_date"));
+            show.setTitle(currentShow.getString("name"));
+            show.setRelease_date(currentShow.getString("first_air_date"));
             show.setOverview(currentShow.getString("overview"));
             show.setPoster(arrangePoster(currentShow));
             results.add(show);

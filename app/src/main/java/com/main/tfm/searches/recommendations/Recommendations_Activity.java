@@ -1,6 +1,7 @@
 package com.main.tfm.searches.recommendations;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,10 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Recommendations_Activity extends AppCompatActivity {
 
@@ -31,7 +36,10 @@ public class Recommendations_Activity extends AppCompatActivity {
     private Recommendations_Adapter adapter;
     private String filter;
     private UserDB db = new UserDB(this);
-    private ArrayList<Content> movies, tvshows, videogames, books;
+    private ArrayList<Content> movies = new ArrayList<>();
+    private ArrayList<Content> tvshows = new ArrayList<>();
+    private ArrayList<Content> videogames = new ArrayList<>();
+    private ArrayList<Content> books = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +72,15 @@ public class Recommendations_Activity extends AppCompatActivity {
                 filter = tab.getText().toString();
                 updateResults(filter);
             }
+
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
 
             }
-           @Override
-           public void onTabReselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
 
     }
@@ -93,11 +104,22 @@ public class Recommendations_Activity extends AppCompatActivity {
         adapter.updateData(activeResults);
     }
 
-        private void initContentLists() throws IOException, JSONException {
+    private void initContentLists() throws IOException, JSONException {
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
+        try {
             ArrayList<String> tags = db.retrieveUserTags();
-            movies = TMDBInterface.searchMoviesByTags(tags);
-            tvshows = TMDBInterface.searchTVShowsByTags(tags);
-            videogames = RAWGInterface.searchVideogamesByTags(tags);
-            books = GoogleBooksInterface.searchBooksByTag(tags);
+            Future<ArrayList<Content>> moviesFuture = executorService.submit(() -> TMDBInterface.searchMoviesByTags(tags));
+            Future<ArrayList<Content>> tvShowsFuture = executorService.submit(() -> TMDBInterface.searchTVShowsByTags(tags));
+            Future<ArrayList<Content>> videogamesFuture = executorService.submit(() -> RAWGInterface.searchVideogamesByTags(tags));
+            Future<ArrayList<Content>> booksFuture = executorService.submit(() -> GoogleBooksInterface.searchBooksByTag(tags));
+            movies = moviesFuture.get();
+            tvshows = tvShowsFuture.get();
+            videogames = videogamesFuture.get();
+            books = booksFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        } finally {
+            executorService.shutdown();
         }
     }
+}
